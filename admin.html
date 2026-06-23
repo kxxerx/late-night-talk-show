@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>관리자 | 오염도 상점</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">오염도 상점</a>
+    <nav id="nav" class="nav"></nav>
+  </div>
+</header>
+
+  <main class="container">
+    <h1>관리자 페이지</h1>
+    <p class="lead">여기서 회원, 재화, 오염도, 아이템, 이벤트 코드를 관리합니다. 즉, 작은 권력의 맛과 그에 따른 유지보수 지옥입니다.</p>
+    <div id="message" class="message"></div>
+
+    <section class="panel">
+      <h2>회원 목록 / 밴드 닉네임 연결</h2>
+      <p class="small muted">체크박스를 선택하면 아래 일괄 지급 대상이 됩니다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>선택</th>
+              <th>사이트ID</th>
+              <th>이메일</th>
+              <th>표시명</th>
+              <th>밴드 닉네임</th>
+              <th>재화</th>
+              <th>오염도</th>
+              <th>권한</th>
+              <th>저장</th>
+            </tr>
+          </thead>
+          <tbody id="userList"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <h2>선택 회원 일괄 지급/차감</h2>
+      <form id="adjustForm">
+        <label>재화 변화량
+          <input id="adjustCurrency" type="number" value="0">
+        </label>
+        <label>오염도 변화량
+          <input id="adjustPollution" type="number" value="0">
+        </label>
+        <label>아이템 지급
+          <select id="adminItemSelect"></select>
+        </label>
+        <label>아이템 수량
+          <input id="adminItemQty" type="number" value="0" min="0">
+        </label>
+        <label>사유
+          <input id="adjustReason" type="text" placeholder="예: 1차 이벤트 보상">
+        </label>
+        <button type="submit">선택 회원에게 적용</button>
+      </form>
+    </section>
+
+    <section class="section two-column">
+      <article class="panel">
+        <h2>아이템 등록</h2>
+        <form id="itemForm">
+          <label>아이템명
+            <input id="itemName" type="text" required>
+          </label>
+          <label>설명
+            <textarea id="itemDescription"></textarea>
+          </label>
+          <label>이미지 경로 또는 URL
+            <input id="itemImage" type="text" placeholder="assets/items/example.png">
+          </label>
+          <label>가격
+            <input id="itemPrice" type="number" min="0" value="0">
+          </label>
+          <label>효과 타입
+            <input id="itemEffectType" type="text" value="pollution_delta">
+          </label>
+          <label>효과값
+            <input id="itemEffectValue" type="number" value="-10">
+          </label>
+          <label>정렬 순서
+            <input id="itemSort" type="number" value="100">
+          </label>
+          <label>
+            <input id="itemActive" type="checkbox" checked>
+            판매중
+          </label>
+          <button type="submit">아이템 등록</button>
+        </form>
+      </article>
+
+      <article class="panel">
+        <h2>이벤트 코드 생성</h2>
+        <form id="eventCodeForm">
+          <label>코드
+            <input id="newCode" type="text" required placeholder="예: REDMOON01">
+          </label>
+          <label>제목
+            <input id="codeTitle" type="text" required>
+          </label>
+          <label>설명
+            <textarea id="codeDescription"></textarea>
+          </label>
+          <label>승인 시 재화 변화
+            <input id="rewardCurrency" type="number" value="0">
+          </label>
+          <label>승인 시 오염도 변화
+            <input id="codePollution" type="number" value="0">
+          </label>
+          <label>승인 시 지급 아이템
+            <select id="rewardItem"></select>
+          </label>
+          <label>아이템 수량
+            <input id="rewardItemQty" type="number" value="0" min="0">
+          </label>
+          <button type="submit">코드 생성</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="section panel">
+      <h2>등록된 아이템</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>아이템명</th>
+              <th>가격</th>
+              <th>효과</th>
+              <th>상태</th>
+              <th>이미지</th>
+            </tr>
+          </thead>
+          <tbody id="itemList"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section panel">
+      <h2>이벤트 코드 제출 승인/거절</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>사이트ID</th>
+              <th>표시명</th>
+              <th>밴드 닉네임</th>
+              <th>코드</th>
+              <th>이벤트</th>
+              <th>상태</th>
+              <th>증빙</th>
+              <th>제출일</th>
+              <th>처리</th>
+            </tr>
+          </thead>
+          <tbody id="submissionList"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

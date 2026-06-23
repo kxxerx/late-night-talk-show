@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>로그인 | 오염도 상점</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">오염도 상점</a>
+    <nav id="nav" class="nav"></nav>
+  </div>
+</header>
+
+  <main class="container">
+    <h1>로그인 / 회원가입</h1>
+    <p class="lead">사이트 아이디는 회원가입 후 자동 생성됩니다. 밴드 가입 질문에는 그 사이트 아이디를 입력하게 하면 됩니다.</p>
+    <div id="message" class="message"></div>
+
+    <section class="two-column">
+      <article class="panel">
+        <h2>로그인</h2>
+        <form id="loginForm">
+          <label>이메일
+            <input id="loginEmail" type="email" required>
+          </label>
+          <label>비밀번호
+            <input id="loginPassword" type="password" required>
+          </label>
+          <button type="submit">로그인</button>
+        </form>
+      </article>
+
+      <article class="panel">
+        <h2>회원가입</h2>
+        <form id="signupForm">
+          <label>이메일
+            <input id="signupEmail" type="email" required>
+          </label>
+          <label>비밀번호
+            <input id="signupPassword" type="password" minlength="6" required>
+          </label>
+          <label>표시 닉네임
+            <input id="signupDisplayName" type="text" placeholder="사이트에서 보일 이름">
+          </label>
+          <button type="submit">회원가입</button>
+        </form>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

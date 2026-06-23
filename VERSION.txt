@@ -1,0 +1,2 @@
+pollution-shop-starter v0.2
+- Added manual GRANT SQL for Supabase projects with Automatically expose new tables OFF.
