@@ -1,11 +1,8 @@
-pollution-shop-starter v1.4
-- Fixed invitation page black/red/yellow styling and centered invite button.
-- Used GabiaMaeumgyeol family name for whisper text.
-- Added rounded empty inventory box.
-- Removed standalone status text under profile name.
-- Made profile stats three columns.
-- Converted signup to popup modal and close on success.
-- Hid role from visitor page.
-- Made user name readonly and default to 익명.
-- Profile display prefers band nickname, then user name, then 익명.
-- Rebuilt withdrawal modal click behavior.
+pollution-shop-starter v1.5
+- Added public active item read policy for anon visitors.
+- Updated purchase RPC error message to 유쾌주화가 부족합니다.
+- Added admin_remove_profile RPC for removing any visitor profile from site DB.
+- Added forgot password guidance modal.
+- Reduced profile stats to two cells.
+- Updated invitation button and horror buttons to black/red styling.
+- Reduced yellow play-with-us text size and made whisper text white.

@@ -95,7 +95,7 @@ function openExitModal() {
         <h2 style="color:#ff0000;font-size:clamp(34px,6vw,62px);line-height:1.05;margin:0 0 20px;text-shadow:0 0 14px rgba(255,0,0,.92);">완전히 소각당하시겠습니까?</h2>
         <p style="color:#ff0000;font-size:10px;line-height:1.22;word-break:break-all;max-height:240px;overflow:hidden;opacity:.9;margin:0 0 24px;">${makeDontLeaveText()}</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-          <button id="confirmExitBtn" type="button" style="border-radius:0;background:#210000;color:#ff0000;border:1px solid #ff0000;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;">기념품샵에서 나가기</button>
+          <button id="confirmExitBtn" type="button" style="border-radius:0;background:#210000;color:#ff0000;border:1px solid #ff0000;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;">기념품샵 떠나기</button>
           <button id="cancelExitBtn" type="button" style="border-radius:0;background:#080808;color:#ff0000;border:1px solid #a00000;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;">아직 머무르기</button>
         </div>
       </div>`;
@@ -110,7 +110,7 @@ function openExitModal() {
       if (error) {
         showMessage(error.message, "error");
         event.currentTarget.disabled = false;
-        event.currentTarget.textContent = "기념품샵에서 나가기";
+        event.currentTarget.textContent = "기념품샵 떠나기";
         modal.style.display = "none";
         return;
       }

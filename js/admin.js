@@ -38,24 +38,27 @@ async function loadUsers() {
       </td>
       <td>
         <button data-save-user="${user.id}">저장</button>
-        ${user.status === "withdrawn" ? `<button data-purge-user="${user.id}" class="danger">삭제</button>` : ""}
+        ${user.id !== adminProfile.id ? `<button data-remove-user="${user.id}" class="danger">제거</button>` : ""}
       </td>
     </tr>
   `).join("");
 
 
-  document.querySelectorAll("[data-purge-user]").forEach(button => {
+  
+
+
+  document.querySelectorAll("[data-remove-user]").forEach(button => {
     button.addEventListener("click", async () => {
-      const id = button.dataset.purgeUser;
-      const ok = confirm("기념품샵에서 나간 방문객 정보를 사이트 DB에서 삭제할까요? Supabase Auth 실제 계정은 별도로 남을 수 있습니다.");
+      const id = button.dataset.removeUser;
+      const ok = confirm("이 방문객 정보를 사이트 DB에서 제거할까요? 비밀번호 분실자의 재등록을 도와줄 때도 사용할 수 있습니다. Supabase Auth 실제 계정은 별도로 남을 수 있습니다.");
       if (!ok) return;
 
-      const { data, error } = await supabase.rpc("admin_purge_withdrawn_profile", {
+      const { data, error } = await supabase.rpc("admin_remove_profile", {
         p_target_user_id: id
       });
 
       if (error) showMessage(error.message, "error");
-      else showMessage(data.message || "삭제 완료", "success");
+      else showMessage(data.message || "제거 완료", "success");
 
       await loadUsers();
     });
