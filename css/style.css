@@ -1707,3 +1707,50 @@ button, .button {
 #cancelExitBtn:hover {
   background: #1a0000 !important;
 }
+
+
+/* v1.8 admin editing and cohesion tweaks */
+.blog-header.noir + .container {
+  border-top: 3px solid rgba(214,168,79,.32);
+}
+
+.category-link.active,
+.blog-header.noir .category-link.active {
+  background: #d6a84f !important;
+  color: #090909 !important;
+}
+
+.status-yellow,
+.two-stats small.status-yellow,
+.status-inline.status-yellow {
+  font-size: 14px !important;
+  letter-spacing: .12em;
+}
+
+.status-red,
+.two-stats small.status-red,
+.status-inline.status-red {
+  font-size: 14px !important;
+  letter-spacing: .12em;
+}
+
+.admin-table-wrap,
+.table-wrap {
+  overflow-x: auto;
+}
+
+.admin-edit-table,
+.table-wrap table {
+  min-width: 980px;
+}
+
+.table-input.short { min-width: 120px; }
+.table-input.tiny { min-width: 72px; max-width: 110px; }
+.table-input.image-url { min-width: 220px; }
+
+td input[type="file"] {
+  max-width: 180px;
+  font-size: 11px;
+}
+
+.item-desc { min-width: 180px; min-height: 54px; }

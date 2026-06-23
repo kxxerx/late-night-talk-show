@@ -1,7 +1,8 @@
-pollution-shop-starter v1.7
-- Updated invitation code page copy and label.
-- Updated visitor status phrases to 괜찮아/조심해/위험해/안 돼 돌아가.
-- Added status color classes: yellow for under 100, red for 100.
-- Added password reset request table and admin inbox.
-- Added password reset request modal submission.
-- Further forced horror modal buttons to black/red.
+pollution-shop-starter v1.8
+- Added admin event code list with edit/delete controls.
+- Added admin item edit/delete controls.
+- Added item image file upload via item-images storage bucket.
+- Added recommended image size documentation.
+- Improved admin table horizontal scrolling and compact inputs.
+- Increased visitor status text size.
+- Added small gold cohesion accents between black/gold header and pastel body.

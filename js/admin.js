@@ -6,6 +6,22 @@ const adminProfile = await requireAdmin();
 let users = [];
 let items = [];
 let submissions = [];
+let codes = [];
+
+function safeFileName(name) {
+  return String(name || "item.png").toLowerCase().replace(/[^a-z0-9._-]/g, "-").slice(0, 80);
+}
+
+async function uploadItemImageFile(file) {
+  if (!file) return "";
+  if (!file.type.startsWith("image/")) throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  if (file.size > 3 * 1024 * 1024) throw new Error("이미지는 3MB 이하로 올려주세요.");
+  const path = `${Date.now()}-${safeFileName(file.name)}`;
+  const { error } = await supabase.storage.from("item-images").upload(path, file, { cacheControl: "3600", upsert: true });
+  if (error) throw error;
+  const { data } = supabase.storage.from("item-images").getPublicUrl(path);
+  return data.publicUrl;
+}
 
 function selectedUserIds() {
   return qsa("[data-user-check]:checked").map(input => input.value);
@@ -113,13 +129,121 @@ async function loadItems() {
 
   qs("#itemList").innerHTML = items.map(item => `
     <tr>
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td>${item.effect_type} ${item.effect_value}</td>
-      <td>${item.is_active ? "판매중" : "중지"}</td>
-      <td>${item.image_url || ""}</td>
+      <td><input class="table-input short" data-item-name="${item.id}" value="${item.name || ""}"></td>
+      <td><textarea class="table-input item-desc" data-item-description="${item.id}">${item.description || ""}</textarea></td>
+      <td><input class="table-input tiny" type="number" data-item-price="${item.id}" value="${item.price || 0}"></td>
+      <td>
+        <select data-item-category="${item.id}">
+          <option value="main" ${item.category === "main" ? "selected" : ""}>기념품</option>
+          <option value="cleanse" ${item.category === "cleanse" ? "selected" : ""}>분실물</option>
+          <option value="special" ${item.category === "special" ? "selected" : ""}>특별 상품</option>
+          <option value="event" ${item.category === "event" ? "selected" : ""}>초대권</option>
+        </select>
+      </td>
+      <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${item.effect_type || "pollution_delta"}"></td>
+      <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${item.effect_value || 0}"></td>
+      <td><input class="table-input image-url" data-item-image="${item.id}" value="${item.image_url || ""}"><input type="file" accept="image/*" data-item-file="${item.id}"></td>
+      <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${item.sort_order || 100}"></td>
+      <td><input type="checkbox" data-item-active="${item.id}" ${item.is_active ? "checked" : ""}></td>
+      <td>
+        <button data-save-item="${item.id}">저장</button>
+        <button data-delete-item="${item.id}" class="danger">삭제</button>
+      </td>
     </tr>
   `).join("");
+
+  document.querySelectorAll("[data-save-item]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.saveItem;
+      try {
+        const file = document.querySelector(`[data-item-file="${id}"]`)?.files?.[0];
+        const uploadedUrl = file ? await uploadItemImageFile(file) : "";
+        const payload = {
+          name: document.querySelector(`[data-item-name="${id}"]`).value.trim(),
+          description: document.querySelector(`[data-item-description="${id}"]`).value.trim(),
+          price: Number(document.querySelector(`[data-item-price="${id}"]`).value || 0),
+          category: document.querySelector(`[data-item-category="${id}"]`).value,
+          effect_type: document.querySelector(`[data-item-effect-type="${id}"]`).value.trim() || "pollution_delta",
+          effect_value: Number(document.querySelector(`[data-item-effect-value="${id}"]`).value || 0),
+          image_url: uploadedUrl || document.querySelector(`[data-item-image="${id}"]`).value.trim() || null,
+          sort_order: Number(document.querySelector(`[data-item-sort="${id}"]`).value || 100),
+          is_active: document.querySelector(`[data-item-active="${id}"]`).checked
+        };
+        const { error } = await supabase.from("items").update(payload).eq("id", id);
+        if (error) throw error;
+        showMessage("아이템 저장 완료", "success");
+        await loadItems();
+      } catch (error) {
+        showMessage(error.message, "error");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-delete-item]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.deleteItem;
+      const ok = confirm("이 아이템을 삭제할까요? 이미 지급/구매 기록이 있으면 삭제가 막힐 수 있습니다. 그 경우 판매중을 해제하세요.");
+      if (!ok) return;
+      const { error } = await supabase.from("items").delete().eq("id", id);
+      if (error) showMessage(error.message, "error");
+      else showMessage("아이템 삭제 완료", "success");
+      await loadItems();
+    });
+  });
+}
+
+
+async function loadCodes() {
+  const { data, error } = await supabase
+    .from("event_codes")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  codes = data || [];
+
+  qs("#codeList").innerHTML = codes.map(code => `
+    <tr>
+      <td><input class="table-input short" data-code-code="${code.id}" value="${code.code || ""}"></td>
+      <td><input class="table-input short" data-code-title="${code.id}" value="${code.title || ""}"></td>
+      <td><input class="table-input tiny" type="number" data-code-currency="${code.id}" value="${code.reward_currency || 0}"></td>
+      <td><input class="table-input tiny" type="number" data-code-pollution="${code.id}" value="${code.pollution_delta || 0}"></td>
+      <td><input type="checkbox" data-code-active="${code.id}" ${code.is_active ? "checked" : ""}></td>
+      <td>
+        <button data-save-code="${code.id}">저장</button>
+        <button data-delete-code="${code.id}" class="danger">삭제</button>
+      </td>
+    </tr>
+  `).join("") || `<tr><td colspan="6">생성된 코드 없음</td></tr>`;
+
+  document.querySelectorAll("[data-save-code]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.saveCode;
+      const payload = {
+        code: document.querySelector(`[data-code-code="${id}"]`).value.trim().toUpperCase(),
+        title: document.querySelector(`[data-code-title="${id}"]`).value.trim(),
+        reward_currency: Number(document.querySelector(`[data-code-currency="${id}"]`).value || 0),
+        pollution_delta: Number(document.querySelector(`[data-code-pollution="${id}"]`).value || 0),
+        is_active: document.querySelector(`[data-code-active="${id}"]`).checked
+      };
+      const { error } = await supabase.from("event_codes").update(payload).eq("id", id);
+      if (error) showMessage(error.message, "error");
+      else showMessage("초대권 코드 저장 완료", "success");
+      await loadCodes();
+    });
+  });
+
+  document.querySelectorAll("[data-delete-code]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.deleteCode;
+      const ok = confirm("이 초대권 코드를 삭제할까요? 제출 기록이 있으면 삭제가 막힐 수 있습니다. 그 경우 활성만 해제하세요.");
+      if (!ok) return;
+      const { error } = await supabase.from("event_codes").delete().eq("id", id);
+      if (error) showMessage(error.message, "error");
+      else showMessage("초대권 코드 삭제 완료", "success");
+      await loadCodes();
+    });
+  });
 }
 
 async function loadSubmissions() {
@@ -218,7 +342,7 @@ qs("#itemForm")?.addEventListener("submit", async (event) => {
   const payload = {
     name: qs("#itemName").value.trim(),
     description: qs("#itemDescription").value.trim(),
-    image_url: qs("#itemImage").value.trim() || null,
+    image_url: (await uploadItemImageFile(qs("#itemImageFile")?.files?.[0])) || qs("#itemImage").value.trim() || null,
     price: Number(qs("#itemPrice").value || 0),
     effect_type: qs("#itemEffectType").value.trim() || "pollution_delta",
     effect_value: Number(qs("#itemEffectValue").value || 0),
@@ -262,6 +386,7 @@ qs("#eventCodeForm")?.addEventListener("submit", async (event) => {
 
   showMessage("초대권 생성 완료", "success");
   qs("#eventCodeForm").reset();
+  await loadCodes();
 });
 
 
@@ -299,7 +424,7 @@ async function loadPasswordRequests() {
 }
 
 if (adminProfile) {
-  Promise.all([loadUsers(), loadItems(), loadSubmissions(), loadPasswordRequests()]).catch(error => {
+  Promise.all([loadUsers(), loadItems(), loadCodes(), loadSubmissions(), loadPasswordRequests()]).catch(error => {
     console.error(error);
     showMessage(error.message, "error");
   });

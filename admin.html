@@ -88,6 +88,10 @@
           <label>이미지 경로 또는 URL
             <input id="itemImage" type="text" placeholder="assets/items/example.png">
           </label>
+          <label>이미지 파일 업로드
+            <input id="itemImageFile" type="file" accept="image/*">
+            <small class="muted">권장: 800×600px, WebP/JPG/PNG, 500KB 이하</small>
+          </label>
           <label>가격
             <input id="itemPrice" type="number" min="0" value="0">
           </label>
@@ -137,17 +141,43 @@
       </article>
     </section>
 
+
+    <section class="section panel">
+      <h2>등록된 초대권 코드</h2>
+      <p class="small muted">생성된 코드를 확인하고 수정/삭제할 수 있습니다.</p>
+      <div class="table-wrap admin-table-wrap">
+        <table class="admin-edit-table">
+          <thead>
+            <tr>
+              <th>코드</th>
+              <th>제목</th>
+              <th>유쾌주화</th>
+              <th>방문객 상태</th>
+              <th>활성</th>
+              <th>처리</th>
+            </tr>
+          </thead>
+          <tbody id="codeList"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="section panel">
       <h2>등록된 아이템</h2>
-      <div class="table-wrap">
-        <table>
+      <div class="table-wrap admin-table-wrap">
+        <table class="admin-edit-table">
           <thead>
             <tr>
               <th>아이템명</th>
+              <th>설명</th>
               <th>가격</th>
-              <th>효과</th>
-              <th>상태</th>
+              <th>카테고리</th>
+              <th>효과 타입</th>
+              <th>효과값</th>
               <th>이미지</th>
+              <th>정렬</th>
+              <th>판매</th>
+              <th>처리</th>
             </tr>
           </thead>
           <tbody id="itemList"></tbody>
