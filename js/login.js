@@ -22,7 +22,7 @@ signupForm?.addEventListener("submit", async (event) => {
 
   const loginId = normalizeLoginId(qs("#signupLoginId").value);
   const password = qs("#signupPassword").value;
-  const displayName = qs("#signupDisplayName").value.trim();
+  const displayName = "익명";
 
   if (loginId.length < 3 || loginId.length > 20) {
     showMessage("아이디는 영문/숫자/_/- 조합으로 3~20자여야 합니다.", "error");
@@ -51,7 +51,7 @@ signupForm?.addEventListener("submit", async (event) => {
     options: {
       data: {
         site_id: loginId,
-        display_name: displayName || loginId
+        display_name: displayName
       }
     }
   });

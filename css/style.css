@@ -1534,3 +1534,99 @@ button, .button {
 .profile-stats {
   grid-template-columns: repeat(3, 1fr) !important;
 }
+
+
+/* v1.4 layout and behavior fixes */
+.midnight-invite {
+  background: #000 !important;
+  color: #ff1d1d !important;
+  border: 1px solid #750000 !important;
+  box-shadow: 0 0 38px rgba(255,0,0,.2) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+}
+
+.midnight-invite p {
+  color: #ff1d1d !important;
+  width: 100%;
+}
+
+.midnight-invite .play-with-us {
+  color: #ffd84d !important;
+  font-weight: 900 !important;
+  font-size: 25px !important;
+  letter-spacing: .42em;
+  text-align: center;
+  width: 100%;
+}
+
+.midnight-invite .midnight-whisper {
+  font-family: GabiaMaeumgyeol, "Gabia Maeumgyeol", serif !important;
+  font-style: italic !important;
+  color: #ff1d1d !important;
+  font-size: 18px !important;
+  line-height: 1.95 !important;
+  text-align: left;
+}
+
+.midnight-invite #openInviteBtn {
+  align-self: center;
+  margin: 24px auto 0 !important;
+  background: #1a0000 !important;
+  color: #ffd84d !important;
+  border: 1px solid #a60000 !important;
+}
+
+.empty-inventory-box {
+  grid-column: 1 / -1;
+  min-height: 130px;
+  border: 1px dashed rgba(188, 167, 218, 0.55);
+  border-radius: 18px;
+  background: rgba(255,255,255,.72);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.visitor-name {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+  line-height: 1.28;
+  max-width: 100%;
+}
+
+.unified-actions .button,
+.unified-actions button,
+.side-actions .button,
+.side-actions button {
+  font-family: var(--font-main) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+
+.three-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.three-stats div {
+  padding: 8px 5px !important;
+}
+
+.three-stats span {
+  font-size: 14px !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.three-stats small {
+  font-size: 10px !important;
+}
+
+#displayName[readonly] {
+  opacity: .75;
+  cursor: not-allowed;
+}

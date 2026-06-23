@@ -1,8 +1,11 @@
-pollution-shop-starter v1.3
-- Changed gift shop wording to souvenir shop.
-- Added softer pastel pink/lavender/mint UI tone.
-- Removed Special Hall button from the right profile card.
-- Renamed currency to 유쾌주화.
-- Restored visitor status label next to the numeric status.
-- Changed signup from inline details to a popup modal.
-- Rebuilt withdrawal horror modal with inline styles and stronger button handling.
+pollution-shop-starter v1.4
+- Fixed invitation page black/red/yellow styling and centered invite button.
+- Used GabiaMaeumgyeol family name for whisper text.
+- Added rounded empty inventory box.
+- Removed standalone status text under profile name.
+- Made profile stats three columns.
+- Converted signup to popup modal and close on success.
+- Hid role from visitor page.
+- Made user name readonly and default to 익명.
+- Profile display prefers band nickname, then user name, then 익명.
+- Rebuilt withdrawal modal click behavior.

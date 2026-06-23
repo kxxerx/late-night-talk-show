@@ -1,3 +1,4 @@
+
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, pollutionLabel, authEmailFromLoginId } from "./common.js";
 
@@ -18,6 +19,9 @@ function normalizeLoginId(value) {
   return String(value || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
 }
 
+function displayVisitorName(profile) {
+  return profile?.band_nickname || profile?.display_name || "익명";
+}
 
 function ensureSignupModal() {
   let modal = document.querySelector("#signupModal");
@@ -30,16 +34,13 @@ function ensureSignupModal() {
     <div class="soft-modal-box">
       <button id="closeSignupModalBtn" class="modal-close" type="button">×</button>
       <h2>방문객 등록</h2>
-      <p class="muted">골든 마스코트 기념품샵에 처음 방문하셨다면 등록을 진행해 주세요.</p>
+      <p class="muted">아이디와 비밀번호만 등록하면 기념품샵에 입장할 수 있습니다. 사용자 이름은 등록 후 관리자가 정리합니다.</p>
       <form id="sideSignupForm">
         <label>아이디
           <input id="sideSignupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
         </label>
         <label>비밀번호
           <input id="sideSignupPassword" type="password" minlength="6" required autocomplete="new-password">
-        </label>
-        <label>표시 닉네임
-          <input id="sideSignupDisplayName" type="text" placeholder="사이트에서 보일 이름">
         </label>
         <button type="submit">방문객 등록</button>
       </form>
@@ -64,8 +65,8 @@ function openSignupModal() {
 async function getOptionalProfile() {
   const session = await getSession();
   cachedSession = session;
-
   document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = !session; });
+
   if (!session) return null;
 
   const { data, error } = await supabase
@@ -74,11 +75,17 @@ async function getOptionalProfile() {
     .eq("id", session.user.id)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    await supabase.auth.signOut();
+    cachedSession = null;
+    document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = true; });
+    return null;
+  }
 
   if (data?.status === "withdrawn") {
     await supabase.auth.signOut();
     cachedSession = null;
+    document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = true; });
     return null;
   }
 
@@ -86,19 +93,19 @@ async function getOptionalProfile() {
 }
 
 function renderLoggedInSide(profile) {
+  const name = displayVisitorName(profile);
   qs("#sidePanel").innerHTML = `
     <div class="profile-card">
-      <div class="avatar">${profileAvatar(profile)}</div>
+      <div class="avatar">${profileAvatar({ ...profile, display_name: name })}</div>
       <div>
-        <h2>${profile.display_name || "방문객 정보"}</h2>
-        <p class="muted">${pollutionLabel(profile.pollution)}</p>
+        <h2 class="visitor-name" title="${name}">${name}</h2>
       </div>
-      <div class="profile-stats">
+      <div class="profile-stats three-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
         <div><span>${profile.pollution}</span><small>방문객 상태</small></div>
         <div><span>${pollutionLabel(profile.pollution)}</span><small>판정</small></div>
       </div>
-      <div class="side-actions">
+      <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>
         <a class="button secondary" href="mypage.html">방문객 정보</a>
         <a class="button secondary" href="codes.html">초대권 등록</a>
@@ -120,8 +127,8 @@ function renderLoggedInSide(profile) {
 function renderGuestSide() {
   qs("#sidePanel").innerHTML = `
     <div class="profile-card auth-side-card">
-      <h2>손님 입장</h2>
-      <p class="muted">구매와 쇼핑백 확인은 손님 등록 후 가능합니다.</p>
+      <h2>방문객 입장</h2>
+      <p class="muted">구매와 쇼핑백 확인은 방문객 등록 후 가능합니다.</p>
 
       <form id="sideLoginForm">
         <label>아이디
@@ -149,10 +156,8 @@ function wireCategoryButtons() {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       currentCategory = category || "all";
-
       const url = currentCategory === "all" ? "index.html" : `index.html?category=${currentCategory}`;
       history.replaceState(null, "", url);
-
       document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("active"));
       button.classList.add("active");
       renderItems();
@@ -162,62 +167,44 @@ function wireCategoryButtons() {
 
 async function handleSideLogin(event) {
   event.preventDefault();
-
   const loginId = qs("#sideLoginId").value.trim();
   const password = qs("#sideLoginPassword").value;
   const email = authEmailFromLoginId(loginId);
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    showMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요.", "error");
+    showMessage("입장 실패: 아이디 또는 비밀번호를 확인하세요.", "error");
     return;
   }
-
-  showMessage("로그인 완료.", "success");
+  showMessage("입장 완료.", "success");
   await loadShopHome();
 }
 
 async function handleSideSignup(event) {
   event.preventDefault();
-
   const loginId = normalizeLoginId(qs("#sideSignupLoginId").value);
   const password = qs("#sideSignupPassword").value;
-  const displayName = qs("#sideSignupDisplayName").value.trim();
 
   if (loginId.length < 3 || loginId.length > 20) {
     showMessage("아이디는 영문/숫자/_/- 조합으로 3~20자여야 합니다.", "error");
     return;
   }
 
-  const { data: available, error: checkError } = await supabase.rpc("is_site_id_available", {
-    p_site_id: loginId
-  });
-
+  const { data: available, error: checkError } = await supabase.rpc("is_site_id_available", { p_site_id: loginId });
   if (checkError) {
     showMessage(checkError.message, "error");
     return;
   }
-
   if (!available) {
     showMessage("이미 사용 중이거나 사용할 수 없는 아이디입니다.", "error");
     return;
   }
 
   const email = authEmailFromLoginId(loginId);
-
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        site_id: loginId,
-        display_name: displayName || loginId
-      }
-    }
+    options: { data: { site_id: loginId, display_name: "익명" } }
   });
 
   if (error) {
@@ -232,11 +219,7 @@ async function handleSideSignup(event) {
     return;
   }
 
-  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
   if (!loginError && loginData?.session) {
     showMessage("방문객 등록 완료. 자동 입장되었습니다.", "success");
     document.querySelector("#signupModal")?.classList.remove("open");
@@ -244,7 +227,8 @@ async function handleSideSignup(event) {
     return;
   }
 
-  showMessage("회원가입은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 로그인이 막힐 수 있습니다.", "success");
+  showMessage("방문객 등록은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 입장이 막힐 수 있습니다.", "success");
+  document.querySelector("#signupModal")?.classList.remove("open");
 }
 
 function filteredItems() {
@@ -254,14 +238,8 @@ function filteredItems() {
 
 function renderItems() {
   const items = filteredItems();
-
   if (!items.length) {
-    qs("#shopList").innerHTML = `
-      <article class="panel empty-panel">
-        <h2>등록된 아이템 없음</h2>
-        <p class="muted">이 카테고리에 아직 아이템이 없습니다.</p>
-      </article>
-    `;
+    qs("#shopList").innerHTML = `<article class="panel empty-panel"><h2>등록된 아이템 없음</h2><p class="muted">이 선반에는 아직 아무것도 없습니다.</p></article>`;
     return;
   }
 
@@ -271,7 +249,6 @@ function renderItems() {
         ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
       </div>
       <div class="item-body">
-        <p class="item-category">${categoryLabels[item.category || "main"] || "아이템"}</p>
         <h2>${item.name}</h2>
         <p>${item.description}</p>
       </div>
@@ -285,25 +262,16 @@ function renderItems() {
   document.querySelectorAll("[data-buy]").forEach(button => {
     button.addEventListener("click", async () => {
       if (!cachedSession || !cachedProfile) {
-        showMessage("구매하려면 먼저 손님 등록을 해주세요.", "error");
+        showMessage("구매하려면 먼저 방문객 등록을 해주세요.", "error");
         qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
-
       const itemId = button.dataset.buy;
       button.disabled = true;
       button.textContent = "처리 중";
-
-      const { data, error } = await supabase.rpc("purchase_item", {
-        p_item_id: itemId
-      });
-
-      if (error) {
-        showMessage(error.message, "error");
-      } else {
-        showMessage(data.message, "success");
-      }
-
+      const { data, error } = await supabase.rpc("purchase_item", { p_item_id: itemId });
+      if (error) showMessage(error.message, "error");
+      else showMessage(data.message, "success");
       await loadShopHome();
     });
   });
@@ -311,23 +279,11 @@ function renderItems() {
 
 async function loadShopHome() {
   cachedProfile = await getOptionalProfile();
-
-  if (cachedProfile) {
-    renderLoggedInSide(cachedProfile);
-  } else {
-    renderGuestSide();
-  }
-
+  if (cachedProfile) renderLoggedInSide(cachedProfile);
+  else renderGuestSide();
   wireCategoryButtons();
-
-  const { data: items, error } = await supabase
-    .from("items")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
-
+  const { data: items, error } = await supabase.from("items").select("*").eq("is_active", true).order("sort_order", { ascending: true });
   if (error) throw error;
-
   cachedItems = items || [];
   renderItems();
 }

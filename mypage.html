@@ -32,15 +32,15 @@
     <section class="grid compact-stats">
       <article class="card">
         <p class="muted">보유 유쾌주화</p>
-        <p class="stat"><span id="currency">0</span> 유쾌주화</p>
+        <p class="stat"><span id="currency">0</span></p>
       </article>
       <article class="card">
         <p class="muted">방문객 상태</p>
         <p class="stat"><span id="pollution">0</span> / 100 <small id="pollutionStatusLabel" class="status-inline">안정</small></p>
       </article>
       <article class="card">
-        <p class="muted">권한</p>
-        <p class="stat" id="role">-</p>
+        <p class="muted">판정</p>
+        <p class="stat" id="visitorStatusText">안정</p>
       </article>
     </section>
 
@@ -54,8 +54,8 @@
     <section class="section panel">
       <h2>프로필</h2>
       <form id="profileForm">
-        <label>표시 닉네임
-          <input id="displayName" type="text">
+        <label>사용자 이름
+          <input id="displayName" type="text" readonly>
         </label>
         <label>밴드 닉네임
           <input id="bandNickname" type="text">

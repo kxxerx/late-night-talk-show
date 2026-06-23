@@ -1,3 +1,4 @@
+
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getMyProfile } from "./common.js";
 
@@ -13,7 +14,12 @@ async function loadInventory() {
 
   if (error) throw error;
 
-  qs("#inventoryList").innerHTML = (data || []).map(row => {
+  if (!data || data.length === 0) {
+    qs("#inventoryList").innerHTML = `<article class="empty-inventory-box">보유 아이템이 없습니다.</article>`;
+    return;
+  }
+
+  qs("#inventoryList").innerHTML = data.map(row => {
     const item = row.item;
     return `
       <article class="item-card">
@@ -28,26 +34,17 @@ async function loadInventory() {
         <div class="item-footer">
           <button data-use="${item.id}">사용</button>
         </div>
-      </article>
-    `;
-  }).join("") || `<p class="muted">보유 아이템이 없습니다.</p>`;
+      </article>`;
+  }).join("");
 
   document.querySelectorAll("[data-use]").forEach(button => {
     button.addEventListener("click", async () => {
       const itemId = button.dataset.use;
       button.disabled = true;
       button.textContent = "사용 중";
-
-      const { data, error } = await supabase.rpc("use_item", {
-        p_item_id: itemId
-      });
-
-      if (error) {
-        showMessage(error.message, "error");
-      } else {
-        showMessage(`${data.message}: ${data.before} → ${data.after}`, "success");
-      }
-
+      const { data, error } = await supabase.rpc("use_item", { p_item_id: itemId });
+      if (error) showMessage(error.message, "error");
+      else showMessage(`${data.message}: ${data.before} → ${data.after}`, "success");
       await loadInventory();
     });
   });
