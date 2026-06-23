@@ -47,7 +47,7 @@ async function loadUsers() {
   document.querySelectorAll("[data-purge-user]").forEach(button => {
     button.addEventListener("click", async () => {
       const id = button.dataset.purgeUser;
-      const ok = confirm("기프트샵에서 나간 방문객 정보를 사이트 DB에서 삭제할까요? Supabase Auth 실제 계정은 별도로 남을 수 있습니다.");
+      const ok = confirm("기념품샵에서 나간 방문객 정보를 사이트 DB에서 삭제할까요? Supabase Auth 실제 계정은 별도로 남을 수 있습니다.");
       if (!ok) return;
 
       const { data, error } = await supabase.rpc("admin_purge_withdrawn_profile", {

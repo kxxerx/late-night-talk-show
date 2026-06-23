@@ -63,6 +63,7 @@ async function loadDashboard() {
   qs("#avatarUrl").value = profile.avatar_url || "";
   qs("#currency").textContent = profile.currency;
   qs("#pollution").textContent = profile.pollution;
+  if (qs("#pollutionStatusLabel")) qs("#pollutionStatusLabel").textContent = pollutionLabel(profile.pollution);
   qs("#role").textContent = profile.role;
 
   const bar = qs("#pollutionBar");
@@ -83,7 +84,7 @@ async function loadDashboard() {
 
   qs("#currencyLogs").innerHTML = (currencyLogs || []).map(log => `
     <li>${formatDate(log.created_at)} / ${log.change_amount > 0 ? "+" : ""}${log.change_amount} / ${log.reason}</li>
-  `).join("") || `<li>재화 기록 없음</li>`;
+  `).join("") || `<li>유쾌주화 기록 없음</li>`;
 
   qs("#pollutionLogs").innerHTML = (pollutionLogs || []).map(log => `
     <li>${formatDate(log.created_at)} / ${log.change_amount > 0 ? "+" : ""}${log.change_amount} / ${log.reason}</li>
@@ -117,63 +118,80 @@ qs("#profileForm")?.addEventListener("submit", async (event) => {
 
 
 
+
 function makeDontLeaveText() {
-  return Array.from({ length: 140 }, () => "나가지마").join("");
+  return Array.from({ length: 170 }, () => "나가지마").join("");
+}
+
+function applyExitModalStyles(modal) {
+  Object.assign(modal.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "2147483647",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+    background: "#000"
+  });
 }
 
 function openExitModal() {
-  let modal = qs("#exitHorrorModal");
+  let modal = document.querySelector("#exitHorrorModal");
 
   if (!modal) {
     modal = document.createElement("div");
     modal.id = "exitHorrorModal";
-    modal.setAttribute("role", "dialog");
-    modal.setAttribute("aria-modal", "true");
+    modal.className = "exit-horror-modal";
+    applyExitModalStyles(modal);
     modal.innerHTML = `
-      <div class="exit-horror-box" role="document">
-        <h2>완전히 소각당하시겠습니까?</h2>
-        <p class="dont-leave">${makeDontLeaveText()}</p>
-        <div class="exit-horror-actions">
-          <button id="confirmExitBtn" class="exit-confirm" type="button">기프트샵에서 나가기</button>
-          <button id="cancelExitBtn" class="exit-cancel" type="button">아직 머무르기</button>
+      <div class="exit-horror-box" style="width:min(780px,100%);max-height:min(720px,90vh);overflow:hidden;border:1px solid #8b0000;background:#000;box-shadow:0 0 55px rgba(255,0,0,.45);padding:36px 30px;text-align:center;">
+        <h2 style="color:#ff0000;font-size:clamp(34px,6vw,62px);line-height:1.05;margin:0 0 20px;text-shadow:0 0 14px rgba(255,0,0,.92);">완전히 소각당하시겠습니까?</h2>
+        <p style="color:#ff0000;font-size:10px;line-height:1.22;word-break:break-all;max-height:240px;overflow:hidden;opacity:.9;margin:0 0 24px;">${makeDontLeaveText()}</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <button id="confirmExitBtn" type="button" style="border-radius:0;background:#210000;color:#ff0000;border:1px solid #ff0000;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;">기념품샵에서 나가기</button>
+          <button id="cancelExitBtn" type="button" style="border-radius:0;background:#080808;color:#ff0000;border:1px solid #a00000;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;">아직 머무르기</button>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
 
-    modal.addEventListener("click", async (event) => {
-      if (event.target.id === "cancelExitBtn" || event.target === modal) {
-        modal.classList.remove("open");
+    modal.querySelector("#cancelExitBtn").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) modal.style.display = "none";
+    });
+
+    modal.querySelector("#confirmExitBtn").addEventListener("click", async (event) => {
+      event.currentTarget.disabled = true;
+      event.currentTarget.textContent = "소각 중...";
+
+      const { data, error } = await supabase.rpc("withdraw_my_account");
+
+      if (error) {
+        showMessage(error.message, "error");
+        event.currentTarget.disabled = false;
+        event.currentTarget.textContent = "기념품샵에서 나가기";
+        modal.style.display = "none";
         return;
       }
 
-      if (event.target.id === "confirmExitBtn") {
-        event.target.disabled = true;
-        event.target.textContent = "소각 중...";
-
-        const { data, error } = await supabase.rpc("withdraw_my_account");
-
-        if (error) {
-          showMessage(error.message, "error");
-          event.target.disabled = false;
-          event.target.textContent = "기프트샵에서 나가기";
-          modal.classList.remove("open");
-          return;
-        }
-
-        showMessage(data.message, "success");
-        await supabase.auth.signOut();
-        setTimeout(() => location.href = "index.html", 700);
-      }
+      showMessage(data.message, "success");
+      await supabase.auth.signOut();
+      setTimeout(() => location.href = "index.html", 700);
     });
   }
 
-  modal.classList.add("open");
+  applyExitModalStyles(modal);
+  modal.style.display = "flex";
 }
 
 qs("#withdrawBtn")?.addEventListener("click", () => {
   openExitModal();
 });
+
 
 
 

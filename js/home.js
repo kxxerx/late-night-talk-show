@@ -18,6 +18,49 @@ function normalizeLoginId(value) {
   return String(value || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
 }
 
+
+function ensureSignupModal() {
+  let modal = document.querySelector("#signupModal");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.id = "signupModal";
+  modal.className = "soft-modal";
+  modal.innerHTML = `
+    <div class="soft-modal-box">
+      <button id="closeSignupModalBtn" class="modal-close" type="button">×</button>
+      <h2>방문객 등록</h2>
+      <p class="muted">골든 마스코트 기념품샵에 처음 방문하셨다면 등록을 진행해 주세요.</p>
+      <form id="sideSignupForm">
+        <label>아이디
+          <input id="sideSignupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
+        </label>
+        <label>비밀번호
+          <input id="sideSignupPassword" type="password" minlength="6" required autocomplete="new-password">
+        </label>
+        <label>표시 닉네임
+          <input id="sideSignupDisplayName" type="text" placeholder="사이트에서 보일 이름">
+        </label>
+        <button type="submit">방문객 등록</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.id === "closeSignupModalBtn") {
+      modal.classList.remove("open");
+    }
+  });
+
+  modal.querySelector("#sideSignupForm")?.addEventListener("submit", handleSideSignup);
+  return modal;
+}
+
+function openSignupModal() {
+  ensureSignupModal().classList.add("open");
+}
+
 async function getOptionalProfile() {
   const session = await getSession();
   cachedSession = session;
@@ -51,14 +94,14 @@ function renderLoggedInSide(profile) {
         <p class="muted">${pollutionLabel(profile.pollution)}</p>
       </div>
       <div class="profile-stats">
-        <div><span>${profile.currency}</span><small>재화</small></div>
+        <div><span>${profile.currency}</span><small>유쾌주화</small></div>
         <div><span>${profile.pollution}</span><small>방문객 상태</small></div>
+        <div><span>${pollutionLabel(profile.pollution)}</span><small>판정</small></div>
       </div>
       <div class="side-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>
         <a class="button secondary" href="mypage.html">방문객 정보</a>
         <a class="button secondary" href="codes.html">초대권 등록</a>
-        <a class="button secondary" href="partner.html">특별관</a>
         ${profile.role === "admin" ? `<a class="button secondary" href="admin.html">관리실</a>` : ""}
         <button id="sideLogoutBtn" class="button secondary" type="button">다시 방문하기</button>
       </div>
@@ -90,28 +133,12 @@ function renderGuestSide() {
         <button type="submit">입장하기</button>
       </form>
 
-      <hr>
-
-      <details class="signup-details">
-        <summary>처음 온 손님 등록</summary>
-        <form id="sideSignupForm">
-          <label>아이디
-            <input id="sideSignupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
-          </label>
-          <label>비밀번호
-            <input id="sideSignupPassword" type="password" minlength="6" required autocomplete="new-password">
-          </label>
-          <label>표시 닉네임
-            <input id="sideSignupDisplayName" type="text" placeholder="사이트에서 보일 이름">
-          </label>
-          <button type="submit">손님 등록</button>
-        </form>
-      </details>
+      <button id="openSignupModalBtn" class="button secondary" type="button">방문객 등록</button>
     </div>
   `;
 
   qs("#sideLoginForm")?.addEventListener("submit", handleSideLogin);
-  qs("#sideSignupForm")?.addEventListener("submit", handleSideSignup);
+  qs("#openSignupModalBtn")?.addEventListener("click", openSignupModal);
 }
 
 function wireCategoryButtons() {
@@ -199,7 +226,8 @@ async function handleSideSignup(event) {
   }
 
   if (data?.session) {
-    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    showMessage("방문객 등록 완료. 자동 입장되었습니다.", "success");
+    document.querySelector("#signupModal")?.classList.remove("open");
     await loadShopHome();
     return;
   }
@@ -210,7 +238,8 @@ async function handleSideSignup(event) {
   });
 
   if (!loginError && loginData?.session) {
-    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    showMessage("방문객 등록 완료. 자동 입장되었습니다.", "success");
+    document.querySelector("#signupModal")?.classList.remove("open");
     await loadShopHome();
     return;
   }
@@ -247,7 +276,7 @@ function renderItems() {
         <p>${item.description}</p>
       </div>
       <div class="item-footer">
-        <p class="price">${item.price} 조각</p>
+        <p class="price">${item.price} 유쾌주화</p>
         <button data-buy="${item.id}">구입</button>
       </div>
     </article>

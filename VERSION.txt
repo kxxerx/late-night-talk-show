@@ -1,8 +1,8 @@
-pollution-shop-starter v1.2
-- Changed logo text to Golden Mascot Memorial Hall only.
-- Moved category strip to all main pages.
-- Moved Special Hall link to the end of the category strip.
-- Special Hall link is visible only to logged-in visitors.
-- Rewrote Special Hall invitation page text.
-- Added yellow bold styling for '우 리 같 이 놀 자'.
-- Added Gabia Maeumgyeol webfont styling for the whisper text.
+pollution-shop-starter v1.3
+- Changed gift shop wording to souvenir shop.
+- Added softer pastel pink/lavender/mint UI tone.
+- Removed Special Hall button from the right profile card.
+- Renamed currency to 유쾌주화.
+- Restored visitor status label next to the numeric status.
+- Changed signup from inline details to a popup modal.
+- Rebuilt withdrawal horror modal with inline styles and stronger button handling.

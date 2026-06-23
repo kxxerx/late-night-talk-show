@@ -24,7 +24,7 @@ async function loadShop() {
       </div>
       <h2>${item.name}</h2>
       <p>${item.description}</p>
-      <p class="price">${item.price} 조각</p>
+      <p class="price">${item.price} 유쾌주화</p>
       <button data-buy="${item.id}">구입하기</button>
     </article>
   `).join("");
