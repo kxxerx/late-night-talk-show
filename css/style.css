@@ -1228,3 +1228,150 @@ select {
 .danger-zone {
   border-color: rgba(240, 127, 156, 0.45) !important;
 }
+
+
+
+/* v1.1 black/gold header, no global menu, fixed horror modal */
+.gift-menu {
+  display: none !important;
+}
+
+.blog-header.noir,
+.blog-header.slim.noir {
+  background:
+    radial-gradient(circle at 20% 35%, rgba(214,168,79,0.13), transparent 18rem),
+    radial-gradient(circle at 72% 45%, rgba(214,168,79,0.08), transparent 20rem),
+    #070707 !important;
+  border-bottom: 3px solid #d6a84f !important;
+}
+
+.blog-header.noir .brand-stage {
+  min-height: 175px !important;
+}
+
+.blog-header.noir .logo-slot img {
+  width: min(650px, 100%) !important;
+}
+
+.blog-header.noir .category-strip {
+  padding: 0 0 16px !important;
+}
+
+.blog-header.noir .category-link {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(214,168,79,0.42) !important;
+  color: #e8d198 !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 6px 12px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.blog-header.noir .category-link.active,
+.blog-header.noir .special-hall-link:hover {
+  background: #d6a84f !important;
+  color: #070707 !important;
+  border-color: #d6a84f !important;
+}
+
+.side-actions .button,
+.side-actions button {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.danger-zone {
+  background: rgba(255,255,255,0.9) !important;
+  border: 1px solid rgba(45,0,0,0.2) !important;
+}
+
+.danger-zone h2 {
+  color: #7b1e2f !important;
+}
+
+#withdrawBtn.danger {
+  background: #2b0000 !important;
+  color: #ff3434 !important;
+  border: 1px solid #850000 !important;
+  border-radius: 999px !important;
+}
+
+.exit-horror-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  background: #000 !important;
+}
+
+.exit-horror-modal.open {
+  display: flex !important;
+}
+
+.exit-horror-box {
+  width: min(780px, 100%) !important;
+  max-height: min(720px, 90vh) !important;
+  overflow: hidden !important;
+  border: 1px solid #8b0000 !important;
+  background: #000 !important;
+  box-shadow: 0 0 55px rgba(255, 0, 0, 0.45) !important;
+  padding: 36px 30px !important;
+  text-align: center !important;
+}
+
+.exit-horror-box h2 {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: clamp(34px, 6vw, 62px) !important;
+  line-height: 1.05 !important;
+  margin: 0 0 20px !important;
+  text-shadow: 0 0 14px rgba(255,0,0,0.92) !important;
+}
+
+.exit-horror-box .dont-leave {
+  color: #ff0000 !important;
+  font-size: 10px !important;
+  line-height: 1.22 !important;
+  word-break: break-all !important;
+  max-height: 240px !important;
+  overflow: hidden !important;
+  opacity: 0.9 !important;
+  margin: 0 0 24px !important;
+}
+
+.exit-horror-actions {
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+.exit-horror-actions button,
+.exit-horror-actions .exit-confirm,
+.exit-horror-actions .exit-cancel {
+  border-radius: 0 !important;
+  background: #080808 !important;
+  color: #ff0000 !important;
+  border: 1px solid #a00000 !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+}
+
+.exit-horror-actions .exit-confirm {
+  background: #210000 !important;
+  border-color: #ff0000 !important;
+  color: #ff0000 !important;
+}
+
+.exit-horror-actions button:disabled {
+  opacity: .55 !important;
+  cursor: wait !important;
+}

@@ -59,16 +59,16 @@ function renderLoggedInSide(profile) {
         <a class="button secondary" href="codes.html">초대권 등록</a>
         <a class="button secondary" href="partner.html">특별관</a>
         ${profile.role === "admin" ? `<a class="button secondary" href="admin.html">관리실</a>` : ""}
-        <button id="sideLogoutBtn" class="button secondary" type="button">다음에 다시 방문하기</button>
+        <button id="sideLogoutBtn" class="button secondary" type="button">다시 방문하기</button>
       </div>
     </div>
   `;
 
   qs("#sideLogoutBtn")?.addEventListener("click", async () => {
-    const ok = confirm("다음에 다시 방문하시겠습니까?");
+    const ok = confirm("다시 방문하시겠습니까?");
     if (!ok) return;
     await supabase.auth.signOut();
-    showMessage("방문 기록을 잠시 접어두었습니다.", "success");
+    showMessage("다음 방문을 기다리겠습니다.", "success");
     await loadShopHome();
   });
 }

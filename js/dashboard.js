@@ -116,44 +116,55 @@ qs("#profileForm")?.addEventListener("submit", async (event) => {
 });
 
 
+
 function makeDontLeaveText() {
-  return Array.from({ length: 90 }, () => "나가지마").join("");
+  return Array.from({ length: 140 }, () => "나가지마").join("");
 }
 
 function openExitModal() {
   let modal = qs("#exitHorrorModal");
+
   if (!modal) {
     modal = document.createElement("div");
     modal.id = "exitHorrorModal";
-    modal.className = "exit-horror-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
     modal.innerHTML = `
-      <div class="exit-horror-box">
+      <div class="exit-horror-box" role="document">
         <h2>완전히 소각당하시겠습니까?</h2>
         <p class="dont-leave">${makeDontLeaveText()}</p>
         <div class="exit-horror-actions">
-          <button id="confirmExitBtn" class="danger" type="button">기프트샵에서 나가기</button>
-          <button id="cancelExitBtn" type="button">아직 머무르기</button>
+          <button id="confirmExitBtn" class="exit-confirm" type="button">기프트샵에서 나가기</button>
+          <button id="cancelExitBtn" class="exit-cancel" type="button">아직 머무르기</button>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
 
-    qs("#cancelExitBtn").addEventListener("click", () => {
-      modal.classList.remove("open");
-    });
-
-    qs("#confirmExitBtn").addEventListener("click", async () => {
-      const { data, error } = await supabase.rpc("withdraw_my_account");
-
-      if (error) {
-        showMessage(error.message, "error");
+    modal.addEventListener("click", async (event) => {
+      if (event.target.id === "cancelExitBtn" || event.target === modal) {
         modal.classList.remove("open");
         return;
       }
 
-      showMessage(data.message, "success");
-      await supabase.auth.signOut();
-      setTimeout(() => location.href = "index.html", 700);
+      if (event.target.id === "confirmExitBtn") {
+        event.target.disabled = true;
+        event.target.textContent = "소각 중...";
+
+        const { data, error } = await supabase.rpc("withdraw_my_account");
+
+        if (error) {
+          showMessage(error.message, "error");
+          event.target.disabled = false;
+          event.target.textContent = "기프트샵에서 나가기";
+          modal.classList.remove("open");
+          return;
+        }
+
+        showMessage(data.message, "success");
+        await supabase.auth.signOut();
+        setTimeout(() => location.href = "index.html", 700);
+      }
     });
   }
 
@@ -163,6 +174,7 @@ function openExitModal() {
 qs("#withdrawBtn")?.addEventListener("click", () => {
   openExitModal();
 });
+
 
 
 loadDashboard().catch(error => {

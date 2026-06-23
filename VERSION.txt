@@ -1,8 +1,8 @@
-pollution-shop-starter v1.0
-- Applied finalized site/menu terminology.
-- Added Golden Mascot Gift Shop / Midnight Talk Show Special Hall logo text.
-- Renamed pollution to visitor status.
-- Renamed event code to invitation registration.
-- Renamed item categories to souvenir/lost item/special product.
-- Renamed logout and withdrawal actions.
-- Added custom black/red horror modal for withdrawal.
+pollution-shop-starter v1.1
+- Changed header/logo area to black and gold.
+- Removed global top menu again.
+- Added Special Hall link into the shop category strip.
+- Fixed sidebar profile button labels.
+- Shortened logout label to 다시 방문하기.
+- Cleaned withdrawal section wording.
+- Strengthened and fixed horror exit modal styling and click behavior.
