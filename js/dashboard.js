@@ -3,9 +3,50 @@ import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, po
 
 await renderNav();
 
+let currentProfile = null;
+
+function safeFileName(name) {
+  return String(name || "avatar.png")
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .slice(0, 80);
+}
+
+async function uploadAvatarIfSelected(profile) {
+  const input = qs("#avatarFile");
+  const file = input?.files?.[0];
+  if (!file) return qs("#avatarUrl").value.trim();
+
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    throw new Error("프로필 이미지는 2MB 이하로 올려주세요.");
+  }
+
+  const path = `${profile.id}/${Date.now()}-${safeFileName(file.name)}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, file, {
+      cacheControl: "3600",
+      upsert: true
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(path);
+
+  return data.publicUrl;
+}
+
 async function loadDashboard() {
   const profile = await getMyProfile();
   if (!profile) return;
+  currentProfile = profile;
 
   qs("#profileHero").innerHTML = `
     <div class="avatar big">${profileAvatar(profile)}</div>
@@ -52,23 +93,26 @@ async function loadDashboard() {
 qs("#profileForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const displayName = qs("#displayName").value;
-  const bandNickname = qs("#bandNickname").value;
-  const avatarUrl = qs("#avatarUrl").value;
+  try {
+    const displayName = qs("#displayName").value;
+    const bandNickname = qs("#bandNickname").value;
+    const avatarUrl = await uploadAvatarIfSelected(currentProfile);
 
-  const { error } = await supabase.rpc("update_my_profile", {
-    p_display_name: displayName,
-    p_band_nickname: bandNickname,
-    p_avatar_url: avatarUrl
-  });
+    const { error } = await supabase.rpc("update_my_profile", {
+      p_display_name: displayName,
+      p_band_nickname: bandNickname,
+      p_avatar_url: avatarUrl
+    });
 
-  if (error) {
+    if (error) throw error;
+
+    showMessage("프로필 저장 완료", "success");
+    qs("#avatarFile").value = "";
+    await loadDashboard();
+  } catch (error) {
+    console.error(error);
     showMessage(error.message, "error");
-    return;
   }
-
-  showMessage("프로필 저장 완료", "success");
-  await loadDashboard();
 });
 
 qs("#withdrawBtn")?.addEventListener("click", async () => {

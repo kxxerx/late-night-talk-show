@@ -3,29 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>상점 | 오염도 상점</title>
+  <title>상점</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">오염도 상점</a>
-    <nav id="nav" class="nav"></nav>
-  </div>
-</header>
-
-  <main class="container app-layout">
-    <section class="main-column">
-      <div class="page-title">
-        <p class="eyebrow">Contamination shop</p>
-        <h1>상점</h1>
-        <p class="lead">재화로 아이템을 구입하고, 필요한 순간 오염도를 깎아내리세요. 이 모든 수치놀이를 위해 인류는 데이터베이스를 발명했습니다.</p>
+  <header class="blog-header">
+    <div class="brand-stage">
+      <div class="logo-slot">
+        <img src="assets/site-logo.svg" alt="사이트 로고">
       </div>
+    </div>
+    <div class="shop-strip">
+      <span id="sectionLabel">전체</span>
+    </div>
+  </header>
+
+  <main class="container app-layout compact-shop">
+    <section class="main-column">
       <div id="message" class="message"></div>
       <section id="shopList" class="shop-grid"></section>
     </section>
-    <aside class="side-column" id="profileCard"></aside>
+    <aside class="side-column" id="sidePanel"></aside>
   </main>
   <script type="module" src="js/home.js"></script>
 </body>

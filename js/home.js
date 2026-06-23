@@ -1,10 +1,61 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, profileAvatar, pollutionLabel } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, pollutionLabel, authEmailFromLoginId } from "./common.js";
 
-await renderNav();
+let currentCategory = "all";
+let cachedItems = [];
+let cachedProfile = null;
+let cachedSession = null;
 
-async function renderProfileCard(profile) {
-  qs("#profileCard").innerHTML = `
+const categoryLabels = {
+  all: "전체",
+  main: "메인 상점 아이템",
+  cleanse: "정화 아이템",
+  event: "이벤트 아이템",
+  special: "특수 아이템"
+};
+
+function normalizeLoginId(value) {
+  return String(value || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+}
+
+async function getOptionalProfile() {
+  const session = await getSession();
+  cachedSession = session;
+
+  if (!session) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error) throw error;
+
+  if (data?.status === "withdrawn") {
+    await supabase.auth.signOut();
+    cachedSession = null;
+    return null;
+  }
+
+  return data;
+}
+
+function renderCategoryCard() {
+  return `
+    <div class="category-card">
+      <h3>상점 카테고리</h3>
+      <button class="category-chip active" data-category="all">전체</button>
+      <button class="category-chip" data-category="main">메인 상점 아이템</button>
+      <button class="category-chip" data-category="cleanse">정화 아이템</button>
+      <button class="category-chip" data-category="event">이벤트 아이템</button>
+      <button class="category-chip" data-category="special">특수 아이템</button>
+    </div>
+  `;
+}
+
+function renderLoggedInSide(profile) {
+  qs("#sidePanel").innerHTML = `
     <div class="profile-card">
       <div class="avatar">${profileAvatar(profile)}</div>
       <div>
@@ -20,24 +71,175 @@ async function renderProfileCard(profile) {
         <a class="button secondary" href="inventory.html">내 가방</a>
         <a class="button secondary" href="mypage.html">내 상태</a>
         <a class="button secondary" href="codes.html">코드 제출</a>
+        <button id="sideLogoutBtn" class="button secondary" type="button">로그아웃</button>
       </div>
     </div>
+    ${renderCategoryCard()}
   `;
+
+  qs("#sideLogoutBtn")?.addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    showMessage("로그아웃되었습니다.", "success");
+    await loadShopHome();
+  });
 }
 
-async function loadShopHome() {
-  const profile = await getMyProfile();
-  if (!profile) return;
+function renderGuestSide() {
+  qs("#sidePanel").innerHTML = `
+    <div class="profile-card auth-side-card">
+      <h2>로그인</h2>
+      <p class="muted">구매와 내 가방 확인은 로그인 후 가능합니다.</p>
 
-  await renderProfileCard(profile);
+      <form id="sideLoginForm">
+        <label>아이디
+          <input id="sideLoginId" type="text" required autocomplete="username" placeholder="아이디">
+        </label>
+        <label>비밀번호
+          <input id="sideLoginPassword" type="password" required autocomplete="current-password" placeholder="비밀번호">
+        </label>
+        <button type="submit">로그인</button>
+      </form>
 
-  const { data: items, error } = await supabase
-    .from("items")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+      <hr>
 
-  if (error) throw error;
+      <details class="signup-details">
+        <summary>회원가입</summary>
+        <form id="sideSignupForm">
+          <label>아이디
+            <input id="sideSignupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
+          </label>
+          <label>비밀번호
+            <input id="sideSignupPassword" type="password" minlength="6" required autocomplete="new-password">
+          </label>
+          <label>표시 닉네임
+            <input id="sideSignupDisplayName" type="text" placeholder="사이트에서 보일 이름">
+          </label>
+          <button type="submit">회원가입</button>
+        </form>
+      </details>
+    </div>
+    ${renderCategoryCard()}
+  `;
+
+  qs("#sideLoginForm")?.addEventListener("submit", handleSideLogin);
+  qs("#sideSignupForm")?.addEventListener("submit", handleSideSignup);
+}
+
+function wireCategoryButtons() {
+  document.querySelectorAll("[data-category]").forEach(button => {
+    button.addEventListener("click", () => {
+      currentCategory = button.dataset.category;
+      document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
+      renderItems();
+    });
+  });
+}
+
+async function handleSideLogin(event) {
+  event.preventDefault();
+
+  const loginId = qs("#sideLoginId").value.trim();
+  const password = qs("#sideLoginPassword").value;
+  const email = authEmailFromLoginId(loginId);
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    showMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요.", "error");
+    return;
+  }
+
+  showMessage("로그인 완료.", "success");
+  await loadShopHome();
+}
+
+async function handleSideSignup(event) {
+  event.preventDefault();
+
+  const loginId = normalizeLoginId(qs("#sideSignupLoginId").value);
+  const password = qs("#sideSignupPassword").value;
+  const displayName = qs("#sideSignupDisplayName").value.trim();
+
+  if (loginId.length < 3 || loginId.length > 20) {
+    showMessage("아이디는 영문/숫자/_/- 조합으로 3~20자여야 합니다.", "error");
+    return;
+  }
+
+  const { data: available, error: checkError } = await supabase.rpc("is_site_id_available", {
+    p_site_id: loginId
+  });
+
+  if (checkError) {
+    showMessage(checkError.message, "error");
+    return;
+  }
+
+  if (!available) {
+    showMessage("이미 사용 중이거나 사용할 수 없는 아이디입니다.", "error");
+    return;
+  }
+
+  const email = authEmailFromLoginId(loginId);
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        site_id: loginId,
+        display_name: displayName || loginId
+      }
+    }
+  });
+
+  if (error) {
+    showMessage(error.message, "error");
+    return;
+  }
+
+  if (data?.session) {
+    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    await loadShopHome();
+    return;
+  }
+
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (!loginError && loginData?.session) {
+    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    await loadShopHome();
+    return;
+  }
+
+  showMessage("회원가입은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 로그인이 막힐 수 있습니다.", "success");
+}
+
+function filteredItems() {
+  if (currentCategory === "all") return cachedItems;
+  return cachedItems.filter(item => (item.category || "main") === currentCategory);
+}
+
+function renderItems() {
+  const items = filteredItems();
+
+  qs("#sectionLabel").textContent = categoryLabels[currentCategory] || "상점 아이템";
+
+  if (!items.length) {
+    qs("#shopList").innerHTML = `
+      <article class="panel empty-panel">
+        <h2>등록된 아이템 없음</h2>
+        <p class="muted">이 카테고리에 아직 아이템이 없습니다. 비어 있는 상점이라니, 자본주의도 잠깐 쉬는군요.</p>
+      </article>
+    `;
+    return;
+  }
 
   qs("#shopList").innerHTML = items.map(item => `
     <article class="item-card">
@@ -45,6 +247,7 @@ async function loadShopHome() {
         ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
       </div>
       <div class="item-body">
+        <p class="item-category">${categoryLabels[item.category || "main"] || "아이템"}</p>
         <h2>${item.name}</h2>
         <p>${item.description}</p>
       </div>
@@ -57,6 +260,12 @@ async function loadShopHome() {
 
   document.querySelectorAll("[data-buy]").forEach(button => {
     button.addEventListener("click", async () => {
+      if (!cachedSession || !cachedProfile) {
+        showMessage("구매하려면 먼저 오른쪽에서 로그인하세요.", "error");
+        qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
       const itemId = button.dataset.buy;
       button.disabled = true;
       button.textContent = "처리 중...";
@@ -74,6 +283,29 @@ async function loadShopHome() {
       await loadShopHome();
     });
   });
+}
+
+async function loadShopHome() {
+  cachedProfile = await getOptionalProfile();
+
+  if (cachedProfile) {
+    renderLoggedInSide(cachedProfile);
+  } else {
+    renderGuestSide();
+  }
+
+  wireCategoryButtons();
+
+  const { data: items, error } = await supabase
+    .from("items")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) throw error;
+
+  cachedItems = items || [];
+  renderItems();
 }
 
 loadShopHome().catch(error => {

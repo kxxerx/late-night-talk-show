@@ -436,3 +436,140 @@ hr {
     flex-direction: column;
   }
 }
+
+
+
+/* v0.5 blog-like shop header */
+.blog-header {
+  background: #465f73;
+  min-height: 406px;
+  border-bottom: 4px solid #f4d35e;
+  display: grid;
+  align-content: end;
+}
+
+.brand-stage {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+}
+
+.logo-slot {
+  width: 100%;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+}
+
+.logo-slot img {
+  width: min(460px, 100%);
+  height: auto;
+  display: block;
+}
+
+.shop-strip {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  color: #f4d35e;
+  font-weight: 900;
+  padding: 14px 0 28px;
+  letter-spacing: -0.02em;
+}
+
+.compact-shop {
+  margin-top: 34px;
+}
+
+.compact-shop .side-column {
+  top: 24px;
+}
+
+.category-card {
+  margin-top: 16px;
+  background: linear-gradient(180deg, var(--panel), rgba(18, 20, 30, 0.94));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 8px;
+}
+
+.category-card h3 {
+  margin: 0 0 8px;
+  letter-spacing: -0.04em;
+}
+
+.category-chip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-align: left;
+}
+
+.category-chip.active {
+  background: linear-gradient(135deg, var(--accent), #7ac7ff);
+  color: #111217;
+}
+
+.item-category {
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 0 0 8px;
+}
+
+.empty-panel {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 860px) {
+  .blog-header {
+    min-height: 260px;
+  }
+
+  .brand-stage {
+    min-height: 190px;
+  }
+}
+
+
+
+/* v0.6 guest login sidebar */
+.auth-side-card h2 {
+  margin-bottom: 6px;
+}
+
+.auth-side-card form {
+  gap: 10px;
+}
+
+.signup-details {
+  display: grid;
+  gap: 12px;
+}
+
+.signup-details summary {
+  cursor: pointer;
+  color: var(--accent-2);
+  font-weight: 900;
+  padding: 6px 0;
+}
+
+.signup-details[open] summary {
+  margin-bottom: 10px;
+}
+
+#sidePanel {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 860px) {
+  #sidePanel {
+    order: -1;
+  }
+}
