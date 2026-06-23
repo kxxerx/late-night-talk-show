@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getSession, profileAvatar, pollutionLabel, visitorStatusText, authEmailFromLoginId } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, authEmailFromLoginId } from "./common.js";
 
 let currentCategory = new URLSearchParams(location.search).get("category") || "all";
 let cachedItems = [];
@@ -49,13 +49,41 @@ function ensureForgotModal() {
     <div class="soft-modal-box">
       <button id="closeForgotModalBtn" class="modal-close" type="button">×</button>
       <h2>비밀번호를 잊으셨나요?</h2>
-      <p class="muted">이 사이트는 이메일 대신 아이디로 입장하지만, 내부적으로는 가짜 이메일 형식을 사용합니다. 그래서 자동 비밀번호 찾기 메일은 사용할 수 없습니다.</p>
-      <p class="muted">아이디를 관리실에 알려 주세요. 관리자가 방문객 정보를 제거하면 같은 아이디로 다시 등록할 수 있습니다.</p>
+      <p class="muted">아이디를 입력하면 관리실로 비밀번호 분실 요청이 전달됩니다. 자동 메일 복구는 사용할 수 없습니다.</p>
+      <form id="forgotPasswordForm">
+        <label>아이디
+          <input id="forgotLoginId" type="text" required placeholder="아이디">
+        </label>
+        <label>메모
+          <input id="forgotNote" type="text" placeholder="선택 입력">
+        </label>
+        <button type="submit">관리실에 요청 보내기</button>
+      </form>
     </div>`;
   document.body.appendChild(modal);
-  modal.addEventListener("click", (event) => { if (event.target === modal || event.target.id === "closeForgotModalBtn") modal.classList.remove("open"); });
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.id === "closeForgotModalBtn") modal.classList.remove("open");
+  });
+  modal.querySelector("#forgotPasswordForm")?.addEventListener("submit", handleForgotPasswordRequest);
   return modal;
 }
+
+async function handleForgotPasswordRequest(event) {
+  event.preventDefault();
+  const loginId = normalizeLoginId(qs("#forgotLoginId").value);
+  const note = qs("#forgotNote").value.trim();
+  const { data, error } = await supabase.rpc("submit_password_reset_request", {
+    p_login_id: loginId,
+    p_note: note
+  });
+  if (error) {
+    showMessage(error.message, "error");
+    return;
+  }
+  showMessage(data.message || "요청을 보냈습니다.", "success");
+  document.querySelector("#forgotModal")?.classList.remove("open");
+}
+
 function openForgotModal() { ensureForgotModal().classList.add("open"); }
 
 async function getOptionalProfile() {
@@ -81,7 +109,7 @@ function renderLoggedInSide(profile) {
       <div><h2 class="visitor-name" title="${name}">${name}</h2></div>
       <div class="profile-stats two-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
-        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small>${visitorStatusText(profile)}</small></div>
+        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small class="${visitorStatusClass(profile)}">${visitorStatusText(profile)}</small></div>
       </div>
       <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>

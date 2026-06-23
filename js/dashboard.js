@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText } from "./common.js";
+import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass } from "./common.js";
 
 await renderNav();
 let currentProfile = null;
@@ -47,7 +47,7 @@ async function loadDashboard() {
   if (qs("#avatarUrl")) qs("#avatarUrl").value = profile.avatar_url || "";
   if (qs("#currency")) qs("#currency").textContent = profile.currency;
   if (qs("#pollution")) qs("#pollution").textContent = profile.visitor_type === "entity" ? "—" : profile.pollution;
-  if (qs("#pollutionStatusLabel")) qs("#pollutionStatusLabel").textContent = visitorStatusText(profile);
+  if (qs("#pollutionStatusLabel")) { qs("#pollutionStatusLabel").textContent = visitorStatusText(profile); qs("#pollutionStatusLabel").className = `status-inline ${visitorStatusClass(profile)}`; }
   if (qs("#visitorStatusText")) qs("#visitorStatusText").textContent = visitorStatusText(profile);
   if (qs("#role")) qs("#role").textContent = profile.role;
 

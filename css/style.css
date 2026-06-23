@@ -1681,3 +1681,29 @@ button, .button {
   min-height: 2.4em;
   display: block;
 }
+
+
+/* v1.7 status and horror button fixes */
+.status-yellow {
+  color: #ffd84d !important;
+  font-weight: 900 !important;
+}
+
+.status-red {
+  color: #ff0000 !important;
+  font-weight: 900 !important;
+}
+
+#confirmExitBtn,
+#cancelExitBtn {
+  background: #080808 !important;
+  color: #ff0000 !important;
+  border: 1px solid #ff0000 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#confirmExitBtn:hover,
+#cancelExitBtn:hover {
+  background: #1a0000 !important;
+}

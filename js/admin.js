@@ -264,8 +264,42 @@ qs("#eventCodeForm")?.addEventListener("submit", async (event) => {
   qs("#eventCodeForm").reset();
 });
 
+
+async function loadPasswordRequests() {
+  const { data, error } = await supabase
+    .from("password_reset_requests")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) throw error;
+
+  qs("#passwordRequestList").innerHTML = (data || []).map(row => `
+    <tr>
+      <td>${row.login_id}</td>
+      <td>${row.note || ""}</td>
+      <td><span class="status ${row.status}">${row.status}</span></td>
+      <td>${formatDate(row.created_at)}</td>
+      <td>
+        ${row.status === "pending" ? `<button data-resolve-password="${row.id}">처리 완료</button>` : "완료"}
+      </td>
+    </tr>
+  `).join("") || `<tr><td colspan="5">요청 없음</td></tr>`;
+
+  document.querySelectorAll("[data-resolve-password]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const { data, error } = await supabase.rpc("admin_resolve_password_request", {
+        p_request_id: button.dataset.resolvePassword
+      });
+      if (error) showMessage(error.message, "error");
+      else showMessage(data.message || "처리 완료", "success");
+      await loadPasswordRequests();
+    });
+  });
+}
+
 if (adminProfile) {
-  Promise.all([loadUsers(), loadItems(), loadSubmissions()]).catch(error => {
+  Promise.all([loadUsers(), loadItems(), loadSubmissions(), loadPasswordRequests()]).catch(error => {
     console.error(error);
     showMessage(error.message, "error");
   });
