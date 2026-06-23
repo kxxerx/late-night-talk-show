@@ -15,12 +15,18 @@
   </div>
 </header>
 
-  <main class="container">
-    <h1>상점</h1>
-    <p class="lead">보유 재화: <strong id="myCurrency">0</strong> 조각</p>
-    <div id="message" class="message"></div>
-    <section id="shopList" class="grid"></section>
+  <main class="container app-layout">
+    <section class="main-column">
+      <div class="page-title">
+        <p class="eyebrow">Contamination shop</p>
+        <h1>상점</h1>
+        <p class="lead">재화로 아이템을 구입하고, 필요한 순간 오염도를 깎아내리세요. 이 모든 수치놀이를 위해 인류는 데이터베이스를 발명했습니다.</p>
+      </div>
+      <div id="message" class="message"></div>
+      <section id="shopList" class="shop-grid"></section>
+    </section>
+    <aside class="side-column" id="profileCard"></aside>
   </main>
-  <script type="module" src="js/shop.js"></script>
+  <script type="module" src="js/home.js"></script>
 </body>
 </html>

@@ -15,20 +15,23 @@
   </div>
 </header>
 
-  <main class="container">
-    <h1>로그인 / 회원가입</h1>
-    <p class="lead">사이트 아이디는 회원가입 후 자동 생성됩니다. Supabase에서 Confirm email을 꺼두면 회원가입 후 자동 로그인됩니다.</p>
+  <main class="container auth-page">
+    <section class="auth-hero">
+      <p class="eyebrow">Welcome</p>
+      <h1>오염도 상점 입장</h1>
+      <p class="lead">이메일 대신 아이디와 비밀번호로 가입합니다. 내부적으로는 Supabase 때문에 가짜 이메일 형식으로 처리되지만, 사용자는 몰라도 됩니다. 이런 게 개발의 민낯이야.</p>
+    </section>
     <div id="message" class="message"></div>
 
     <section class="two-column">
       <article class="panel">
         <h2>로그인</h2>
         <form id="loginForm">
-          <label>이메일
-            <input id="loginEmail" type="email" required>
+          <label>아이디
+            <input id="loginId" type="text" required autocomplete="username" placeholder="예: raven01">
           </label>
           <label>비밀번호
-            <input id="loginPassword" type="password" required>
+            <input id="loginPassword" type="password" required autocomplete="current-password">
           </label>
           <button type="submit">로그인</button>
         </form>
@@ -37,11 +40,11 @@
       <article class="panel">
         <h2>회원가입</h2>
         <form id="signupForm">
-          <label>이메일
-            <input id="signupEmail" type="email" required>
+          <label>아이디
+            <input id="signupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
           </label>
           <label>비밀번호
-            <input id="signupPassword" type="password" minlength="6" required>
+            <input id="signupPassword" type="password" minlength="6" required autocomplete="new-password">
           </label>
           <label>표시 닉네임
             <input id="signupDisplayName" type="text" placeholder="사이트에서 보일 이름">

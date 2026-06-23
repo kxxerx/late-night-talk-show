@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, renderNav } from "./common.js";
+import { qs, showMessage, renderNav, authEmailFromLoginId } from "./common.js";
 
 renderNav();
 
@@ -12,19 +12,45 @@ function goHomeSoon() {
   }, 700);
 }
 
+function normalizeLoginId(value) {
+  return String(value || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+}
+
 signupForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = qs("#signupEmail").value.trim();
+  const loginId = normalizeLoginId(qs("#signupLoginId").value);
   const password = qs("#signupPassword").value;
   const displayName = qs("#signupDisplayName").value.trim();
+
+  if (loginId.length < 3 || loginId.length > 20) {
+    showMessage("아이디는 영문/숫자/_/- 조합으로 3~20자여야 합니다.", "error");
+    return;
+  }
+
+  const { data: available, error: checkError } = await supabase.rpc("is_site_id_available", {
+    p_site_id: loginId
+  });
+
+  if (checkError) {
+    showMessage(checkError.message, "error");
+    return;
+  }
+
+  if (!available) {
+    showMessage("이미 사용 중이거나 사용할 수 없는 아이디입니다.", "error");
+    return;
+  }
+
+  const email = authEmailFromLoginId(loginId);
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        display_name: displayName
+        site_id: loginId,
+        display_name: displayName || loginId
       }
     }
   });
@@ -51,14 +77,15 @@ signupForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  showMessage("회원가입은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 메일 확인 후 로그인해야 합니다.", "success");
+  showMessage("회원가입은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 로그인이 막힐 수 있습니다.", "success");
 });
 
 loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = qs("#loginEmail").value.trim();
+  const loginId = qs("#loginId").value.trim();
   const password = qs("#loginPassword").value;
+  const email = authEmailFromLoginId(loginId);
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -66,7 +93,7 @@ loginForm?.addEventListener("submit", async (event) => {
   });
 
   if (error) {
-    showMessage(error.message, "error");
+    showMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요.", "error");
     return;
   }
 

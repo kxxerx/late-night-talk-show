@@ -218,3 +218,64 @@ Authentication
 v0.3부터 `js/login.js`는 회원가입 후 자동 로그인을 시도합니다.  
 만약 Supabase에서 Confirm email이 켜져 있으면 자동 로그인되지 않고 이메일 확인 안내가 표시됩니다.
 
+---
+
+# v0.4 변경사항
+
+## 1. 기본 화면 변경
+
+기본 `index.html`은 이제 내 상태 화면이 아니라 상점 화면입니다.  
+오른쪽에는 프로필 카드가 표시됩니다.
+
+## 2. 내 상태 화면 분리
+
+내 상태 화면은 `mypage.html`로 분리되었습니다.
+
+## 3. 아이디/비밀번호 가입
+
+사용자는 이메일 대신 아이디와 비밀번호로 가입합니다.  
+단, Supabase Auth는 내부적으로 이메일 형식이 필요하므로 코드가 자동으로 아래 형태의 내부 이메일을 만듭니다.
+
+```txt
+아이디@pollution.invalid
+```
+
+사용자는 이 내부 이메일을 몰라도 됩니다.
+
+## 4. 탈퇴 처리
+
+`mypage.html`에 탈퇴 버튼이 추가되었습니다.  
+현재 탈퇴는 Supabase Auth 사용자를 완전히 삭제하는 기능이 아니라, 프로필을 `withdrawn` 상태로 바꾸고 재화/오염도/아이템을 초기화하는 비활성화 방식입니다.
+
+완전 삭제가 필요하면 관리자가 Supabase Dashboard의 Authentication → Users에서 해당 사용자를 직접 삭제해야 합니다.
+
+## 5. 이미 설치한 프로젝트라면
+
+이미 v0.3 이하의 `setup.sql`을 실행했다면, Supabase SQL Editor에서 아래 파일을 추가로 실행하세요.
+
+```txt
+migrations/upgrade-v0.4.sql
+```
+
+새로 처음 설치하는 경우에는 `supabase/setup.sql`만 실행하면 됩니다.
+
+## 6. 디자인 수정 방법
+
+대부분의 화면 스타일은 아래 파일에서 바꿉니다.
+
+```txt
+css/style.css
+```
+
+친구가 디자인을 해준다면 보통 이 파일을 수정하면 됩니다.  
+화면 구조 자체를 바꾸려면 HTML 파일을 수정해야 합니다.
+
+```txt
+index.html       상점 메인
+mypage.html      내 상태
+inventory.html   내 가방
+codes.html       이벤트 코드
+login.html       로그인/회원가입
+admin.html       관리자
+```
+

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>내 상태 | 오염도 상점</title>
+  <title>상점 | 오염도 상점</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,65 +15,18 @@
   </div>
 </header>
 
-  <main class="container">
-    <h1>내 상태</h1>
-    <p class="lead">오염도와 재화는 여기서 확인합니다. 인간은 숫자로 관리될 때 이상하게 안심하더라.</p>
-    <div id="message" class="message"></div>
-
-    <section class="grid">
-      <article class="card">
-        <p class="muted">사이트 아이디</p>
-        <p class="stat" id="siteId">-</p>
-      </article>
-      <article class="card">
-        <p class="muted">보유 재화</p>
-        <p class="stat"><span id="currency">0</span> 조각</p>
-      </article>
-      <article class="card">
-        <p class="muted">오염도</p>
-        <p class="stat"><span id="pollution">0</span> / 100</p>
-      </article>
-      <article class="card">
-        <p class="muted">권한</p>
-        <p class="stat" id="role">-</p>
-      </article>
-    </section>
-
-    <section class="section panel">
-      <h2>오염도 게이지</h2>
-      <div class="pollution-meter">
-        <div id="pollutionBar" class="pollution-bar">0%</div>
+  <main class="container app-layout">
+    <section class="main-column">
+      <div class="page-title">
+        <p class="eyebrow">Contamination shop</p>
+        <h1>상점</h1>
+        <p class="lead">재화로 아이템을 구입하고, 필요한 순간 오염도를 깎아내리세요. 이 모든 수치놀이를 위해 인류는 데이터베이스를 발명했습니다.</p>
       </div>
+      <div id="message" class="message"></div>
+      <section id="shopList" class="shop-grid"></section>
     </section>
-
-    <section class="section panel">
-      <h2>프로필</h2>
-      <p class="small muted">밴드 닉네임은 여기서 입력할 수 있습니다. 관리자는 관리자 페이지에서 확인하고 수동 연결하면 됩니다.</p>
-      <form id="profileForm">
-        <label>이메일
-          <span id="email" class="muted">-</span>
-        </label>
-        <label>표시 닉네임
-          <input id="displayName" type="text">
-        </label>
-        <label>밴드 닉네임
-          <input id="bandNickname" type="text">
-        </label>
-        <button type="submit">저장</button>
-      </form>
-    </section>
-
-    <section class="two-column section">
-      <article class="panel">
-        <h2>최근 재화 기록</h2>
-        <ul id="currencyLogs"></ul>
-      </article>
-      <article class="panel">
-        <h2>최근 오염도 기록</h2>
-        <ul id="pollutionLogs"></ul>
-      </article>
-    </section>
+    <aside class="side-column" id="profileCard"></aside>
   </main>
-  <script type="module" src="js/dashboard.js"></script>
+  <script type="module" src="js/home.js"></script>
 </body>
 </html>

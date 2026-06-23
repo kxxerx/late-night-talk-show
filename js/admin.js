@@ -30,6 +30,7 @@ async function loadUsers() {
       <td><input class="table-input" data-band="${user.id}" value="${user.band_nickname || ""}"></td>
       <td>${user.currency}</td>
       <td>${user.pollution}</td>
+      <td>${user.status || "active"}</td>
       <td>
         <select data-role="${user.id}">
           <option value="user" ${user.role === "user" ? "selected" : ""}>user</option>

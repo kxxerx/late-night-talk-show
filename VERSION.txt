@@ -1,3 +1,8 @@
-pollution-shop-starter v0.3
-- Updated signup flow: attempts automatic login after signup.
-- Added README instructions for disabling Supabase Confirm email.
+pollution-shop-starter v0.4
+- Added username/password style signup using internal fake email.
+- Added site_id availability check.
+- Changed default page to shop.
+- Added profile sidebar on shop page.
+- Added mypage.html for status/profile.
+- Added withdrawal/deactivation function.
+- Improved base UI styles.
