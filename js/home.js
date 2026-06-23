@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getSession, profileAvatar, pollutionLabel, authEmailFromLoginId } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, pollutionLabel, visitorStatusText, authEmailFromLoginId } from "./common.js";
 
 let currentCategory = new URLSearchParams(location.search).get("category") || "all";
 let cachedItems = [];
@@ -81,7 +81,7 @@ function renderLoggedInSide(profile) {
       <div><h2 class="visitor-name" title="${name}">${name}</h2></div>
       <div class="profile-stats two-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
-        <div><span>${profile.pollution}</span><small>판정 상태 · ${pollutionLabel(profile.pollution)}</small></div>
+        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small>${visitorStatusText(profile)}</small></div>
       </div>
       <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>

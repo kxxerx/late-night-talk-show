@@ -108,10 +108,24 @@ export function profileAvatar(profile) {
 
 export function pollutionLabel(value) {
   const n = Number(value || 0);
-  if (n >= 80) return "위험";
-  if (n >= 50) return "불안정";
-  if (n >= 20) return "경미한 오염";
+  if (n >= 100) return "침식";
+  if (n >= 71) return "위험";
+  if (n >= 41) return "불안정";
+  if (n >= 21) return "경미한 오염";
   return "안정";
+}
+
+export function visitorStatusText(profileOrValue) {
+  if (typeof profileOrValue === "object" && profileOrValue !== null) {
+    if (profileOrValue.visitor_type === "entity") return "측정 불필요";
+    const n = Number(profileOrValue.pollution || 0);
+    if (n >= 100) return "침식 · 우리가 된 걸 환영해";
+    return pollutionLabel(n);
+  }
+
+  const n = Number(profileOrValue || 0);
+  if (n >= 100) return "침식 · 우리가 된 걸 환영해";
+  return pollutionLabel(n);
 }
 
 

@@ -1674,3 +1674,10 @@ button, .button {
 #forgotPasswordBtn {
   margin-top: 4px;
 }
+
+
+/* v1.6 status wording */
+.two-stats small {
+  min-height: 2.4em;
+  display: block;
+}

@@ -31,6 +31,12 @@ async function loadUsers() {
       <td>${user.pollution}</td>
       <td>${user.status || "active"}</td>
       <td>
+        <select data-visitor-type="${user.id}">
+          <option value="human" ${user.visitor_type !== "entity" ? "selected" : ""}>일반</option>
+          <option value="entity" ${user.visitor_type === "entity" ? "selected" : ""}>J3/괴이</option>
+        </select>
+      </td>
+      <td>
         <select data-role="${user.id}">
           <option value="user" ${user.role === "user" ? "selected" : ""}>user</option>
           <option value="admin" ${user.role === "admin" ? "selected" : ""}>admin</option>
@@ -70,12 +76,14 @@ async function loadUsers() {
       const displayName = document.querySelector(`[data-display="${id}"]`).value;
       const bandNickname = document.querySelector(`[data-band="${id}"]`).value;
       const role = document.querySelector(`[data-role="${id}"]`).value;
+      const visitorType = document.querySelector(`[data-visitor-type="${id}"]`)?.value || "human";
 
       const { error } = await supabase.rpc("admin_update_member", {
         p_target_user_id: id,
         p_display_name: displayName,
         p_band_nickname: bandNickname,
-        p_role: role
+        p_role: role,
+        p_visitor_type: visitorType
       });
 
       if (error) showMessage(error.message, "error");

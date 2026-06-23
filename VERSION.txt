@@ -1,8 +1,7 @@
-pollution-shop-starter v1.5
-- Added public active item read policy for anon visitors.
-- Updated purchase RPC error message to 유쾌주화가 부족합니다.
-- Added admin_remove_profile RPC for removing any visitor profile from site DB.
-- Added forgot password guidance modal.
-- Reduced profile stats to two cells.
-- Updated invitation button and horror buttons to black/red styling.
-- Reduced yellow play-with-us text size and made whisper text white.
+pollution-shop-starter v1.6
+- Updated visitor status labels and 100 침식 wording.
+- Added one-time partner invitation reward: +10 유쾌주화 and +10 visitor status.
+- Added partner_invite_claimed_at to prevent duplicate rewards.
+- Added visitor_type for human vs J3/entity visitors.
+- Entity visitors show 측정 불필요 and do not gain visitor status from invitation rewards.
+- Added admin visitor type selector.
