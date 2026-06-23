@@ -86,6 +86,28 @@ async function handleForgotPasswordRequest(event) {
 
 function openForgotModal() { ensureForgotModal().classList.add("open"); }
 
+function ensureFarewellModal() {
+  let modal = document.querySelector("#farewellModal");
+  if (modal) return modal;
+  modal = document.createElement("div");
+  modal.id = "farewellModal";
+  modal.className = "soft-modal farewell-modal";
+  modal.innerHTML = `
+    <div class="soft-modal-box farewell-box">
+      <h2>이용해 주셔서 감사합니다, 고객님.</h2>
+      <p class="muted">다음에 다시 방문해 주세요.</p>
+      <p class="come-again">또 놀 러 와</p>
+      <button id="closeFarewellBtn" type="button">닫기</button>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.id === "closeFarewellBtn") modal.classList.remove("open");
+  });
+  return modal;
+}
+function openFarewellModal() { ensureFarewellModal().classList.add("open"); }
+
+
 async function getOptionalProfile() {
   const session = await getSession();
   cachedSession = session;
@@ -109,7 +131,7 @@ function renderLoggedInSide(profile) {
       <div><h2 class="visitor-name" title="${name}">${name}</h2></div>
       <div class="profile-stats two-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
-        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small class="${visitorStatusClass(profile)}">${visitorStatusText(profile)}</small></div>
+        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small>방문객 상태</small><strong class="profile-status-text ${visitorStatusClass(profile)}">${visitorStatusText(profile)}</strong></div>
       </div>
       <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>
@@ -120,11 +142,9 @@ function renderLoggedInSide(profile) {
       </div>
     </div>`;
   qs("#sideLogoutBtn")?.addEventListener("click", async () => {
-    const ok = confirm("다시 방문하시겠습니까?");
-    if (!ok) return;
     await supabase.auth.signOut();
-    showMessage("다음 방문을 기다리겠습니다.", "success");
     await loadShopHome();
+    openFarewellModal();
   });
 }
 function renderGuestSide() {

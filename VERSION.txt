@@ -1,8 +1,8 @@
-pollution-shop-starter v1.8
-- Added admin event code list with edit/delete controls.
-- Added admin item edit/delete controls.
-- Added item image file upload via item-images storage bucket.
-- Added recommended image size documentation.
-- Improved admin table horizontal scrolling and compact inputs.
-- Increased visitor status text size.
-- Added small gold cohesion accents between black/gold header and pastel body.
+pollution-shop-starter v1.9
+- Fixed admin management tables so headers, buttons, and select boxes stay horizontal.
+- Widened admin tables and improved horizontal scrolling.
+- Updated member-management column labels.
+- Increased profile-card stat label readability.
+- Changed 판정 상태 label to 방문객 상태.
+- Refined black/gold header-category strip while keeping pastel body.
+- Added farewell modal for 다시 방문하기.

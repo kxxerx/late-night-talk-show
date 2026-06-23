@@ -58,7 +58,7 @@ async function loadUsers() {
           <option value="admin" ${user.role === "admin" ? "selected" : ""}>admin</option>
         </select>
       </td>
-      <td>
+      <td class="action-cell">
         <button data-save-user="${user.id}">저장</button>
         ${user.id !== adminProfile.id ? `<button data-remove-user="${user.id}" class="danger">제거</button>` : ""}
       </td>
@@ -130,7 +130,6 @@ async function loadItems() {
   qs("#itemList").innerHTML = items.map(item => `
     <tr>
       <td><input class="table-input short" data-item-name="${item.id}" value="${item.name || ""}"></td>
-      <td><textarea class="table-input item-desc" data-item-description="${item.id}">${item.description || ""}</textarea></td>
       <td><input class="table-input tiny" type="number" data-item-price="${item.id}" value="${item.price || 0}"></td>
       <td>
         <select data-item-category="${item.id}">
@@ -145,7 +144,7 @@ async function loadItems() {
       <td><input class="table-input image-url" data-item-image="${item.id}" value="${item.image_url || ""}"><input type="file" accept="image/*" data-item-file="${item.id}"></td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${item.sort_order || 100}"></td>
       <td><input type="checkbox" data-item-active="${item.id}" ${item.is_active ? "checked" : ""}></td>
-      <td>
+      <td class="action-cell">
         <button data-save-item="${item.id}">저장</button>
         <button data-delete-item="${item.id}" class="danger">삭제</button>
       </td>
@@ -160,7 +159,6 @@ async function loadItems() {
         const uploadedUrl = file ? await uploadItemImageFile(file) : "";
         const payload = {
           name: document.querySelector(`[data-item-name="${id}"]`).value.trim(),
-          description: document.querySelector(`[data-item-description="${id}"]`).value.trim(),
           price: Number(document.querySelector(`[data-item-price="${id}"]`).value || 0),
           category: document.querySelector(`[data-item-category="${id}"]`).value,
           effect_type: document.querySelector(`[data-item-effect-type="${id}"]`).value.trim() || "pollution_delta",
@@ -209,7 +207,7 @@ async function loadCodes() {
       <td><input class="table-input tiny" type="number" data-code-currency="${code.id}" value="${code.reward_currency || 0}"></td>
       <td><input class="table-input tiny" type="number" data-code-pollution="${code.id}" value="${code.pollution_delta || 0}"></td>
       <td><input type="checkbox" data-code-active="${code.id}" ${code.is_active ? "checked" : ""}></td>
-      <td>
+      <td class="action-cell">
         <button data-save-code="${code.id}">저장</button>
         <button data-delete-code="${code.id}" class="danger">삭제</button>
       </td>

@@ -6,4 +6,4 @@ export const SUPABASE_URL = "https://ecicfybgpyxmbagdxxbx.supabase.co";
 export const SUPABASE_ANON_KEY = "sb_publishable_fnaEIF9679szxA282hrPuA_kNKXexn9";
 
 // 제휴 페이지에서 열릴 밴드 초대/연결 주소입니다.
-export const BAND_INVITE_URL = "https://band.us/";
+export const BAND_INVITE_URL = "https://band.us/n/aaa3b6A4Cch5S";

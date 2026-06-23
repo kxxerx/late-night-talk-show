@@ -33,18 +33,20 @@
     <section class="panel">
       <h2>회원 목록 / 밴드 닉네임 연결</h2>
       <p class="small muted">체크박스를 선택하면 아래 일괄 지급 대상이 됩니다.</p>
-      <div class="table-wrap">
-        <table>
+      <div class="table-wrap admin-table-wrap wide-user-table">
+        <table class="admin-edit-table user-admin-table">
           <thead>
             <tr>
               <th>선택</th>
               <th>사이트ID</th>
               <th>이메일</th>
-              <th>표시명</th>
+              <th>사용자 이름</th>
               <th>밴드 닉네임</th>
               <th>유쾌주화</th>
-              <th>방문객 상태</th>
-              <th>권한</th>
+              <th>상태</th>
+              <th>계정상태</th>
+              <th>권한 구분</th>
+              <th>권한설정</th>
               <th>저장</th>
             </tr>
           </thead>
@@ -165,11 +167,10 @@
     <section class="section panel">
       <h2>등록된 아이템</h2>
       <div class="table-wrap admin-table-wrap">
-        <table class="admin-edit-table">
+        <table class="admin-edit-table item-admin-table">
           <thead>
             <tr>
               <th>아이템명</th>
-              <th>설명</th>
               <th>가격</th>
               <th>카테고리</th>
               <th>효과 타입</th>
@@ -177,7 +178,7 @@
               <th>이미지</th>
               <th>정렬</th>
               <th>판매</th>
-              <th>처리</th>
+              <th>저장</th>
             </tr>
           </thead>
           <tbody id="itemList"></tbody>
@@ -188,7 +189,7 @@
 
     <section class="section panel">
       <h2>비밀번호 분실 요청</h2>
-      <p class="small muted">요청을 확인한 뒤, 필요한 경우 해당 방문객 정보를 제거해서 같은 아이디로 다시 등록할 수 있게 해 주세요.</p>
+      <p class="small muted">요청을 확인한 뒤, 필요한 경우 해당 방문객 정보를 제거해서 같은 아이디로 다시 등록할 수 있게 해 주세요. 현재 정적 사이트 구조에서는 관리실에서 타인의 비밀번호를 직접 변경할 수 없습니다.</p>
       <div class="table-wrap">
         <table>
           <thead>
