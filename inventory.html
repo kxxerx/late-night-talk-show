@@ -3,23 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>내 가방 | 오염도 상점</title>
+  <title>내 가방</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">오염도 상점</a>
-    <nav id="nav" class="nav"></nav>
-  </div>
-</header>
 
-  <main class="container">
-    <h1>내 가방</h1>
-    <p class="lead">현재 오염도: <strong id="myPollution">0</strong> / 100</p>
+  <header class="blog-header slim">
+    <div class="brand-stage">
+      <a class="logo-slot" href="index.html" aria-label="홈으로">
+        <img src="assets/site-logo.svg" alt="사이트 로고">
+      </a>
+    </div>
+    <nav class="main-menu" aria-label="주 메뉴">
+      <a class="" href="index.html">상점</a>
+      <a class="" href="mypage.html">내 정보</a>
+      <a class="active" href="inventory.html">내 가방</a>
+      <a class="" href="codes.html">이벤트 코드</a>
+      <a class="" href="admin.html">관리자</a>
+    </nav>
+  </header>
+
+  <main class="container narrow-page">
+    <section class="page-head-small">
+      <h1>내 가방</h1>
+      <p class="muted">보유한 아이템을 확인하고 사용할 수 있습니다.</p>
+    </section>
     <div id="message" class="message"></div>
-    <section id="inventoryList" class="grid"></section>
+    <section id="inventoryList" class="shop-grid compact-grid"></section>
   </main>
   <script type="module" src="js/inventory.js"></script>
 </body>

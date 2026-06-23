@@ -1,5 +1,7 @@
-pollution-shop-starter v0.6
-- Shop page is now visible before login.
-- Guest sidebar shows login and signup forms.
-- Buy buttons now ask guests to log in instead of redirecting immediately.
-- No additional SQL required after v0.5.
+pollution-shop-starter v0.7
+- Unified header/menu across main pages.
+- Logo now links to home.
+- Moved shop categories to horizontal menu under logo.
+- Removed site ID display from user-facing profile pages.
+- Simplified event code page to code-only submission.
+- Reduced and unified typography and item card sizes.

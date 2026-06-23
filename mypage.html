@@ -3,28 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>내 상태 | 오염도 상점</title>
+  <title>내 정보</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">오염도 상점</a>
-    <nav id="nav" class="nav"></nav>
-  </div>
-</header>
 
-  <main class="container">
+  <header class="blog-header slim">
+    <div class="brand-stage">
+      <a class="logo-slot" href="index.html" aria-label="홈으로">
+        <img src="assets/site-logo.svg" alt="사이트 로고">
+      </a>
+    </div>
+    <nav class="main-menu" aria-label="주 메뉴">
+      <a class="" href="index.html">상점</a>
+      <a class="active" href="mypage.html">내 정보</a>
+      <a class="" href="inventory.html">내 가방</a>
+      <a class="" href="codes.html">이벤트 코드</a>
+      <a class="" href="admin.html">관리자</a>
+    </nav>
+  </header>
+
+  <main class="container narrow-page">
     <section id="profileHero" class="profile-hero"></section>
-    <p class="lead">프로필, 재화, 오염도, 로그를 확인합니다. 사이트 아이디는 로그인과 운영자 매칭을 위한 고정 식별자입니다.</p>
     <div id="message" class="message"></div>
 
-    <section class="grid">
-      <article class="card">
-        <p class="muted">사이트 아이디</p>
-        <p class="stat" id="siteId">-</p>
-      </article>
+    <section class="grid compact-stats">
       <article class="card">
         <p class="muted">보유 재화</p>
         <p class="stat"><span id="currency">0</span> 조각</p>
@@ -40,7 +43,7 @@
     </section>
 
     <section class="section panel">
-      <h2>오염도 게이지</h2>
+      <h2>오염도</h2>
       <div class="pollution-meter">
         <div id="pollutionBar" class="pollution-bar">0%</div>
       </div>
@@ -49,20 +52,17 @@
     <section class="section panel">
       <h2>프로필</h2>
       <form id="profileForm">
-        <label>내부 이메일
-          <span id="email" class="muted">-</span>
-        </label>
         <label>표시 닉네임
           <input id="displayName" type="text">
         </label>
         <label>밴드 닉네임
           <input id="bandNickname" type="text">
         </label>
-        <label>프로필 이미지 파일 업로드
+        <label>프로필 이미지 파일
           <input id="avatarFile" type="file" accept="image/*">
         </label>
         <label>프로필 이미지 URL
-          <input id="avatarUrl" type="text" placeholder="파일 업로드 시 자동으로 채워집니다. 외부 이미지 URL도 가능">
+          <input id="avatarUrl" type="text" placeholder="파일 업로드 시 자동으로 채워집니다.">
         </label>
         <button type="submit">저장</button>
       </form>
@@ -81,9 +81,12 @@
 
     <section class="section panel danger-zone">
       <h2>탈퇴</h2>
-      <p class="muted">현재 버전의 탈퇴는 Supabase Auth 계정을 완전히 삭제하는 대신 프로필을 비활성화하고 보유 수치를 초기화합니다. 완전 삭제는 관리자가 Supabase Authentication에서 별도로 삭제해야 합니다.</p>
+      <p class="muted">탈퇴 처리는 프로필 비활성화와 보유 수치 초기화로 처리됩니다. 완전 삭제는 관리자가 Supabase에서 별도로 삭제해야 합니다.</p>
       <button id="withdrawBtn" class="danger">탈퇴 처리</button>
     </section>
+
+    <span id="email" hidden></span>
+    <span id="siteId" hidden></span>
   </main>
   <script type="module" src="js/dashboard.js"></script>
 </body>

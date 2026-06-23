@@ -1,7 +1,5 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, formatDate } from "./common.js";
-
-await renderNav();
+import { qs, showMessage, getMyProfile, formatDate } from "./common.js";
 
 async function loadSubmissions() {
   const profile = await getMyProfile();
@@ -9,33 +7,29 @@ async function loadSubmissions() {
 
   const { data, error } = await supabase
     .from("event_submissions")
-    .select("*, event_code:event_codes(code, title, reward_currency, pollution_delta)")
-    .order("submitted_at", { ascending: false });
+    .select("*, event_codes(code, title)")
+    .eq("user_id", profile.id)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
 
   qs("#submissionList").innerHTML = (data || []).map(row => `
-    <tr>
-      <td>${row.event_code?.code || "-"}</td>
-      <td>${row.event_code?.title || "-"}</td>
-      <td><span class="status ${row.status}">${row.status}</span></td>
-      <td>${row.event_code?.reward_currency ?? 0}</td>
-      <td>${row.event_code?.pollution_delta ?? 0}</td>
-      <td>${formatDate(row.submitted_at)}</td>
-      <td>${row.admin_note || ""}</td>
-    </tr>
-  `).join("") || `<tr><td colspan="7">제출 내역이 없습니다.</td></tr>`;
+    <article class="submission-row">
+      <strong>${row.event_codes?.title || row.event_codes?.code || "이벤트"}</strong>
+      <span class="status ${row.status}">${row.status}</span>
+      <p class="muted">${formatDate(row.created_at)}</p>
+    </article>
+  `).join("") || `<p class="muted">제출 내역이 없습니다.</p>`;
 }
 
 qs("#codeForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const code = qs("#eventCode").value.trim();
-  const proof = qs("#proofText").value.trim();
 
   const { data, error } = await supabase.rpc("submit_event_code", {
     p_code: code,
-    p_proof_text: proof
+    p_proof_text: ""
   });
 
   if (error) {
@@ -43,8 +37,8 @@ qs("#codeForm")?.addEventListener("submit", async (event) => {
     return;
   }
 
-  showMessage(data.message, "success");
-  qs("#codeForm").reset();
+  showMessage(data.message || "제출되었습니다.", "success");
+  qs("#eventCode").value = "";
   await loadSubmissions();
 });
 

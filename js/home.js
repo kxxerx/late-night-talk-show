@@ -41,40 +41,25 @@ async function getOptionalProfile() {
   return data;
 }
 
-function renderCategoryCard() {
-  return `
-    <div class="category-card">
-      <h3>상점 카테고리</h3>
-      <button class="category-chip active" data-category="all">전체</button>
-      <button class="category-chip" data-category="main">메인 상점 아이템</button>
-      <button class="category-chip" data-category="cleanse">정화 아이템</button>
-      <button class="category-chip" data-category="event">이벤트 아이템</button>
-      <button class="category-chip" data-category="special">특수 아이템</button>
-    </div>
-  `;
-}
-
 function renderLoggedInSide(profile) {
   qs("#sidePanel").innerHTML = `
     <div class="profile-card">
       <div class="avatar">${profileAvatar(profile)}</div>
       <div>
-        <h2>${profile.display_name || profile.site_id}</h2>
-        <p class="muted">@${profile.site_id}</p>
+        <h2>${profile.display_name || "내 프로필"}</h2>
+        <p class="muted">${pollutionLabel(profile.pollution)}</p>
       </div>
       <div class="profile-stats">
-        <div><span>${profile.currency}</span><small>보유 재화</small></div>
+        <div><span>${profile.currency}</span><small>재화</small></div>
         <div><span>${profile.pollution}</span><small>오염도</small></div>
-        <div><span>${pollutionLabel(profile.pollution)}</span><small>상태</small></div>
       </div>
       <div class="side-actions">
         <a class="button secondary" href="inventory.html">내 가방</a>
-        <a class="button secondary" href="mypage.html">내 상태</a>
-        <a class="button secondary" href="codes.html">코드 제출</a>
+        <a class="button secondary" href="mypage.html">내 정보</a>
+        <a class="button secondary" href="codes.html">코드 입력</a>
         <button id="sideLogoutBtn" class="button secondary" type="button">로그아웃</button>
       </div>
     </div>
-    ${renderCategoryCard()}
   `;
 
   qs("#sideLogoutBtn")?.addEventListener("click", async () => {
@@ -118,7 +103,6 @@ function renderGuestSide() {
         </form>
       </details>
     </div>
-    ${renderCategoryCard()}
   `;
 
   qs("#sideLoginForm")?.addEventListener("submit", handleSideLogin);
@@ -229,13 +213,11 @@ function filteredItems() {
 function renderItems() {
   const items = filteredItems();
 
-  qs("#sectionLabel").textContent = categoryLabels[currentCategory] || "상점 아이템";
-
   if (!items.length) {
     qs("#shopList").innerHTML = `
       <article class="panel empty-panel">
         <h2>등록된 아이템 없음</h2>
-        <p class="muted">이 카테고리에 아직 아이템이 없습니다. 비어 있는 상점이라니, 자본주의도 잠깐 쉬는군요.</p>
+        <p class="muted">이 카테고리에 아직 아이템이 없습니다.</p>
       </article>
     `;
     return;
@@ -253,7 +235,7 @@ function renderItems() {
       </div>
       <div class="item-footer">
         <p class="price">${item.price} 조각</p>
-        <button data-buy="${item.id}">구입하기</button>
+        <button data-buy="${item.id}">구입</button>
       </div>
     </article>
   `).join("");
@@ -268,7 +250,7 @@ function renderItems() {
 
       const itemId = button.dataset.buy;
       button.disabled = true;
-      button.textContent = "처리 중...";
+      button.textContent = "처리 중";
 
       const { data, error } = await supabase.rpc("purchase_item", {
         p_item_id: itemId

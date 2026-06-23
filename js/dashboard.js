@@ -52,7 +52,7 @@ async function loadDashboard() {
     <div class="avatar big">${profileAvatar(profile)}</div>
     <div>
       <h1>${profile.display_name || profile.site_id}</h1>
-      <p class="muted">@${profile.site_id} · ${pollutionLabel(profile.pollution)}</p>
+      <p class="muted">${pollutionLabel(profile.pollution)}</p>
     </div>
   `;
 

@@ -3,53 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>이벤트 코드 | 오염도 상점</title>
+  <title>이벤트 코드</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">오염도 상점</a>
-    <nav id="nav" class="nav"></nav>
-  </div>
-</header>
 
-  <main class="container">
-    <h1>이벤트 코드 제출</h1>
-    <p class="lead">코드를 입력해도 바로 적용되지 않습니다. 관리자가 승인해야 재화/오염도가 반영됩니다. 안전장치라는 이름의 인간 노동이지.</p>
+  <header class="blog-header slim">
+    <div class="brand-stage">
+      <a class="logo-slot" href="index.html" aria-label="홈으로">
+        <img src="assets/site-logo.svg" alt="사이트 로고">
+      </a>
+    </div>
+    <nav class="main-menu" aria-label="주 메뉴">
+      <a class="" href="index.html">상점</a>
+      <a class="" href="mypage.html">내 정보</a>
+      <a class="" href="inventory.html">내 가방</a>
+      <a class="active" href="codes.html">이벤트 코드</a>
+      <a class="" href="admin.html">관리자</a>
+    </nav>
+  </header>
+
+  <main class="container narrow-page">
+    <section class="page-head-small">
+      <h1>이벤트 코드</h1>
+      <p class="muted">운영자가 안내한 코드를 입력하세요. 승인이 필요한 코드는 관리자가 확인한 뒤 반영됩니다.</p>
+    </section>
     <div id="message" class="message"></div>
 
     <section class="panel">
+      <h2>코드 입력</h2>
       <form id="codeForm">
         <label>이벤트 코드
           <input id="eventCode" type="text" required placeholder="예: TEST2026">
         </label>
-        <label>증빙 / 메모
-          <textarea id="proofText" placeholder="밴드 댓글 내용, 참여 내용, 링크 등을 적어두세요."></textarea>
-        </label>
-        <button type="submit">제출하기</button>
+        <button type="submit">제출</button>
       </form>
     </section>
 
     <section class="section panel">
       <h2>내 제출 내역</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>코드</th>
-              <th>이벤트</th>
-              <th>상태</th>
-              <th>재화</th>
-              <th>오염도</th>
-              <th>제출일</th>
-              <th>관리자 메모</th>
-            </tr>
-          </thead>
-          <tbody id="submissionList"></tbody>
-        </table>
-      </div>
+      <div id="submissionList"></div>
     </section>
   </main>
   <script type="module" src="js/codes.js"></script>
