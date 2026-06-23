@@ -1,5 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="460" height="140" viewBox="0 0 460 140">
-  <rect width="460" height="140" fill="none"/>
-  <text x="24" y="92" font-family="Georgia, serif" font-size="58" font-weight="700" fill="#f4d35e">M</text>
-  <line x1="170" y1="70" x2="440" y2="70" stroke="#f4d35e" stroke-width="4"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="210" viewBox="0 0 860 210">
+  <defs>
+    <linearGradient id="cloud" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd7ec"/>
+      <stop offset="45%" stop-color="#d9f7ff"/>
+      <stop offset="100%" stop-color="#fff1b8"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+  <rect width="860" height="210" fill="none"/>
+  <g opacity=".75" filter="url(#soft)">
+    <circle cx="106" cy="105" r="58" fill="#ffd7ec"/>
+    <circle cx="158" cy="86" r="48" fill="#d9f7ff"/>
+    <circle cx="210" cy="110" r="56" fill="#fff1b8"/>
+  </g>
+  <text x="78" y="125" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700" fill="#d79b22">G</text>
+  <text x="270" y="82" font-family="'Noto Sans KR', Arial, sans-serif" font-size="31" font-weight="800" fill="#f29ac1">골든 마스코트 기프트샵</text>
+  <text x="272" y="128" font-family="'Noto Sans KR', Arial, sans-serif" font-size="24" font-weight="700" fill="#6f7fa3" letter-spacing="2">심야 토크쇼 특별관</text>
+  <path d="M610 106 C660 66, 724 66, 788 106" fill="none" stroke="#f4cf6a" stroke-width="4" stroke-linecap="round"/>
 </svg>

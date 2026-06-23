@@ -8,10 +8,10 @@ let cachedSession = null;
 
 const categoryLabels = {
   all: "전체",
-  main: "메인 상점 아이템",
-  cleanse: "정화 아이템",
-  event: "이벤트 아이템",
-  special: "특수 아이템"
+  main: "기념품",
+  cleanse: "분실물",
+  event: "초대권",
+  special: "특별 상품"
 };
 
 function normalizeLoginId(value) {
@@ -46,26 +46,29 @@ function renderLoggedInSide(profile) {
     <div class="profile-card">
       <div class="avatar">${profileAvatar(profile)}</div>
       <div>
-        <h2>${profile.display_name || "내 프로필"}</h2>
+        <h2>${profile.display_name || "방문객 정보"}</h2>
         <p class="muted">${pollutionLabel(profile.pollution)}</p>
       </div>
       <div class="profile-stats">
         <div><span>${profile.currency}</span><small>재화</small></div>
-        <div><span>${profile.pollution}</span><small>오염도</small></div>
+        <div><span>${profile.pollution}</span><small>방문객 상태</small></div>
       </div>
       <div class="side-actions">
-        <a class="button secondary" href="inventory.html">내 가방</a>
-        <a class="button secondary" href="mypage.html">내 정보</a>
-        <a class="button secondary" href="codes.html">코드 입력</a>
-        ${profile.role === "admin" ? `<a class="button secondary" href="admin.html">관리자</a>` : ""}
-        <button id="sideLogoutBtn" class="button secondary" type="button">로그아웃</button>
+        <a class="button secondary" href="inventory.html">쇼핑백</a>
+        <a class="button secondary" href="mypage.html">방문객 정보</a>
+        <a class="button secondary" href="codes.html">초대권 등록</a>
+        <a class="button secondary" href="partner.html">특별관</a>
+        ${profile.role === "admin" ? `<a class="button secondary" href="admin.html">관리실</a>` : ""}
+        <button id="sideLogoutBtn" class="button secondary" type="button">다음에 다시 방문하기</button>
       </div>
     </div>
   `;
 
   qs("#sideLogoutBtn")?.addEventListener("click", async () => {
+    const ok = confirm("다음에 다시 방문하시겠습니까?");
+    if (!ok) return;
     await supabase.auth.signOut();
-    showMessage("로그아웃되었습니다.", "success");
+    showMessage("방문 기록을 잠시 접어두었습니다.", "success");
     await loadShopHome();
   });
 }
@@ -73,8 +76,8 @@ function renderLoggedInSide(profile) {
 function renderGuestSide() {
   qs("#sidePanel").innerHTML = `
     <div class="profile-card auth-side-card">
-      <h2>로그인</h2>
-      <p class="muted">구매와 내 가방 확인은 로그인 후 가능합니다.</p>
+      <h2>손님 입장</h2>
+      <p class="muted">구매와 쇼핑백 확인은 손님 등록 후 가능합니다.</p>
 
       <form id="sideLoginForm">
         <label>아이디
@@ -83,13 +86,13 @@ function renderGuestSide() {
         <label>비밀번호
           <input id="sideLoginPassword" type="password" required autocomplete="current-password" placeholder="비밀번호">
         </label>
-        <button type="submit">로그인</button>
+        <button type="submit">입장하기</button>
       </form>
 
       <hr>
 
       <details class="signup-details">
-        <summary>회원가입</summary>
+        <summary>처음 온 손님 등록</summary>
         <form id="sideSignupForm">
           <label>아이디
             <input id="sideSignupLoginId" type="text" required minlength="3" maxlength="20" placeholder="영문/숫자/_/- 3~20자">
@@ -100,7 +103,7 @@ function renderGuestSide() {
           <label>표시 닉네임
             <input id="sideSignupDisplayName" type="text" placeholder="사이트에서 보일 이름">
           </label>
-          <button type="submit">회원가입</button>
+          <button type="submit">손님 등록</button>
         </form>
       </details>
     </div>
@@ -244,7 +247,7 @@ function renderItems() {
   document.querySelectorAll("[data-buy]").forEach(button => {
     button.addEventListener("click", async () => {
       if (!cachedSession || !cachedProfile) {
-        showMessage("구매하려면 먼저 오른쪽에서 로그인하세요.", "error");
+        showMessage("구매하려면 먼저 손님 등록을 해주세요.", "error");
         qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }

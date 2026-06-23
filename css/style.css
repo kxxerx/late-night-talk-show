@@ -992,3 +992,239 @@ button.secondary {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+
+
+
+/* v0.9 Golden Mascot Gift Shop pastel theme */
+:root {
+  --bg: #fff8fb;
+  --bg-soft: #fff0f7;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-2: rgba(255, 247, 252, 0.95);
+  --text: #526079;
+  --muted: #8c95aa;
+  --line: rgba(202, 170, 205, 0.36);
+  --accent: #f7a6c9;
+  --accent-2: #89cde6;
+  --danger: #f07f9c;
+  --success: #8fd8ad;
+  --warning: #f4cf6a;
+  --shadow: 0 18px 45px rgba(201, 166, 197, 0.22);
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.85), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(217, 247, 255, 0.8), transparent 30rem),
+    linear-gradient(180deg, #fff9fd, #f5fbff 48%, #fff7e4);
+  color: var(--text);
+}
+
+.blog-header.gift,
+.blog-header.slim.gift {
+  background:
+    radial-gradient(circle at 16% 42%, rgba(255, 215, 236, 0.95), transparent 14rem),
+    radial-gradient(circle at 42% 35%, rgba(217, 247, 255, 0.95), transparent 16rem),
+    radial-gradient(circle at 76% 40%, rgba(255, 241, 184, 0.9), transparent 16rem),
+    #fff8fb;
+  border-bottom: 3px solid rgba(244, 207, 106, 0.85);
+}
+
+.blog-header.slim {
+  min-height: 230px !important;
+}
+
+.blog-header.slim .brand-stage {
+  min-height: 160px !important;
+}
+
+.blog-header.slim .logo-slot img {
+  width: min(520px, 100%) !important;
+}
+
+.category-link {
+  background: rgba(255,255,255,0.72) !important;
+  border: 1px solid rgba(247, 166, 201, 0.35) !important;
+  border-radius: 999px !important;
+  color: #7a6d8f !important;
+  font-weight: 700 !important;
+}
+
+.category-link.active {
+  background: #ffe3f0 !important;
+  color: #8d4f75 !important;
+  border-color: #f7a6c9 !important;
+}
+
+.card,
+.panel,
+.item-card,
+.profile-card,
+.category-card {
+  background: rgba(255, 255, 255, 0.86) !important;
+  border: 1px solid rgba(247, 166, 201, 0.28) !important;
+  box-shadow: 0 12px 32px rgba(201, 166, 197, 0.18) !important;
+}
+
+.item-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,248,252,0.9)) !important;
+}
+
+.item-image-wrap {
+  background: linear-gradient(135deg, #fff0f7, #edfaff) !important;
+  border-color: rgba(247, 166, 201, 0.22) !important;
+}
+
+button,
+.button {
+  background: #ffd7ec !important;
+  color: #6f5c7d !important;
+  border: 1px solid rgba(247, 166, 201, 0.35) !important;
+  border-radius: 999px !important;
+}
+
+.button.secondary,
+button.secondary {
+  background: #f6fbff !important;
+  color: #6f7fa3 !important;
+  border-color: rgba(137, 205, 230, 0.35) !important;
+}
+
+button.danger,
+.button.danger {
+  background: #ffd0dc !important;
+  color: #8d3e56 !important;
+  border-color: rgba(240, 127, 156, 0.45) !important;
+}
+
+input,
+textarea,
+select {
+  background: rgba(255,255,255,0.78) !important;
+  color: var(--text) !important;
+  border-color: rgba(202, 170, 205, 0.42) !important;
+}
+
+.pollution-bar {
+  background: linear-gradient(90deg, #b8ead0, #fff1b8, #ffd0dc) !important;
+  color: #6f5c7d !important;
+}
+
+.invitation-card {
+  background:
+    radial-gradient(circle at top left, rgba(255, 215, 236, 0.7), transparent 15rem),
+    radial-gradient(circle at bottom right, rgba(217, 247, 255, 0.7), transparent 14rem),
+    rgba(255,255,255,0.9) !important;
+}
+
+.soft-title h1 {
+  color: #8d6f9f;
+}
+
+.eyebrow,
+.item-category,
+.price {
+  color: #d79b22 !important;
+}
+
+
+
+/* v1.0 exact naming + horror exit modal */
+.gift-menu {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 0 10px;
+}
+
+.gift-menu a {
+  color: #7a6d8f;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(247, 166, 201, 0.35);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.blog-header.slim .brand-stage {
+  min-height: 170px !important;
+}
+
+.blog-header.slim .logo-slot img {
+  width: min(620px, 100%) !important;
+}
+
+.exit-horror-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #000;
+}
+
+.exit-horror-modal.open {
+  display: flex;
+}
+
+.exit-horror-box {
+  width: min(760px, 100%);
+  max-height: min(680px, 90vh);
+  overflow: hidden;
+  border: 1px solid #700;
+  background:
+    radial-gradient(circle at center, rgba(80,0,0,0.42), transparent 18rem),
+    #000;
+  box-shadow: 0 0 45px rgba(255,0,0,0.35);
+  padding: 34px 28px;
+  text-align: center;
+}
+
+.exit-horror-box h2 {
+  color: #ff0000 !important;
+  font-size: clamp(30px, 6vw, 58px) !important;
+  line-height: 1.05;
+  margin: 0 0 18px;
+  letter-spacing: -0.06em;
+  text-shadow: 0 0 12px rgba(255,0,0,0.8);
+}
+
+.dont-leave {
+  color: #d00000 !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  word-break: break-all;
+  max-height: 220px;
+  overflow: hidden;
+  opacity: 0.92;
+  margin: 0 auto 22px !important;
+}
+
+.exit-horror-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.exit-horror-actions button {
+  border-radius: 0 !important;
+  background: #111 !important;
+  color: #ff0000 !important;
+  border: 1px solid #a00000 !important;
+}
+
+.exit-horror-actions button.danger {
+  background: #200 !important;
+  color: #ff0000 !important;
+  border-color: #ff0000 !important;
+}
+
+.danger-zone {
+  border-color: rgba(240, 127, 156, 0.45) !important;
+}

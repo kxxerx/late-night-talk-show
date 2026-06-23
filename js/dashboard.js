@@ -87,7 +87,7 @@ async function loadDashboard() {
 
   qs("#pollutionLogs").innerHTML = (pollutionLogs || []).map(log => `
     <li>${formatDate(log.created_at)} / ${log.change_amount > 0 ? "+" : ""}${log.change_amount} / ${log.reason}</li>
-  `).join("") || `<li>오염도 기록 없음</li>`;
+  `).join("") || `<li>방문객 상태 기록 없음</li>`;
 }
 
 qs("#profileForm")?.addEventListener("submit", async (event) => {
@@ -115,21 +115,55 @@ qs("#profileForm")?.addEventListener("submit", async (event) => {
   }
 });
 
-qs("#withdrawBtn")?.addEventListener("click", async () => {
-  const ok = confirm("정말 탈퇴 처리할까요? 보유 재화, 오염도, 아이템 수량이 초기화됩니다. 이 작업은 테스트용 비활성화에 가깝고, Supabase Auth 계정의 완전 삭제는 관리자가 별도로 해야 합니다.");
-  if (!ok) return;
 
-  const { data, error } = await supabase.rpc("withdraw_my_account");
+function makeDontLeaveText() {
+  return Array.from({ length: 90 }, () => "나가지마").join("");
+}
 
-  if (error) {
-    showMessage(error.message, "error");
-    return;
+function openExitModal() {
+  let modal = qs("#exitHorrorModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "exitHorrorModal";
+    modal.className = "exit-horror-modal";
+    modal.innerHTML = `
+      <div class="exit-horror-box">
+        <h2>완전히 소각당하시겠습니까?</h2>
+        <p class="dont-leave">${makeDontLeaveText()}</p>
+        <div class="exit-horror-actions">
+          <button id="confirmExitBtn" class="danger" type="button">기프트샵에서 나가기</button>
+          <button id="cancelExitBtn" type="button">아직 머무르기</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    qs("#cancelExitBtn").addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
+
+    qs("#confirmExitBtn").addEventListener("click", async () => {
+      const { data, error } = await supabase.rpc("withdraw_my_account");
+
+      if (error) {
+        showMessage(error.message, "error");
+        modal.classList.remove("open");
+        return;
+      }
+
+      showMessage(data.message, "success");
+      await supabase.auth.signOut();
+      setTimeout(() => location.href = "index.html", 700);
+    });
   }
 
-  showMessage(data.message, "success");
-  await supabase.auth.signOut();
-  setTimeout(() => location.href = "login.html", 700);
+  modal.classList.add("open");
+}
+
+qs("#withdrawBtn")?.addEventListener("click", () => {
+  openExitModal();
 });
+
 
 loadDashboard().catch(error => {
   console.error(error);

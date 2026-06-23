@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>초대권 등록</title>
+  <title>특별관</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -24,27 +24,19 @@
   </header>
 
   <main class="container narrow-page">
-    <section class="page-head-small">
-      <h1>초대권 등록</h1>
-      <p class="muted">운영자가 안내한 코드를 입력하세요. 승인이 필요한 코드는 관리실가 확인한 뒤 반영됩니다.</p>
+    <section class="page-head-small soft-title">
+      <h1>심야 토크쇼 특별관 초대권</h1>
+      <p class="muted">골든 마스코트 기프트샵 안쪽에 마련된 심야 토크쇼 특별관입니다. 로그인한 방문객만 초대권을 열람할 수 있습니다.</p>
     </section>
     <div id="message" class="message"></div>
 
-    <section class="panel">
-      <h2>초대권 등록 입력</h2>
-      <form id="codeForm">
-        <label>초대권 등록
-          <input id="eventCode" type="text" required placeholder="예: TEST2026">
-        </label>
-        <button type="submit">제출</button>
-      </form>
-    </section>
-
-    <section class="section panel">
-      <h2>내 제출 내역</h2>
-      <div id="submissionList"></div>
+    <section class="panel invitation-card">
+      <p class="eyebrow">Collaboration Gift</p>
+      <h2>심야 토크쇼 특별관 초대권</h2>
+      <p>이 초대장을 열면 제휴 밴드로 이동합니다. 무료지만, 무료라는 말이 언제나 안전하다는 뜻은 아니죠. 세상이 그렇게 친절했다면 우리가 이런 사이트를 만들고 있겠습니까.</p>
+      <button id="openInviteBtn" type="button">무료 초대권 열기</button>
     </section>
   </main>
-  <script type="module" src="js/codes.js"></script>
+  <script type="module" src="js/partner.js"></script>
 </body>
 </html>

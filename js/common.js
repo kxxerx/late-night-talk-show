@@ -85,6 +85,8 @@ export async function requireAdmin() {
 }
 
 export async function logout() {
+  const ok = confirm("다음에 다시 방문하시겠습니까?");
+  if (!ok) return;
   await supabase.auth.signOut();
   location.href = "index.html";
 }

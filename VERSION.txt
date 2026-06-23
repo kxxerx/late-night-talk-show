@@ -1,8 +1,8 @@
-pollution-shop-starter v0.8
-- Fixed inventory null textContent error.
-- Fixed event_submissions submitted_at column issue.
-- Fixed admin ambiguous relationship embed issue.
-- Removed top navigation menu.
-- Added admin link to logged-in admin sidebar only.
-- Simplified category buttons.
-- Further reduced item card and image sizes.
+pollution-shop-starter v1.0
+- Applied finalized site/menu terminology.
+- Added Golden Mascot Gift Shop / Midnight Talk Show Special Hall logo text.
+- Renamed pollution to visitor status.
+- Renamed event code to invitation registration.
+- Renamed item categories to souvenir/lost item/special product.
+- Renamed logout and withdrawal actions.
+- Added custom black/red horror modal for withdrawal.
