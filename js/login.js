@@ -6,6 +6,12 @@ renderNav();
 const signupForm = qs("#signupForm");
 const loginForm = qs("#loginForm");
 
+function goHomeSoon() {
+  setTimeout(() => {
+    location.href = "index.html";
+  }, 700);
+}
+
 signupForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -28,7 +34,24 @@ signupForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  showMessage("회원가입 완료. 이메일 확인 설정이 켜져 있다면 메일 확인 후 로그인하세요.", "success");
+  if (data?.session) {
+    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    goHomeSoon();
+    return;
+  }
+
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (!loginError && loginData?.session) {
+    showMessage("회원가입 완료. 자동 로그인되었습니다.", "success");
+    goHomeSoon();
+    return;
+  }
+
+  showMessage("회원가입은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 메일 확인 후 로그인해야 합니다.", "success");
 });
 
 loginForm?.addEventListener("submit", async (event) => {
@@ -47,5 +70,6 @@ loginForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  location.href = "index.html";
+  showMessage("로그인 완료.", "success");
+  goHomeSoon();
 });

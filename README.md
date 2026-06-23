@@ -186,3 +186,35 @@ Enable automatic RLS → ON
 따라서 별도로 grant SQL을 따로 실행하지 않아도 됩니다.  
 `setup.sql` 전체를 한 번에 실행하면 됩니다.
 
+---
+
+# 회원가입 이메일 확인 끄기
+
+이 프로젝트는 폐쇄형 커뮤니티/밴드 수동 확인용으로 설계되어 있습니다.  
+초기 운영에서는 Supabase 이메일 확인을 꺼두는 편이 사용자가 덜 헷갈립니다.
+
+경로는 보통 아래 중 하나입니다.
+
+```txt
+Authentication
+→ Sign In / Providers
+→ Email
+→ Confirm email OFF
+→ Save
+```
+
+또는
+
+```txt
+Authentication
+→ Providers
+→ Email
+→ Confirm email OFF
+→ Save
+```
+
+이 설정을 끄면 새 회원은 이메일 확인 없이 가입 후 바로 로그인할 수 있습니다.
+
+v0.3부터 `js/login.js`는 회원가입 후 자동 로그인을 시도합니다.  
+만약 Supabase에서 Confirm email이 켜져 있으면 자동 로그인되지 않고 이메일 확인 안내가 표시됩니다.
+

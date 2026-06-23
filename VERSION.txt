@@ -1,2 +1,3 @@
-pollution-shop-starter v0.2
-- Added manual GRANT SQL for Supabase projects with Automatically expose new tables OFF.
+pollution-shop-starter v0.3
+- Updated signup flow: attempts automatic login after signup.
+- Added README instructions for disabling Supabase Confirm email.
