@@ -1,7 +1,7 @@
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, pollutionLabel, authEmailFromLoginId } from "./common.js";
 
-let currentCategory = "all";
+let currentCategory = new URLSearchParams(location.search).get("category") || "all";
 let cachedItems = [];
 let cachedProfile = null;
 let cachedSession = null;
@@ -22,6 +22,7 @@ async function getOptionalProfile() {
   const session = await getSession();
   cachedSession = session;
 
+  document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = !session; });
   if (!session) return null;
 
   const { data, error } = await supabase
@@ -115,8 +116,16 @@ function renderGuestSide() {
 
 function wireCategoryButtons() {
   document.querySelectorAll("[data-category]").forEach(button => {
-    button.addEventListener("click", () => {
-      currentCategory = button.dataset.category;
+    const category = button.dataset.category;
+    button.classList.toggle("active", category === currentCategory);
+
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      currentCategory = category || "all";
+
+      const url = currentCategory === "all" ? "index.html" : `index.html?category=${currentCategory}`;
+      history.replaceState(null, "", url);
+
       document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("active"));
       button.classList.add("active");
       renderItems();

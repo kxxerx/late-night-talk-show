@@ -1,3 +1,4 @@
+@import url("https://cdn.jsdelivr.net/npm/@noonnu/gabia-maeumgyeol@0.1.0/index.css");
 :root {
   --bg: #0c0d12;
   --bg-soft: #11131b;
@@ -1374,4 +1375,59 @@ select {
 .exit-horror-actions button:disabled {
   opacity: .55 !important;
   cursor: wait !important;
+}
+
+
+/* v1.2 global category strip + invitation typography */
+
+.blog-header.noir .category-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  padding: 0 0 16px !important;
+}
+
+.blog-header.noir .category-link[hidden] {
+  display: none !important;
+}
+
+.blog-header.noir .category-link {
+  text-decoration: none !important;
+}
+
+.midnight-invite {
+  background:
+    radial-gradient(circle at top left, rgba(214,168,79,0.12), transparent 16rem),
+    #080808 !important;
+  color: #e8d198 !important;
+  border-color: rgba(214,168,79,0.5) !important;
+}
+
+.midnight-invite p {
+  color: #d8c189 !important;
+  line-height: 1.75;
+}
+
+.midnight-invite .play-with-us {
+  color: #ffd84d !important;
+  font-weight: 900 !important;
+  font-size: 24px !important;
+  letter-spacing: 0.42em;
+  text-align: center;
+  margin: 24px 0 18px !important;
+  text-shadow: 0 0 14px rgba(255, 216, 77, 0.45);
+}
+
+.midnight-invite .midnight-whisper {
+  font-family: "Gabia Maeumgyeol", "Noto Serif KR", serif !important;
+  font-style: italic !important;
+  color: #c9b37c !important;
+  font-size: 17px !important;
+  line-height: 1.95 !important;
+  word-break: keep-all;
+  opacity: 0.95;
+}
+
+.midnight-invite button {
+  margin-top: 16px;
 }

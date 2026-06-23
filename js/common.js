@@ -48,6 +48,7 @@ export async function requireAuth() {
 export async function getMyProfile() {
   const session = await requireAuth();
   if (!session) return null;
+  document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = false; });
 
   const { data, error } = await supabase
     .from("profiles")
@@ -111,4 +112,13 @@ export function pollutionLabel(value) {
   if (n >= 50) return "불안정";
   if (n >= 20) return "경미한 오염";
   return "안정";
+}
+
+
+export async function revealMemberLinks() {
+  const session = await getSession();
+  document.querySelectorAll(".requires-login").forEach((node) => {
+    node.hidden = !session;
+  });
+  return session;
 }

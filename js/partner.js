@@ -1,5 +1,7 @@
 import * as config from "./config.js";
-import { qs, showMessage, getMyProfile } from "./common.js";
+import { qs, showMessage, getMyProfile, revealMemberLinks } from "./common.js";
+
+await revealMemberLinks();
 
 const profile = await getMyProfile();
 

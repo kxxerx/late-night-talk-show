@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, renderNav, authEmailFromLoginId } from "./common.js";
+import { qs, showMessage, renderNav, authEmailFromLoginId, revealMemberLinks } from "./common.js";
 
+await revealMemberLinks();
 renderNav();
 
 const signupForm = qs("#signupForm");
