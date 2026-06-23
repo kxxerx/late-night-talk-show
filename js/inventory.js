@@ -1,13 +1,9 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav } from "./common.js";
-
-await renderNav();
+import { qs, showMessage, getMyProfile } from "./common.js";
 
 async function loadInventory() {
   const profile = await getMyProfile();
   if (!profile) return;
-
-  qs("#myPollution").textContent = profile.pollution;
 
   const { data, error } = await supabase
     .from("inventories")
@@ -24,20 +20,23 @@ async function loadInventory() {
         <div class="item-image-wrap">
           ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
         </div>
-        <h2>${item.name}</h2>
-        <p>${item.description}</p>
-        <p>보유 수량: <strong>${row.quantity}</strong></p>
-        <p>효과: ${item.effect_type} ${item.effect_value}</p>
-        <button data-use="${item.id}">사용하기</button>
+        <div class="item-body">
+          <h2>${item.name}</h2>
+          <p>${item.description}</p>
+          <p class="muted">보유 ${row.quantity}개 · 효과 ${item.effect_value}</p>
+        </div>
+        <div class="item-footer">
+          <button data-use="${item.id}">사용</button>
+        </div>
       </article>
     `;
-  }).join("") || `<p>보유 아이템이 없습니다. 상점에 가서 문명의 소비 구조에 참여하세요.</p>`;
+  }).join("") || `<p class="muted">보유 아이템이 없습니다.</p>`;
 
   document.querySelectorAll("[data-use]").forEach(button => {
     button.addEventListener("click", async () => {
       const itemId = button.dataset.use;
       button.disabled = true;
-      button.textContent = "사용 중...";
+      button.textContent = "사용 중";
 
       const { data, error } = await supabase.rpc("use_item", {
         p_item_id: itemId

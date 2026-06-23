@@ -1,7 +1,6 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, qsa, showMessage, requireAdmin, renderNav, formatDate } from "./common.js";
+import { qs, qsa, showMessage, requireAdmin, formatDate } from "./common.js";
 
-await renderNav();
 const adminProfile = await requireAdmin();
 
 let users = [];
@@ -96,7 +95,7 @@ async function loadItems() {
 async function loadSubmissions() {
   const { data, error } = await supabase
     .from("event_submissions")
-    .select("*, profile:profiles(site_id, email, display_name, band_nickname), event_code:event_codes(code, title, reward_currency, pollution_delta)")
+    .select("*, profile:profiles!event_submissions_user_id_fkey(site_id, email, display_name, band_nickname), event_code:event_codes(code, title, reward_currency, pollution_delta)")
     .order("submitted_at", { ascending: false })
     .limit(100);
 
@@ -111,7 +110,6 @@ async function loadSubmissions() {
       <td>${row.event_code?.code || ""}</td>
       <td>${row.event_code?.title || ""}</td>
       <td><span class="status ${row.status}">${row.status}</span></td>
-      <td>${row.proof_text || ""}</td>
       <td>${formatDate(row.submitted_at)}</td>
       <td>
         ${row.status === "pending" ? `
@@ -121,7 +119,7 @@ async function loadSubmissions() {
         ` : row.admin_note || ""}
       </td>
     </tr>
-  `).join("") || `<tr><td colspan="9">제출 없음</td></tr>`;
+  `).join("") || `<tr><td colspan="8">제출 없음</td></tr>`;
 
   document.querySelectorAll("[data-approve]").forEach(button => {
     button.addEventListener("click", async () => {

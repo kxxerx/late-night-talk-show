@@ -1,7 +1,8 @@
-pollution-shop-starter v0.7
-- Unified header/menu across main pages.
-- Logo now links to home.
-- Moved shop categories to horizontal menu under logo.
-- Removed site ID display from user-facing profile pages.
-- Simplified event code page to code-only submission.
-- Reduced and unified typography and item card sizes.
+pollution-shop-starter v0.8
+- Fixed inventory null textContent error.
+- Fixed event_submissions submitted_at column issue.
+- Fixed admin ambiguous relationship embed issue.
+- Removed top navigation menu.
+- Added admin link to logged-in admin sidebar only.
+- Simplified category buttons.
+- Further reduced item card and image sizes.

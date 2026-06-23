@@ -9,7 +9,7 @@ async function loadSubmissions() {
     .from("event_submissions")
     .select("*, event_codes(code, title)")
     .eq("user_id", profile.id)
-    .order("created_at", { ascending: false });
+    .order("submitted_at", { ascending: false });
 
   if (error) throw error;
 
@@ -17,7 +17,7 @@ async function loadSubmissions() {
     <article class="submission-row">
       <strong>${row.event_codes?.title || row.event_codes?.code || "이벤트"}</strong>
       <span class="status ${row.status}">${row.status}</span>
-      <p class="muted">${formatDate(row.created_at)}</p>
+      <p class="muted">${formatDate(row.submitted_at)}</p>
     </article>
   `).join("") || `<p class="muted">제출 내역이 없습니다.</p>`;
 }

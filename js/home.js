@@ -57,6 +57,7 @@ function renderLoggedInSide(profile) {
         <a class="button secondary" href="inventory.html">내 가방</a>
         <a class="button secondary" href="mypage.html">내 정보</a>
         <a class="button secondary" href="codes.html">코드 입력</a>
+        ${profile.role === "admin" ? `<a class="button secondary" href="admin.html">관리자</a>` : ""}
         <button id="sideLogoutBtn" class="button secondary" type="button">로그아웃</button>
       </div>
     </div>
