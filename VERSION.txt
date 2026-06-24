@@ -1,6 +1,5 @@
-pollution-shop-starter v3.4
-- Re-centered profile stat boxes in the side profile card.
-- Rebuilt human/infected special-hall prelude as full-screen black cut transitions.
-- Forced entity fallback avatar letters to cyan with text-fill-color.
-- Added stronger entity header/category separator overrides.
+pollution-shop-starter v3.6
+- Changed special-hall popup intro typography to serif/Batang style.
+- Updated original invitation copy before corruption.
+- Original invitation now visually corrupts into red default typography before redacted typing.
 - No SQL migration required.

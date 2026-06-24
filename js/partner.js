@@ -47,71 +47,99 @@ function showNotFoundOverlay() {
   }, 1050);
 }
 
-function makeMadIntroOverlay() {
+function makeMadPopup() {
   const overlay = document.createElement("div");
-  overlay.className = "mad-intro-overlay open";
+  overlay.className = "mad-popup-overlay open";
   overlay.innerHTML = `
-    <div id="madIntroContent" class="mad-intro-content"></div>
+    <div class="mad-popup-box">
+      <div id="madPopupContent" class="mad-popup-content"></div>
+    </div>
   `;
   document.body.appendChild(overlay);
   return overlay;
 }
 
-async function clearIntroScreen(overlay, pause = 280) {
-  const content = overlay.querySelector("#madIntroContent");
+async function clearMadPopup(overlay, pause = 320) {
+  const content = overlay.querySelector("#madPopupContent");
+  content.classList.add("fade-out");
+  await sleep(240);
+  content.classList.remove("fade-out");
   content.innerHTML = "";
   await sleep(pause);
 }
 
 async function runHumanPrelude() {
-  const overlay = makeMadIntroOverlay();
-  const content = overlay.querySelector("#madIntroContent");
+  const overlay = makeMadPopup();
+  const content = overlay.querySelector("#madPopupContent");
 
-  content.innerHTML = `<div class="mad-big-flash">보라!</div>`;
+  content.innerHTML = `<div class="mad-popup-big">보라!</div>`;
   await sleep(900);
-  await clearIntroScreen(overlay, 360);
+  await clearMadPopup(overlay, 360);
 
-  content.innerHTML = `<p id="proclamationLine" class="mad-fullscreen-text"></p>`;
+  content.innerHTML = `<p id="proclamationLine" class="mad-popup-text"></p>`;
   await typeText(content.querySelector("#proclamationLine"), PROCLAMATION_TEXT, 34);
-  await sleep(700);
-  await clearIntroScreen(overlay, 420);
+  await sleep(620);
+  await clearMadPopup(overlay, 420);
 
-  content.innerHTML = `<p id="whoAmILine" class="mad-fullscreen-text who-am-i-screen"></p>`;
+  content.innerHTML = `<p id="whoAmILine" class="mad-popup-text who-am-i-screen"></p>`;
   await typeText(content.querySelector("#whoAmILine"), WHO_AM_I_TEXT, 7);
-  await sleep(600);
-  await clearIntroScreen(overlay, 420);
+  await sleep(560);
+  await clearMadPopup(overlay, 420);
 
-  content.innerHTML = `<div class="mad-big-flash who-are-you">너는 누구야?</div>`;
-  await sleep(950);
+  content.innerHTML = `<div class="mad-popup-big who-are-you">너는 누구야?</div>`;
+  await sleep(900);
 
   overlay.classList.remove("open");
   await sleep(260);
   overlay.remove();
 }
 
+function renderOriginalInvitation(content) {
+  qs("#inviteLead").textContent = "수신 중입니다.";
+  content.innerHTML = `
+    <div id="originalInviteBlock" class="original-invite-block">
+      <p class="original-warning">단, 이 버튼을 누름으로써 발생하는 공포, 환청, ■■, ■■■■ 등의 문제에 대하여 골든 리조트는 일체의 배상책임이 없습니다.</p>
+      <p class="original-play">우 리 같 이 놀 자</p>
+      <p class="original-gabia">안녕하십니까! 이 밤의 즐거움. 매일 만나는 새로운 얼굴. 그리고 친근한 당신의 사회자! 안녕하십니까. 여기는 심야 토크쇼입니다! 오늘의 방청객으로 초대된 것을 환영합니다.</p>
+    </div>
+  `;
+}
+
+async function corruptOriginalInvitation() {
+  const block = qs("#originalInviteBlock");
+  if (!block) return;
+
+  block.classList.add("is-corrupting");
+  await sleep(260);
+
+  block.innerHTML = `<p id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></p>`;
+  await typeText(qs("#redactedLine"), REDACTED_TEXT, 24);
+  await sleep(420);
+  block.classList.add("fade-out");
+  await sleep(260);
+  block.remove();
+}
+
 async function renderHumanInvite() {
   const content = qs("#inviteDynamicContent");
-  qs("#inviteLead").textContent = "수신 중입니다.";
 
   await runHumanPrelude();
 
-  content.innerHTML = `
-    <p id="redactedLine" class="invite-corrupt-copy"></p>
-    <p id="comeHereLine" class="invite-corrupt-copy come-here-wall" hidden></p>
+  renderOriginalInvitation(content);
+  await sleep(5000);
+
+  await corruptOriginalInvitation();
+
+  content.insertAdjacentHTML("beforeend", `
+    <p id="comeHereLine" class="invite-corrupt-copy come-here-wall"></p>
     <p id="audienceInvite" class="audience-invite final-invite-line" hidden>심야토크쇼의 방청객으로 초대되셨습니다.</p>
     <button id="openInviteBtn" type="button" hidden>방청하기</button>
-  `;
+  `);
 
-  const redacted = qs("#redactedLine");
   const comeHere = qs("#comeHereLine");
   const audience = qs("#audienceInvite");
   const button = qs("#openInviteBtn");
 
-  await typeText(redacted, REDACTED_TEXT, 24);
-  await sleep(420);
-  redacted.hidden = true;
-
-  comeHere.hidden = false;
   await typeText(comeHere, COME_HERE_TEXT, 5);
   await sleep(350);
 
