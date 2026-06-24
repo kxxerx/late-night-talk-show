@@ -2577,3 +2577,183 @@ main::after,
     padding-right: 3px !important;
   }
 }
+
+
+
+/* v2.3 profile/shop/admin repair */
+.profile-avatar {
+  width: 82px !important;
+  height: 82px !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto 10px !important;
+  background: #050505 !important;
+  border: 1px solid rgba(214,168,79,.55) !important;
+  color: #ffe45c !important;
+  font-weight: 900 !important;
+}
+
+.profile-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.profile-avatar span {
+  color: #ffe45c !important;
+  font-size: 22px !important;
+}
+
+.profile-stats.two-stats {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.profile-stats.two-stats > div {
+  min-height: 78px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-align: center !important;
+}
+
+.profile-stats.two-stats span {
+  display: block !important;
+  font-size: 25px !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  color: #ffe2a0 !important;
+}
+
+.profile-stats.two-stats small,
+.profile-status-text {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  word-break: keep-all !important;
+}
+
+.profile-status-text.status-yellow,
+.status-yellow {
+  color: #ffe45c !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 10px rgba(255,228,92,.35) !important;
+}
+
+.profile-status-text.status-red,
+.status-red {
+  color: #ff2a2a !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 10px rgba(255,0,0,.45) !important;
+}
+
+.luxury-item-card .item-body {
+  width: 100% !important;
+}
+
+.luxury-item-card h2 {
+  text-align: center !important;
+  margin-bottom: 8px !important;
+}
+
+.luxury-item-card .item-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.luxury-item-card .price {
+  text-align: left !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-left: 2px !important;
+  color: #ffe45c !important;
+}
+
+.item-actions {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 7px !important;
+  width: 100% !important;
+}
+
+.item-actions button,
+.item-actions .button {
+  width: 100% !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+  word-break: keep-all !important;
+  font-size: 12px !important;
+}
+
+.come-again {
+  color: #fff200 !important;
+  text-shadow: 0 0 16px rgba(255,242,0,.72) !important;
+  font-weight: 900 !important;
+}
+
+.admin-edit-table input,
+.admin-edit-table select,
+.admin-edit-table button,
+.admin-edit-table th,
+.admin-edit-table td {
+  writing-mode: horizontal-tb !important;
+  word-break: keep-all !important;
+  white-space: nowrap !important;
+}
+
+.admin-edit-table {
+  min-width: 1260px !important;
+}
+
+.item-admin-table {
+  min-width: 1520px !important;
+}
+
+.image-manage-cell {
+  min-width: 240px !important;
+}
+
+.current-image-name {
+  display: block !important;
+  color: #bfa770 !important;
+  font-size: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+.file-inline {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+}
+
+.file-inline input[type="file"] {
+  width: 150px !important;
+  max-width: 150px !important;
+}
+
+@media (max-width: 640px) {
+  .profile-stats.two-stats span {
+    font-size: 22px !important;
+  }
+
+  .profile-stats.two-stats small,
+  .profile-status-text {
+    font-size: 13px !important;
+  }
+}

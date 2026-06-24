@@ -1,10 +1,7 @@
-pollution-shop-starter v2.2
-- Fixed renderItems is not defined.
-- Rewrote shop home rendering safely.
-- Removed item image URL inputs; file upload only.
-- Fixed profile status card overlap: number + judgment stacked.
-- Added security contract modal for human visitors who reach status 100.
-- Accepting the contract converts visitor_type from human to infected.
-- Added goodbye modal before logout.
-- Strengthened CSS to remove white translucent background artifacts.
-- Added spacing between item detail image and title.
+pollution-shop-starter v2.3
+- Fixed broken profile avatar rendering.
+- Reworked shop card layout: image, item name, left-aligned price, detail/buy buttons.
+- Fixed profile status stat layout and status colors.
+- Rewrote admin.js stable to restore member, event code, item, submission, password request lists.
+- Removed remaining image URL dependencies from admin item editing.
+- Made goodbye modal '또 놀 러 와' brighter yellow.

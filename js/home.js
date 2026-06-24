@@ -216,7 +216,7 @@ function renderSidePanel() {
 
   panel.innerHTML = `
     <section class="profile-card">
-      <img class="profile-avatar" src="${profileAvatar(cachedProfile)}" alt="프로필 이미지">
+      <div class="profile-avatar">${profileAvatar(cachedProfile)}</div>
       <h2>${displayName(cachedProfile)}</h2>
       <div class="profile-stats two-stats">
         <div><span>${cachedProfile.currency}</span><small>유쾌주화</small></div>
