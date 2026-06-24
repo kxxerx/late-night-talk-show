@@ -249,10 +249,15 @@ export async function handleEntityCollapseIfNeeded(profile) {
     modal.innerHTML = `
       <div class="soft-modal-box mask-break-box">
         <div class="broken-mask" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
+          <span class="mask-eye left"></span>
+          <span class="mask-eye right"></span>
+          <span class="mask-crack one"></span>
+          <span class="mask-crack two"></span>
+          <span class="mask-crack three"></span>
         </div>
         <h2>동기화가 해제되었습니다.</h2>
         <p>빌린 인생이 금이 가고, 가면은 원래의 얼굴을 더 이상 붙잡지 못합니다.</p>
+        <button id="confirmMaskBreakBtn" type="button">확인</button>
       </div>
     `;
     document.body.appendChild(modal);
@@ -260,16 +265,16 @@ export async function handleEntityCollapseIfNeeded(profile) {
 
   modal.classList.add("open");
 
-  try {
-    await new Promise(resolve => setTimeout(resolve, 1600));
-    await supabase.rpc("release_entity_life", { p_reason: "동기화가 해제되었습니다." });
-  } catch (error) {
-    console.error(error);
-  }
-
-  setTimeout(() => {
+  document.querySelector("#confirmMaskBreakBtn")?.addEventListener("click", async () => {
+    const btn = document.querySelector("#confirmMaskBreakBtn");
+    if (btn) btn.disabled = true;
+    try {
+      await supabase.rpc("release_entity_life", { p_reason: "동기화가 해제되었습니다." });
+    } catch (error) {
+      console.error(error);
+    }
     location.reload();
-  }, 600);
+  }, { once: true });
 
   return true;
 }

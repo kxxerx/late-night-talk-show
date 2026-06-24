@@ -4396,3 +4396,221 @@ body.entity-mode ::-webkit-scrollbar-thumb {
     min-height: 78px !important;
   }
 }
+
+
+
+/* v3.3 special invitation intro + mask redesign + stubborn entity lines */
+
+/* 일반/오염자 특별관: 광기 인트로 */
+.behold-flash,
+.who-are-you-flash {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: clamp(46px, 10vw, 96px) !important;
+  font-weight: 1000 !important;
+  text-align: center !important;
+  line-height: 1.05 !important;
+  margin: 18px 0 !important;
+  text-shadow: 0 0 24px rgba(255,0,0,.9), 0 0 4px #ff0000 !important;
+  animation: terrorPop .34s cubic-bezier(.2,1.6,.2,1) both !important;
+}
+
+.behold-flash.fade-out,
+.who-are-you-flash.fade-out {
+  animation: terrorFade .36s ease-in forwards !important;
+}
+
+.mad-proclamation,
+.who-am-i-line {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.62 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.55) !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+.who-am-i-line {
+  word-break: break-all !important;
+  margin-top: 18px !important;
+}
+
+@keyframes terrorPop {
+  0% { transform: scale(.72); opacity: 0; filter: blur(8px); }
+  60% { transform: scale(1.08); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes terrorFade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.86); filter: blur(7px); }
+}
+
+/* 가면 파손 모달: 읽고 확인할 수 있게 유지 */
+.mask-break-box {
+  text-align: center !important;
+  border-color: rgba(255,0,0,.78) !important;
+  background: #020000 !important;
+  color: #ff2020 !important;
+  box-shadow: 0 0 48px rgba(255,0,0,.34) !important;
+}
+
+.mask-break-box h2,
+.mask-break-box p {
+  color: #ff2020 !important;
+  text-shadow: 0 0 10px rgba(255,0,0,.45) !important;
+}
+
+.mask-break-box button {
+  color: #ff2020 !important;
+  border-color: rgba(255,0,0,.7) !important;
+  background: #120000 !important;
+}
+
+/* 알 말고 가면처럼: 하얀 가면 실루엣 + 눈구멍 + 균열 */
+.broken-mask {
+  width: 146px !important;
+  height: 172px !important;
+  margin: 0 auto 18px !important;
+  position: relative !important;
+  filter: drop-shadow(0 0 22px rgba(255,0,0,.6)) !important;
+  animation: maskWholeShake .75s ease-in-out infinite alternate !important;
+}
+
+.broken-mask::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 18px !important;
+  top: 4px !important;
+  width: 110px !important;
+  height: 150px !important;
+  background:
+    radial-gradient(circle at 36% 42%, transparent 0 10px, rgba(255,0,0,.28) 11px 13px, transparent 14px),
+    radial-gradient(circle at 64% 42%, transparent 0 10px, rgba(255,0,0,.28) 11px 13px, transparent 14px),
+    linear-gradient(180deg, #fff7df 0%, #d9caa5 100%) !important;
+  border: 3px solid #ff0000 !important;
+  border-radius: 48% 48% 42% 42% / 38% 38% 58% 58% !important;
+  clip-path: polygon(50% 0, 84% 8%, 98% 38%, 87% 78%, 50% 100%, 13% 78%, 2% 38%, 16% 8%) !important;
+  box-shadow: inset 0 0 20px rgba(255,0,0,.24), 0 0 18px rgba(255,0,0,.32) !important;
+  animation: maskCrackPulse 1.2s ease-in-out infinite !important;
+}
+
+.broken-mask::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 68px !important;
+  top: 38px !important;
+  width: 12px !important;
+  height: 96px !important;
+  background: #ff0000 !important;
+  clip-path: polygon(40% 0, 100% 24%, 58% 43%, 96% 66%, 34% 100%, 52% 68%, 0 48%, 42% 30%) !important;
+  box-shadow: 0 0 10px rgba(255,0,0,.9) !important;
+  animation: crackGlow .55s ease-in-out infinite alternate !important;
+}
+
+.broken-mask .mask-eye {
+  position: absolute !important;
+  top: 63px !important;
+  width: 28px !important;
+  height: 14px !important;
+  background: #050000 !important;
+  border: 2px solid #ff0000 !important;
+  border-radius: 50% 50% 42% 42% !important;
+  z-index: 2 !important;
+  box-shadow: inset 0 0 9px rgba(255,0,0,.5) !important;
+}
+
+.broken-mask .mask-eye.left { left: 42px !important; transform: rotate(8deg) !important; }
+.broken-mask .mask-eye.right { right: 42px !important; transform: rotate(-8deg) !important; }
+
+.broken-mask .mask-crack {
+  position: absolute !important;
+  z-index: 3 !important;
+  background: #ff0000 !important;
+  box-shadow: 0 0 9px rgba(255,0,0,.85) !important;
+}
+
+.broken-mask .mask-crack.one {
+  left: 59px !important;
+  top: 28px !important;
+  width: 4px !important;
+  height: 45px !important;
+  transform: rotate(-28deg) !important;
+}
+
+.broken-mask .mask-crack.two {
+  right: 51px !important;
+  top: 86px !important;
+  width: 4px !important;
+  height: 52px !important;
+  transform: rotate(31deg) !important;
+}
+
+.broken-mask .mask-crack.three {
+  left: 64px !important;
+  top: 118px !important;
+  width: 38px !important;
+  height: 4px !important;
+  transform: rotate(-10deg) !important;
+}
+
+@keyframes maskWholeShake {
+  0% { transform: translate(-1px, 0) rotate(-1deg); }
+  100% { transform: translate(1px, 1px) rotate(1deg); }
+}
+
+@keyframes maskCrackPulse {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50% { opacity: .88; filter: brightness(.88); }
+}
+
+@keyframes crackGlow {
+  0% { opacity: .65; }
+  100% { opacity: 1; }
+}
+
+/* 괴이 기본 프로필 앞글자: 노랑 금지, 청록 고정 */
+html.entity-mode body .profile-avatar,
+html.entity-mode body .profile-avatar span,
+html.entity-mode body .avatar,
+html.entity-mode body .avatar span,
+body.entity-mode .profile-avatar,
+body.entity-mode .profile-avatar span,
+body.entity-mode .avatar,
+body.entity-mode .avatar span {
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.72) !important;
+  background: #020605 !important;
+  text-shadow: 0 0 10px rgba(83,210,191,.55) !important;
+}
+
+/* 로고 아래/카테고리 위쪽 금색선 잔여 제거 */
+html.entity-mode body .blog-header,
+html.entity-mode body .site-banner,
+html.entity-mode body .brand-row,
+html.entity-mode body .category-strip,
+body.entity-mode .blog-header,
+body.entity-mode .site-banner,
+body.entity-mode .brand-row,
+body.entity-mode .category-strip {
+  border-top-color: rgba(83,210,191,.62) !important;
+  border-bottom-color: rgba(83,210,191,.62) !important;
+  box-shadow:
+    inset 0 1px rgba(83,210,191,.18),
+    inset 0 -1px rgba(83,210,191,.24) !important;
+}
+
+/* 혹시 hr/장식선이 금색이면 괴이 모드에서 청록으로 */
+html.entity-mode body hr,
+html.entity-mode body .divider,
+html.entity-mode body .ornament-line,
+body.entity-mode hr,
+body.entity-mode .divider,
+body.entity-mode .ornament-line {
+  border-color: rgba(83,210,191,.62) !important;
+  background: rgba(83,210,191,.62) !important;
+}

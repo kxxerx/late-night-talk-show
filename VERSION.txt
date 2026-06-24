@@ -1,11 +1,8 @@
-pollution-shop-starter v3.2
-- Centered final invitation line above audience button.
-- Profile avatar fallback now uses band nickname first.
-- Added avatar delete button on mypage.
-- Adjusted stat card vertical alignment on shop and mypage.
-- Changed contract party from 청 이사 to 청달래.
-- Updated entity sync judgement labels.
-- Added mask break animation and release_entity_life RPC.
-- Added entity life cancel item: 물거품 귀환권.
-- Clears entity CSS mode on logout.
-- Added mode-specific scrollbar styles.
+pollution-shop-starter v3.3
+- Added dramatic human/infected special-hall intro after 404.
+- Reworked mask-break animation into a clearer mask silhouette.
+- Mask-break modal now waits for user confirmation before releasing life.
+- Forced mask-break text/buttons red.
+- Fixed entity fallback avatar text color to cyan.
+- Added stronger entity line/border overrides for logo/category separators.
+- No SQL migration required.
