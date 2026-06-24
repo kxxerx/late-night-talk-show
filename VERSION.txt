@@ -1,6 +1,6 @@
-pollution-shop-starter v4.7
-- Added item description editing in admin item list.
-- Removed effect type field from item create/edit UI.
-- Effect type is now derived from item_kind automatically.
-- Kept effect value editable.
+pollution-shop-starter v4.8
+- Fixed file input colors in entity mode.
+- Styled file selector buttons per visitor mode.
+- Fixed item description textarea border in entity mode.
+- Changed item images to object-fit: contain to avoid cropping 800x600 images.
 - No SQL migration required.
