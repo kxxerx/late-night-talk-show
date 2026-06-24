@@ -1,12 +1,6 @@
-pollution-shop-starter v2.4
-- Hid image registered text in admin item list.
-- Simplified admin item file input UI.
-- Adjusted profile nickname and stat card sizes.
-- Forced status judgement to bright yellow/red.
-- Right-aligned shop item prices.
-- Removed internal scroll from item detail modal.
-- Updated security contract content and party name.
-- Security contract now resets pollution to 0 and shows completion modal.
-- Strengthened entity-mode whole-screen style.
-- Reworked invitation page with 404 overlay and different human/entity invitation copy.
-- Fixed mobile side profile overlapping shop items.
+pollution-shop-starter v2.5
+- Expanded security contract clauses.
+- Reworked invitation page animation and entity copy.
+- Added admin pagination for major lists.
+- Added admin deletion of event submissions for testing/re-registration.
+- Added upgrade-v2.5.sql.

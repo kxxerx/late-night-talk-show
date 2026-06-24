@@ -2821,3 +2821,45 @@ main::after,
   .app-layout { display: flex !important; flex-direction: column !important; }
   #shopList { position: relative !important; z-index: 1 !important; }
 }
+
+
+/* v2.5 pagination and invitation animation */
+.pager {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin: 12px 0 22px !important;
+  color: #ffe2a0 !important;
+}
+.pager button {
+  min-width: 72px !important;
+}
+.glitch-source,
+.midnight-whisper {
+  transition: color .18s ease, text-shadow .18s ease !important;
+}
+.midnight-invite #inviteWhisper,
+.midnight-invite .midnight-whisper {
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+.midnight-invite .audience-invite {
+  margin-top: 18px !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+}
+.midnight-invite button[hidden],
+.midnight-invite [hidden] {
+  display: none !important;
+}
+.entity-invite-page .entity-glitch,
+.entity-invite-page .entity-glitch.small {
+  display: none !important;
+}
+.contract-scroll {
+  max-height: 500px !important;
+}
