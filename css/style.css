@@ -3220,3 +3220,244 @@ body.entity-mode,
     font-size: 11.5px !important;
   }
 }
+
+
+
+/* v2.8 entity palette hardening + profile scale + invitation fix */
+
+/* 쇼핑백 빈 상태 상자 조화 */
+.empty-inventory-box,
+.empty-panel,
+#inventoryList .empty-inventory-box {
+  background: linear-gradient(180deg, rgba(17,15,10,.96), rgba(6,6,5,.96)) !important;
+  border: 1px solid rgba(214,168,79,.34) !important;
+  color: #bfa770 !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35) !important;
+  border-radius: 16px !important;
+  padding: 18px !important;
+  text-align: center !important;
+}
+
+/* 프로필 수치 박스 더 축소 */
+.profile-stats.two-stats {
+  gap: 6px !important;
+}
+
+.profile-stats.two-stats > div,
+.status-only-card {
+  min-height: 52px !important;
+  padding: 6px 6px !important;
+  border-radius: 11px !important;
+}
+
+.profile-stats.two-stats span,
+.status-only-card > span {
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+}
+
+.profile-stats.two-stats small,
+.profile-status-text,
+.status-only-card > small {
+  font-size: 11.5px !important;
+  line-height: 1.18 !important;
+}
+
+.profile-card h2 {
+  margin: 3px 0 9px !important;
+  font-size: 17px !important;
+}
+
+.profile-avatar {
+  width: 68px !important;
+  height: 68px !important;
+}
+
+/* 일반/오염자 초대장: 기존 노란/가비아 스타일을 완전히 덮음 */
+.midnight-invite .invite-corrupt-copy,
+.midnight-invite .come-here-wall.invite-corrupt-copy,
+.midnight-invite p.invite-corrupt-copy,
+#inviteDynamicContent .invite-corrupt-copy,
+#inviteDynamicContent .come-here-wall {
+  color: #ff0000 !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.55) !important;
+  word-break: break-all !important;
+  white-space: normal !important;
+  max-height: none !important;
+  overflow: visible !important;
+  opacity: .96 !important;
+}
+
+.midnight-invite .come-here-wall.invite-corrupt-copy {
+  margin: 16px 0 !important;
+}
+
+/* 괴이 모드 강제 통일 */
+body.entity-mode,
+.entity-mode,
+.entity-mode html {
+  --text: #b7fff3 !important;
+  --muted: #78bfb2 !important;
+  --line: rgba(83,210,191,.48) !important;
+  --accent: #53d2bf !important;
+  --accent-2: #b7fff3 !important;
+  --warning: #53d2bf !important;
+  color: #b7fff3 !important;
+}
+
+body.entity-mode,
+body.entity-mode main,
+body.entity-mode .container,
+body.entity-mode .app-layout,
+body.entity-mode .narrow-page,
+body.entity-mode .page-shell {
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.025) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 85% 0%, rgba(83,210,191,.12), transparent 24rem),
+    #020605 !important;
+  color: #b7fff3 !important;
+}
+
+body.entity-mode .blog-header,
+body.entity-mode .blog-header.noir,
+body.entity-mode .blog-header.slim,
+body.entity-mode .blog-header.slim.noir,
+body.entity-mode .category-strip,
+body.entity-mode .main-menu {
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.045) 0 1px, transparent 1px 10px),
+    #020605 !important;
+  border-color: rgba(83,210,191,.62) !important;
+  color: #b7fff3 !important;
+}
+
+body.entity-mode .category-link,
+body.entity-mode .main-menu a,
+body.entity-mode .side-actions a,
+body.entity-mode .side-actions button,
+body.entity-mode button,
+body.entity-mode .button {
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.62) !important;
+  box-shadow: none !important;
+}
+
+body.entity-mode .category-link.active,
+body.entity-mode .category-link:hover,
+body.entity-mode .main-menu a:hover,
+body.entity-mode button:hover,
+body.entity-mode .button:hover {
+  color: #ffffff !important;
+  border-color: #53d2bf !important;
+  box-shadow: 0 0 0 2px rgba(83,210,191,.18), 0 0 18px rgba(83,210,191,.16) !important;
+}
+
+body.entity-mode .panel,
+body.entity-mode .profile-card,
+body.entity-mode .item-card,
+body.entity-mode .card,
+body.entity-mode .soft-modal-box,
+body.entity-mode .empty-inventory-box,
+body.entity-mode .empty-panel {
+  background:
+    repeating-linear-gradient(135deg, rgba(83,210,191,.028) 0 1px, transparent 1px 8px),
+    #050908 !important;
+  border-color: rgba(83,210,191,.5) !important;
+  color: #b7fff3 !important;
+  box-shadow: 0 0 34px rgba(83,210,191,.12), 0 18px 45px rgba(0,0,0,.6) !important;
+}
+
+body.entity-mode h1,
+body.entity-mode h2,
+body.entity-mode h3,
+body.entity-mode .item-card h2,
+body.entity-mode .profile-card h2,
+body.entity-mode .brand-title,
+body.entity-mode .site-title,
+body.entity-mode .logo-text,
+body.entity-mode label {
+  color: #b7fff3 !important;
+}
+
+body.entity-mode .muted,
+body.entity-mode small,
+body.entity-mode .lead,
+body.entity-mode .profile-stats small,
+body.entity-mode .current-image-name,
+body.entity-mode .empty-inventory-box {
+  color: #78bfb2 !important;
+}
+
+body.entity-mode .item-image-wrap,
+body.entity-mode .detail-image-wrap,
+body.entity-mode .profile-avatar,
+body.entity-mode .profile-stats.two-stats > div,
+body.entity-mode .status-only-card {
+  border-color: rgba(83,210,191,.5) !important;
+  background: #020605 !important;
+}
+
+body.entity-mode .price,
+body.entity-mode .detail-price,
+body.entity-mode .profile-stats span,
+body.entity-mode .message,
+body.entity-mode .message.success {
+  color: #53d2bf !important;
+  border-color: rgba(83,210,191,.5) !important;
+  background: #020605 !important;
+}
+
+body.entity-mode input,
+body.entity-mode textarea,
+body.entity-mode select {
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.5) !important;
+}
+
+body.entity-mode a {
+  color: #b7fff3 !important;
+}
+
+body.entity-mode .status-yellow,
+body.entity-mode .profile-status-text.status-yellow {
+  color: #53d2bf !important;
+  text-shadow: 0 0 12px rgba(83,210,191,.65) !important;
+}
+
+body.entity-mode .status-red,
+body.entity-mode .profile-status-text.status-red {
+  color: #ff4040 !important;
+}
+
+/* 모바일 과축소 방지하면서 프로필은 작게 유지 */
+@media (max-width: 640px) {
+  .profile-stats.two-stats > div,
+  .status-only-card {
+    min-height: 56px !important;
+    padding: 7px 6px !important;
+  }
+
+  .profile-stats.two-stats span,
+  .status-only-card > span {
+    font-size: 19px !important;
+  }
+
+  .profile-stats.two-stats small,
+  .profile-status-text,
+  .status-only-card > small {
+    font-size: 12px !important;
+  }
+
+  .profile-avatar {
+    width: 72px !important;
+    height: 72px !important;
+  }
+}

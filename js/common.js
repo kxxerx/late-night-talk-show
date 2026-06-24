@@ -152,7 +152,17 @@ export function visitorMetricValue(profile) {
 export function visitorKindLabel(profile) {
   if (!profile) return "";
   if (profile.visitor_type === "entity") {
-    return profile.current_life_item_id ? "가면 붕괴율" : "측정 불필요";
+    return profile.current_life_item_id ? maskCollapseJudgment(profile.mask_collapse_rate) : "측정 불필요";
   }
   return visitorStatusText(profile);
+}
+
+
+export function maskCollapseJudgment(value) {
+  const n = Number(value || 0);
+  if (n <= 20) return "가면 안정";
+  if (n <= 40) return "틈새 발생";
+  if (n <= 70) return "위장 불안정";
+  if (n <= 99) return "식별 임박";
+  return "가면 붕괴";
 }

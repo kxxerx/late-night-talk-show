@@ -1,5 +1,9 @@
-pollution-shop-starter v2.7
-- Corrected 일반/오염자 invite 이리와 block to red default typography, matching warning copy.
-- Removed unintended Gabia/yellow emphasis from the repeated invite text.
-- Rebalanced mobile profile and item card sizing after v2.6 shrink.
+pollution-shop-starter v2.8
+- Strongly corrected general/infected invite '이리와' style to red default copy.
+- Harmonized empty shopping bag panel with black/gold theme.
+- Hardened entity mode palette across category menu, profile, item image borders, inputs and messages.
+- Added entity-specific category labels: 인생 진열장 / 가면 수선소 / ■■ ■■.
+- Changed human/infected cleanse label to 스낵.
+- Reduced profile stat boxes further.
+- Added entity mask collapse judgement labels.
 - No SQL migration required.

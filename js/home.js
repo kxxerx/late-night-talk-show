@@ -9,8 +9,16 @@ let currentCategory = new URLSearchParams(location.search).get("category") || "a
 const categoryLabels = {
   all: "전체",
   main: "기념품",
-  cleanse: "분실물",
+  cleanse: "스낵",
   special: "특별 상품",
+  event: "초대권"
+};
+
+const entityCategoryLabels = {
+  all: "전체",
+  main: "인생 진열장",
+  cleanse: "가면 수선소",
+  special: "■■ ■■",
   event: "초대권"
 };
 
@@ -144,6 +152,15 @@ function renderItems() {
 
       await loadShopHome();
     });
+  });
+}
+
+
+function updateCategoryLabels() {
+  const labels = cachedProfile?.visitor_type === "entity" ? entityCategoryLabels : categoryLabels;
+  document.querySelectorAll("[data-category]").forEach(button => {
+    const key = button.dataset.category || "all";
+    if (labels[key]) button.textContent = labels[key];
   });
 }
 
@@ -410,6 +427,7 @@ async function loadShopHome() {
   cachedProfile = await fetchProfile(cachedSession);
   await loadItems();
   renderSidePanel();
+  updateCategoryLabels();
   wireCategoryButtons();
   renderItems();
 
