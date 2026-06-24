@@ -6410,3 +6410,18 @@ body.entity-mode .category-strip {
   from { filter: brightness(1); }
   to { filter: brightness(1.25); }
 }
+
+
+
+/* v4.5 notice close behavior: keep modal visible rules strong */
+#specialHallInviteNoticeModal.open,
+.special-hall-invite-notice.open {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#specialHallInviteNoticeModal[hidden] {
+  display: none !important;
+}

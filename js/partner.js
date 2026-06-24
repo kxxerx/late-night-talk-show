@@ -8,6 +8,7 @@ applyVisitorModeClass(profile);
 
 try {
   if (profile?.id) localStorage.setItem(`special_hall_seen_v44_${profile.id}`, "1");
+  localStorage.setItem(`special_hall_seen_v45_${profile.id}`, "1");
 } catch (_) {}
 
 

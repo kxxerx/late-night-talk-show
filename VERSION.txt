@@ -1,6 +1,6 @@
-pollution-shop-starter v4.4
-- Invitation notice now appears for accounts that have not visited the special hall.
-- Visiting partner.html stores special_hall_seen_v44_USERID in localStorage.
-- Closing the notice only suppresses it for the current browser session.
-- Added Special Hall confirmation button in the notice modal.
+pollution-shop-starter v4.5
+- Changed 'check later' behavior for special-hall invitation notice.
+- Closing the notice now only suppresses it on the current page load.
+- Re-login or page reload shows the notice again if the user has not visited the special hall.
+- Special hall visit is stored with special_hall_seen_v45_USERID, while v44 records are still respected.
 - No SQL migration required.

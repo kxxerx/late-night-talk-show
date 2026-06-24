@@ -400,6 +400,7 @@ function openGoodbyeModal() {
     document.body.appendChild(modal);
 
     qs("#confirmGoodbyeBtn").addEventListener("click", async () => {
+      window.__specialHallInviteNoticeClosedThisPage = false;
       await supabase.auth.signOut();
       clearVisitorModeClass();
       location.href = "index.html";
@@ -448,10 +449,12 @@ async function loadItems() {
 
 
 
+
 function hasVisitedSpecialHall(profile) {
   if (!profile?.id) return true;
   try {
-    return localStorage.getItem(`special_hall_seen_v44_${profile.id}`) === "1";
+    return localStorage.getItem(`special_hall_seen_v45_${profile.id}`) === "1"
+      || localStorage.getItem(`special_hall_seen_v44_${profile.id}`) === "1";
   } catch (_) {
     return false;
   }
@@ -461,10 +464,7 @@ function openSpecialHallInviteNotice(profile) {
   if (!profile?.id) return;
   if (hasVisitedSpecialHall(profile)) return;
 
-  const sessionCloseKey = `special_hall_invite_notice_closed_v44_${profile.id}`;
-  try {
-    if (sessionStorage.getItem(sessionCloseKey) === "1") return;
-  } catch (_) {}
+  if (window.__specialHallInviteNoticeClosedThisPage) return;
 
   let modal = qs("#specialHallInviteNoticeModal");
   if (!modal) {
@@ -495,7 +495,7 @@ function openSpecialHallInviteNotice(profile) {
     });
 
     qs("#closeSpecialHallInviteBtn").addEventListener("click", () => {
-      try { sessionStorage.setItem(sessionCloseKey, "1"); } catch (_) {}
+      window.__specialHallInviteNoticeClosedThisPage = true;
       modal.classList.remove("open");
       modal.setAttribute("hidden", "");
     });
