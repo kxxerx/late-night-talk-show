@@ -1,6 +1,6 @@
-pollution-shop-starter v4.6
-- Renamed brand to 마스코트 골든의 기념품샵.
-- Updated English brand label to Mascot Golden's Souvenir Shop.
-- Applied replacements across HTML, JS, CSS, SQL, README, and VERSION text files.
-- Kept 골든 리조트 wording in special-hall disclaimer.
+pollution-shop-starter v4.7
+- Added item description editing in admin item list.
+- Removed effect type field from item create/edit UI.
+- Effect type is now derived from item_kind automatically.
+- Kept effect value editable.
 - No SQL migration required.

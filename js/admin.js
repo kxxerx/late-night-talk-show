@@ -19,6 +19,15 @@ function safeText(value) {
 function safeFileName(name) {
   return String(name || "item.png").toLowerCase().replace(/[^a-z0-9._-]/g, "-").slice(0, 80);
 }
+
+function deriveItemEffectType(itemKind) {
+  if (itemKind === "contract_release") return "contract_release";
+  if (itemKind === "life") return "entity_life";
+  if (itemKind === "life_cancel") return "life_cancel";
+  if (itemKind === "mask_care") return "mask_collapse_delta";
+  return "pollution_delta";
+}
+
 function slicePage(rows, key) {
   const total = Math.max(1, Math.ceil(rows.length / pageSize));
   pages[key] = Math.min(Math.max(1, pages[key]), total);
@@ -114,11 +123,11 @@ function renderItemsAdmin() {
   qs("#itemList").innerHTML = rows.map(item => `
     <tr>
       <td><input class="table-input short" data-item-name="${item.id}" value="${safeText(item.name || "")}"></td>
+      <td><textarea class="table-textarea item-desc-edit" data-item-description="${item.id}">${safeText(item.description || "")}</textarea></td>
       <td><input class="table-input tiny" type="number" data-item-price="${item.id}" value="${Number(item.price || 0)}"></td>
       <td><select data-item-category="${item.id}"><option value="main" ${item.category === "main" ? "selected" : ""}>기념품</option><option value="cleanse" ${item.category === "cleanse" ? "selected" : ""}>스낵</option><option value="special" ${item.category === "special" ? "selected" : ""}>특별 상품</option><option value="event" ${item.category === "event" ? "selected" : ""}>초대권</option></select></td>
       <td><select data-item-audience="${item.id}"><option value="human" ${item.audience === "human" || !item.audience ? "selected" : ""}>일반</option><option value="infected" ${item.audience === "infected" ? "selected" : ""}>오염자</option><option value="entity" ${item.audience === "entity" ? "selected" : ""}>괴이</option><option value="all" ${item.audience === "all" ? "selected" : ""}>공통</option></select></td>
       <td><select data-item-kind="${item.id}"><option value="regular" ${item.item_kind === "regular" || !item.item_kind ? "selected" : ""}>일반</option><option value="life" ${item.item_kind === "life" ? "selected" : ""}>인생</option><option value="mask_care" ${item.item_kind === "mask_care" ? "selected" : ""}>가면관리</option><option value="life_cancel" ${item.item_kind === "life_cancel" ? "selected" : ""}>인생해제</option><option value="contract_release" ${item.item_kind === "contract_release" ? "selected" : ""}>계약해제</option></select></td>
-      <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${safeText(item.effect_type || "pollution_delta")}"></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${Number(item.effect_value || 0)}"></td>
       <td class="image-manage-cell"><input class="file-only-input" type="file" accept="image/*" data-item-file="${item.id}"></td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${Number(item.sort_order || 100)}"></td>
@@ -132,13 +141,15 @@ function renderItemsAdmin() {
     try {
       const file = document.querySelector(`[data-item-file="${id}"]`)?.files?.[0];
       const uploadedUrl = file ? await uploadItemImageFile(file) : "";
+      const itemKind = document.querySelector(`[data-item-kind="${id}"]`).value;
       const payload = {
         name: document.querySelector(`[data-item-name="${id}"]`).value.trim(),
+        description: document.querySelector(`[data-item-description="${id}"]`).value.trim(),
         price: Number(document.querySelector(`[data-item-price="${id}"]`).value || 0),
         category: document.querySelector(`[data-item-category="${id}"]`).value,
         audience: document.querySelector(`[data-item-audience="${id}"]`).value,
-        item_kind: document.querySelector(`[data-item-kind="${id}"]`).value,
-        effect_type: document.querySelector(`[data-item-effect-type="${id}"]`).value.trim() || "pollution_delta",
+        item_kind: itemKind,
+        effect_type: deriveItemEffectType(itemKind),
         effect_value: Number(document.querySelector(`[data-item-effect-value="${id}"]`).value || 0),
         image_url: uploadedUrl || current?.image_url || null,
         sort_order: Number(document.querySelector(`[data-item-sort="${id}"]`).value || 100),
@@ -245,7 +256,8 @@ qs("#itemForm")?.addEventListener("submit", async (event) => {
   try {
     const file = qs("#itemImageFile")?.files?.[0];
     const imageUrl = file ? await uploadItemImageFile(file) : null;
-    const payload = { name: qs("#itemName").value.trim(), description: qs("#itemDescription").value.trim(), image_url: imageUrl, price: Number(qs("#itemPrice").value || 0), category: qs("#itemCategory")?.value || "main", effect_type: qs("#itemEffectType").value.trim() || "pollution_delta", effect_value: Number(qs("#itemEffectValue").value || 0), audience: qs("#itemAudience")?.value || "human", item_kind: qs("#itemKind")?.value || "regular", is_active: qs("#itemActive").checked, sort_order: Number(qs("#itemSort").value || 100) };
+    const itemKind = qs("#itemKind")?.value || "regular";
+    const payload = { name: qs("#itemName").value.trim(), description: qs("#itemDescription").value.trim(), image_url: imageUrl, price: Number(qs("#itemPrice").value || 0), category: qs("#itemCategory")?.value || "main", effect_type: deriveItemEffectType(itemKind), effect_value: Number(qs("#itemEffectValue").value || 0), audience: qs("#itemAudience")?.value || "human", item_kind: itemKind, is_active: qs("#itemActive").checked, sort_order: Number(qs("#itemSort").value || 100) };
     const { error } = await supabase.from("items").insert(payload);
     if (error) throw error;
     showMessage("선물 등록 완료", "success"); qs("#itemForm").reset(); qs("#itemActive").checked = true; await loadItems();

@@ -6425,3 +6425,26 @@ body.entity-mode .category-strip {
 #specialHallInviteNoticeModal[hidden] {
   display: none !important;
 }
+
+
+
+/* v4.7 admin item description editing + hidden effect type */
+.admin-edit-table .table-textarea,
+.item-admin-table .item-desc-edit {
+  width: 220px !important;
+  min-height: 58px !important;
+  resize: vertical !important;
+  padding: 8px 9px !important;
+  box-sizing: border-box !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(214,168,79,.42) !important;
+  background: rgba(0,0,0,.28) !important;
+  color: inherit !important;
+  font: inherit !important;
+  line-height: 1.45 !important;
+}
+
+.item-admin-table th:nth-child(2),
+.item-admin-table td:nth-child(2) {
+  min-width: 230px !important;
+}
