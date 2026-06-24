@@ -110,9 +110,11 @@ async function corruptOriginalInvitation() {
   if (!block) return;
 
   block.classList.add("is-corrupting");
-  await sleep(260);
+  await sleep(280);
 
-  block.innerHTML = `<p id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></p>`;
+  block.innerHTML = `
+    <p id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></p>
+  `;
   await typeText(qs("#redactedLine"), REDACTED_TEXT, 24);
   await sleep(420);
   block.classList.add("fade-out");

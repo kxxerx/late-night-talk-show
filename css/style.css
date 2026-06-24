@@ -5103,3 +5103,175 @@ body.entity-mode .category-strip {
     font-size: 25px !important;
   }
 }
+
+
+
+/* v3.7 invitation refinements + contract release */
+
+/* 팝업 인트로 빨간 네모 박스 제거, 명조 이탤릭 */
+.mad-popup-box {
+  border: none !important;
+  box-shadow: none !important;
+  background: #000 !important;
+  padding: clamp(20px, 5vw, 42px) !important;
+}
+
+.mad-popup-big,
+.mad-popup-text,
+.who-are-you {
+  font-family: "Noto Serif KR", "Source Han Serif KR", "KoPub Batang", "Batang", serif !important;
+  font-style: italic !important;
+  letter-spacing: -0.02em !important;
+}
+
+.mad-popup-big {
+  font-weight: 900 !important;
+}
+
+.mad-popup-text {
+  font-weight: 700 !important;
+}
+
+/* 본래 초대장 색상 확실히 */
+.original-warning {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+}
+
+.original-play {
+  color: #ffff00 !important;
+  -webkit-text-fill-color: #ffff00 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: clamp(24px, 6vw, 44px) !important;
+  font-weight: 1000 !important;
+  text-align: center !important;
+  letter-spacing: .18em !important;
+  text-shadow: 0 0 18px rgba(255,255,0,.9) !important;
+}
+
+.original-gabia {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: "GabiaMaeumgyeol", "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: 18px !important;
+  line-height: 1.9 !important;
+  font-style: italic !important;
+  text-align: center !important;
+}
+
+/* 원래 상태를 유지하다가 빨간 ■ 문장으로 오염 */
+.original-invite-block.is-corrupting .original-warning,
+.original-invite-block.is-corrupting .original-play,
+.original-invite-block.is-corrupting .original-gabia {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 0 9px rgba(255,0,0,.65) !important;
+  animation: textGlitchRed .12s steps(2, end) infinite !important;
+}
+
+.corrupting-redacted,
+#redactedLine.corrupting-redacted,
+#inviteDynamicContent .corrupting-redacted {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.58 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  word-break: break-all !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.56) !important;
+}
+
+/* 황금 해약서 팝업 */
+.contract-release-modal {
+  z-index: 2147483647 !important;
+}
+
+.contract-release-box {
+  text-align: center !important;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.92), rgba(255,250,230,.96) 45%, rgba(241,213,120,.92) 100%) !important;
+  border: 2px solid #f3d46b !important;
+  color: #3a2500 !important;
+  box-shadow: 0 0 42px rgba(255,230,120,.72), 0 18px 50px rgba(0,0,0,.45) !important;
+}
+
+.contract-release-box h2 {
+  color: #5a3600 !important;
+  text-shadow: 0 0 10px rgba(255,255,255,.75) !important;
+}
+
+.contract-release-box p {
+  color: #3a2500 !important;
+  font-weight: 800 !important;
+  line-height: 1.75 !important;
+}
+
+.contract-release-box button {
+  background: #ffffff !important;
+  color: #6a3f00 !important;
+  border-color: #c7961f !important;
+  box-shadow: 0 0 18px rgba(255,255,255,.7) !important;
+}
+
+.torn-contract {
+  position: relative !important;
+  width: 170px !important;
+  height: 120px !important;
+  margin: 0 auto 18px !important;
+  filter: drop-shadow(0 0 15px rgba(255,220,90,.75)) !important;
+}
+
+.torn-contract .paper {
+  position: absolute !important;
+  top: 8px !important;
+  width: 76px !important;
+  height: 104px !important;
+  background: linear-gradient(180deg, #ffffff, #fff3bf) !important;
+  border: 2px solid #c7961f !important;
+  box-shadow: inset 0 0 14px rgba(199,150,31,.22) !important;
+  animation: paperTearAway 1.1s ease-in-out infinite alternate !important;
+}
+
+.torn-contract .paper.left {
+  left: 10px !important;
+  clip-path: polygon(0 0, 94% 0, 74% 18%, 96% 35%, 70% 50%, 96% 70%, 76% 100%, 0 100%) !important;
+  transform-origin: right center !important;
+}
+
+.torn-contract .paper.right {
+  right: 10px !important;
+  clip-path: polygon(24% 0, 100% 0, 100% 100%, 22% 100%, 4% 72%, 28% 52%, 4% 34%, 26% 16%) !important;
+  transform-origin: left center !important;
+  animation-delay: .08s !important;
+}
+
+.torn-contract .tear-line {
+  position: absolute !important;
+  left: 82px !important;
+  top: 12px !important;
+  width: 6px !important;
+  height: 98px !important;
+  background: linear-gradient(180deg, transparent, #ffffff, transparent) !important;
+  box-shadow: 0 0 16px rgba(255,255,255,.95) !important;
+  animation: holyTearGlow .6s ease-in-out infinite alternate !important;
+}
+
+@keyframes paperTearAway {
+  0% { transform: translateX(0) rotate(0deg); }
+  100% { transform: translateX(var(--move, 0)) rotate(var(--rot, 0deg)); }
+}
+
+.torn-contract .paper.left { --move: -9px; --rot: -5deg; }
+.torn-contract .paper.right { --move: 9px; --rot: 5deg; }
+
+@keyframes holyTearGlow {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}

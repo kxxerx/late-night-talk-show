@@ -1,5 +1,8 @@
-pollution-shop-starter v3.6
-- Changed special-hall popup intro typography to serif/Batang style.
-- Updated original invitation copy before corruption.
-- Original invitation now visually corrupts into red default typography before redacted typing.
-- No SQL migration required.
+pollution-shop-starter v3.7
+- Removed red box from special-hall popup intro.
+- Changed popup intro typography to italic serif.
+- Fixed original invitation colors: play text yellow, host copy white/Gabia.
+- Original invite corrupts into red redacted copy, then come-here animation.
+- Contract party uses display_name for 을.
+- Added infected contract release item: 황금 해약서.
+- Added contract release purchase logic and sacred white/gold tearing modal.

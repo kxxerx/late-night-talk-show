@@ -440,6 +440,34 @@ async function loadShopHome() {
   }
 }
 
+
+function openContractReleaseModal() {
+  let modal = qs("#contractReleaseModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "contractReleaseModal";
+    modal.className = "soft-modal contract-release-modal";
+    modal.innerHTML = `
+      <div class="soft-modal-box contract-release-box">
+        <div class="torn-contract" aria-hidden="true">
+          <span class="paper left"></span>
+          <span class="paper right"></span>
+          <span class="tear-line"></span>
+        </div>
+        <h2>계약 파기</h2>
+        <p>당신을 구속하고 있던 근로계약서의 힘이 사라집니다.</p>
+        <button id="confirmContractReleaseBtn" type="button">확인</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    qs("#confirmContractReleaseBtn").addEventListener("click", () => {
+      modal.classList.remove("open");
+      location.reload();
+    });
+  }
+  modal.classList.add("open");
+}
+
 function openContractCompleteModal() {
   let modal = qs("#contractCompleteModal");
   if (!modal) {
@@ -471,7 +499,7 @@ function openSecurityContractModal() {
     modal.innerHTML = `
       <div class="contract-box">
         <h2>표준 보안팀 근로계약서</h2>
-        <p class="contract-parties">갑 청달래<br>을 ${displayName(cachedProfile)}</p>
+        <p class="contract-parties">갑 청달래<br>을 ${cachedProfile?.display_name || "익명"}</p>
         <p class="contract-scroll">
           을은 본 계약의 체결과 동시에 (주) 백일몽 주식회사를 위해 몸과 영혼을 바쳐 헌신을 다할 것을 맹세한다.<br><br>
           을은 (주) 백일몽 주식회사에서 발생하는 모든 이상현상, 환청, 신체 변형, 사회적 고립, 근무 형태, 설명되지 않은 근무 배치에 대하여 이의를 제기하지 않는다.<br><br>
