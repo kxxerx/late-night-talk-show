@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getSession, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, authEmailFromLoginId } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId } from "./common.js";
 
 let currentCategory = new URLSearchParams(location.search).get("category") || "all";
 let cachedItems = [];
@@ -120,6 +120,8 @@ async function getOptionalProfile() {
     document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = true; });
     return null;
   }
+  document.body.classList.toggle("entity-mode", data.visitor_type === "entity");
+  document.body.classList.toggle("infected-mode", data.visitor_type === "infected");
   return data;
 }
 
@@ -131,7 +133,10 @@ function renderLoggedInSide(profile) {
       <div><h2 class="visitor-name" title="${name}">${name}</h2></div>
       <div class="profile-stats two-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
-        <div class="status-only-card"><span class="profile-status-text ${visitorStatusClass(profile)}">${visitorStatusText(profile)}</span></div>
+        <div class="status-only-card">
+          <span>${visitorMetricValue(profile)}</span>
+          <small class="profile-status-text ${visitorStatusClass(profile)}">${visitorKindLabel(profile)}</small>
+        </div>
       </div>
       <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>
@@ -244,57 +249,37 @@ function openItemDetail(item) {
   modal.classList.add("open");
 }
 
-function filteredItems() { return currentCategory === "all" ? cachedItems : cachedItems.filter(item => (item.category || "main") === currentCategory); }
-function renderItems() {
-  const items = filteredItems();
-  if (!items.length) {
-    qs("#shopList").innerHTML = `<article class="panel empty-panel"><h2>등록된 물품 없음</h2><p class="muted">이 선반에는 아직 아무것도 없습니다.</p></article>`;
-    return;
+
+function itemVisibleForVisitor(item) {
+  const audience = item.audience || "human";
+  const kind = item.item_kind || "regular";
+  const type = cachedProfile?.visitor_type || "human";
+
+  if (type === "entity") {
+    if (audience !== "entity") return false;
+    if (kind === "mask_care" && !cachedProfile?.current_life_item_id) return false;
+    return true;
   }
 
-  qs("#shopList").innerHTML = items.map(item => `
-    <article class="item-card luxury-item-card">
-      <div class="item-image-wrap">
-        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
-      </div>
-      <div class="item-body">
-        <h2>${item.name}</h2>
-      </div>
-      <div class="item-footer">
-        <p class="price">${item.price} 유쾌주화</p>
-        <div class="item-actions">
-          <button data-detail="${item.id}" class="button secondary" type="button">자세히</button>
-          <button data-buy="${item.id}" type="button">구입</button>
-        </div>
-      </div>
-    </article>
-  `).join("");
+  if (type === "infected") {
+    return audience === "infected" || audience === "all";
+  }
 
-  document.querySelectorAll("[data-detail]").forEach(button => {
-    button.addEventListener("click", () => {
-      const item = cachedItems.find(row => String(row.id) === String(button.dataset.detail));
-      if (item) openItemDetail(item);
-    });
-  });
+  return audience === "human" || audience === "all";
+}
 
-  document.querySelectorAll("[data-buy]").forEach(button => button.addEventListener("click", async () => {
-    if (!cachedSession || !cachedProfile) {
-      showMessage("구매하려면 먼저 방문객 등록을 해주세요.", "error");
-      qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
+function itemSoldOutForVisitor(item) {
+  return cachedProfile?.visitor_type === "entity"
+    && (item.item_kind || "regular") === "life"
+    && cachedProfile?.current_life_item_id
+    && String(cachedProfile.current_life_item_id) === String(item.id)
+    && Number(cachedProfile.mask_collapse_rate || 0) < 100;
+}
 
-    const itemId = button.dataset.buy;
-    button.disabled = true;
-    button.textContent = "처리 중";
-
-    const { data, error } = await supabase.rpc("purchase_item", { p_item_id: itemId });
-
-    if (error) showMessage(friendlyError(error.message), "error");
-    else showMessage(data.message, "success");
-
-    await loadShopHome();
-  }));
+function filteredItems() {
+  return cachedItems
+    .filter(itemVisibleForVisitor)
+    .filter(item => currentCategory === "all" || item.category === currentCategory);
 }
 async function loadShopHome() {
   cachedProfile = await getOptionalProfile();

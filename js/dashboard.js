@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass } from "./common.js";
+import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel } from "./common.js";
 
 await renderNav();
 let currentProfile = null;
@@ -36,7 +36,7 @@ async function loadDashboard() {
     <div class="avatar big">${profileAvatar({ ...profile, display_name: visitorName })}</div>
     <div>
       <h1 class="visitor-name" title="${visitorName}">${visitorName}</h1>
-      <p class="muted">${profile.visitor_type === "entity" ? "측정 불필요" : `방문객 상태 ${profile.pollution} / 100 · ${visitorStatusText(profile)}`}</p>
+      <p class="muted">${profile.visitor_type === "entity" ? `${visitorKindLabel(profile)} ${visitorMetricValue(profile)} / 100` : `방문객 상태 ${profile.pollution} / 100 · ${visitorStatusText(profile)}`}</p>
     </div>
   `;
 
@@ -46,8 +46,8 @@ async function loadDashboard() {
   if (qs("#bandNickname")) qs("#bandNickname").value = profile.band_nickname || "";
   if (qs("#avatarUrl")) qs("#avatarUrl").value = profile.avatar_url || "";
   if (qs("#currency")) qs("#currency").textContent = profile.currency;
-  if (qs("#pollution")) qs("#pollution").textContent = profile.visitor_type === "entity" ? "—" : profile.pollution;
-  if (qs("#pollutionStatusLabel")) { qs("#pollutionStatusLabel").textContent = visitorStatusText(profile); qs("#pollutionStatusLabel").className = `status-inline ${visitorStatusClass(profile)}`; }
+  if (qs("#pollution")) qs("#pollution").textContent = visitorMetricValue(profile);
+  if (qs("#pollutionStatusLabel")) { qs("#pollutionStatusLabel").textContent = visitorKindLabel(profile); qs("#pollutionStatusLabel").className = `status-inline ${visitorStatusClass(profile)}`; }
   if (qs("#visitorStatusText")) qs("#visitorStatusText").textContent = visitorStatusText(profile);
   if (qs("#role")) qs("#role").textContent = profile.role;
 

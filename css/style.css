@@ -2214,3 +2214,156 @@ button.secondary {
     letter-spacing: .18em !important;
   }
 }
+
+
+
+/* v2.1 entity/infected shop + layout fixes */
+html,
+body {
+  background: #050505 !important;
+}
+
+body::before,
+body::after,
+.container::before,
+.container::after {
+  display: none !important;
+  content: none !important;
+}
+
+.item-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.item-actions button,
+.item-actions .button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+  word-break: keep-all !important;
+  letter-spacing: 0 !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+.status-only-card span {
+  font-size: 20px !important;
+  line-height: 1.1 !important;
+}
+
+.status-only-card small {
+  display: block !important;
+  margin-top: 6px !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+}
+
+.danger-zone,
+.danger-zone h2,
+.danger-zone p {
+  color: #ff3a3a !important;
+}
+
+.danger-zone {
+  border-color: rgba(255, 0, 0, .45) !important;
+  box-shadow: 0 0 24px rgba(255,0,0,.08) !important;
+}
+
+.image-manage-cell {
+  min-width: 320px !important;
+}
+
+.image-manage-cell .image-url {
+  display: block !important;
+  width: 100% !important;
+  min-width: 260px !important;
+  margin-bottom: 6px !important;
+}
+
+.file-inline {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  color: #d6a84f !important;
+}
+
+.file-inline input[type="file"] {
+  max-width: 190px !important;
+  font-size: 11px !important;
+}
+
+.inline-check {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: auto !important;
+  white-space: nowrap !important;
+}
+
+.inline-check input {
+  width: auto !important;
+}
+
+.item-admin-table {
+  min-width: 1500px !important;
+}
+
+.item-admin-table th,
+.item-admin-table td {
+  white-space: nowrap !important;
+}
+
+.entity-mode .profile-card,
+.entity-mode .panel,
+.entity-mode .item-card {
+  border-color: rgba(83, 210, 191, .34) !important;
+  box-shadow: 0 0 34px rgba(83, 210, 191, .07), 0 18px 45px rgba(0,0,0,.54) !important;
+}
+
+.entity-mode .category-link:hover,
+.entity-mode button:hover,
+.entity-mode .button:hover {
+  border-color: #53d2bf !important;
+  color: #b7fff3 !important;
+}
+
+.entity-invite-page .midnight-invite {
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.05) 0 1px, transparent 1px 7px),
+    #030303 !important;
+  border-color: rgba(83,210,191,.45) !important;
+}
+
+.entity-glitch {
+  color: #53d2bf !important;
+  font-weight: 900 !important;
+  letter-spacing: .12em !important;
+  text-shadow: 0 0 10px rgba(83,210,191,.65) !important;
+  word-break: break-all !important;
+}
+
+.entity-glitch.small {
+  color: #9fffee !important;
+  font-size: 12px !important;
+  opacity: .8 !important;
+}
+
+@media (max-width: 640px) {
+  .item-actions {
+    gap: 4px !important;
+  }
+
+  .item-actions button,
+  .item-actions .button {
+    font-size: 11px !important;
+  }
+}

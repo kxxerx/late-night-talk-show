@@ -1,7 +1,12 @@
-pollution-shop-starter v2.0
-- Replaced pastel body with full black/gold luxury theme.
-- Shop cards now show image, item name, price, detail/buy only.
-- Added item detail modal with image and full description.
-- Updated Midnight Talk Show whisper text with spacing and mobile-safe wrapping.
-- Profile status card now shows only the status phrase, without the visitor-status label.
-- Fixed duplicated payload typo in admin.js from previous branch.
+pollution-shop-starter v2.1
+- Added infected visitor type.
+- Added entity mask collapse system.
+- Added item audience and item kind fields.
+- Added entity-only life products and mask-care items.
+- Entity shop now shows life products first and mask-care items after a life is purchased.
+- Current life product is shown as sold out for that entity.
+- Added entity glitch styling for Midnight Talk Show invitation page.
+- Fixed detail/buy button horizontal layout.
+- Removed white translucent background artifacts.
+- Adjusted profile status to show number + status text.
+- Fixed admin item image upload layout and sale checkbox alignment.

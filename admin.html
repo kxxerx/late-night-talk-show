@@ -97,6 +97,21 @@
           <label>가격
             <input id="itemPrice" type="number" min="0" value="0">
           </label>
+          <label>판매 대상
+            <select id="itemAudience">
+              <option value="human">일반</option>
+              <option value="infected">오염자</option>
+              <option value="entity">괴이</option>
+              <option value="all">공통</option>
+            </select>
+          </label>
+          <label>물품 구분
+            <select id="itemKind">
+              <option value="regular">일반</option>
+              <option value="life">인생</option>
+              <option value="mask_care">가면관리</option>
+            </select>
+          </label>
           <label>효과 타입
             <input id="itemEffectType" type="text" value="pollution_delta">
           </label>
@@ -106,9 +121,9 @@
           <label>정렬 순서
             <input id="itemSort" type="number" value="100">
           </label>
-          <label>
+          <label class="inline-check">
+            <span>판매중</span>
             <input id="itemActive" type="checkbox" checked>
-            판매중
           </label>
           <button type="submit">아이템 등록</button>
         </form>
@@ -173,6 +188,8 @@
               <th>아이템명</th>
               <th>가격</th>
               <th>카테고리</th>
+              <th>대상</th>
+              <th>구분</th>
               <th>효과 타입</th>
               <th>효과값</th>
               <th>이미지</th>

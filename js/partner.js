@@ -6,6 +6,19 @@ await revealMemberLinks();
 
 const profile = await getMyProfile();
 
+function entityInviteRewrite() {
+  if (!profile || profile.visitor_type !== "entity") return;
+  document.body.classList.add("entity-mode", "entity-invite-page");
+  const invite = document.querySelector(".midnight-invite");
+  if (!invite) return;
+  invite.insertAdjacentHTML("afterbegin", `
+    <p class="entity-glitch">■■■■■ 수신자 식별 오류 ■■■■■</p>
+    <p class="entity-glitch small">당신은 초대된 적이 없습니다. 당신은 이미 여기 있었습니다. ■■■■■■■■■■■■■■■</p>
+  `);
+}
+
+entityInviteRewrite();
+
 qs("#openInviteBtn")?.addEventListener("click", async () => {
   if (!profile) return;
 

@@ -125,7 +125,7 @@ export function visitorStatusClass(profileOrValue) {
 
 export function visitorStatusText(profileOrValue) {
   if (typeof profileOrValue === "object" && profileOrValue !== null) {
-    if (profileOrValue.visitor_type === "entity") return "측정 불필요";
+    if (profileOrValue.visitor_type === "entity") return profileOrValue.current_life_item_id ? "가면 붕괴율" : "측정 불필요";
     return pollutionLabel(Number(profileOrValue.pollution || 0));
   }
   return pollutionLabel(Number(profileOrValue || 0));
@@ -138,4 +138,21 @@ export async function revealMemberLinks() {
     node.hidden = !session;
   });
   return session;
+}
+
+
+export function visitorMetricValue(profile) {
+  if (!profile) return "-";
+  if (profile.visitor_type === "entity") {
+    return profile.current_life_item_id ? Number(profile.mask_collapse_rate || 0) : "—";
+  }
+  return Number(profile.pollution || 0);
+}
+
+export function visitorKindLabel(profile) {
+  if (!profile) return "";
+  if (profile.visitor_type === "entity") {
+    return profile.current_life_item_id ? "가면 붕괴율" : "측정 불필요";
+  }
+  return visitorStatusText(profile);
 }

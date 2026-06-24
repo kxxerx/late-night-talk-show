@@ -48,8 +48,9 @@ async function loadUsers() {
       <td>${user.status || "active"}</td>
       <td>
         <select data-visitor-type="${user.id}">
-          <option value="human" ${user.visitor_type !== "entity" ? "selected" : ""}>일반</option>
-          <option value="entity" ${user.visitor_type === "entity" ? "selected" : ""}>J3/괴이</option>
+          <option value="human" ${user.visitor_type === "human" || !user.visitor_type ? "selected" : ""}>일반</option>
+          <option value="infected" ${user.visitor_type === "infected" ? "selected" : ""}>오염자</option>
+          <option value="entity" ${user.visitor_type === "entity" ? "selected" : ""}>괴이</option>
         </select>
       </td>
       <td>
@@ -139,9 +140,27 @@ async function loadItems() {
           <option value="event" ${item.category === "event" ? "selected" : ""}>초대권</option>
         </select>
       </td>
+      <td>
+        <select data-item-audience="${item.id}">
+          <option value="human" ${item.audience === "human" || !item.audience ? "selected" : ""}>일반</option>
+          <option value="infected" ${item.audience === "infected" ? "selected" : ""}>오염자</option>
+          <option value="entity" ${item.audience === "entity" ? "selected" : ""}>괴이</option>
+          <option value="all" ${item.audience === "all" ? "selected" : ""}>공통</option>
+        </select>
+      </td>
+      <td>
+        <select data-item-kind="${item.id}">
+          <option value="regular" ${item.item_kind === "regular" || !item.item_kind ? "selected" : ""}>일반</option>
+          <option value="life" ${item.item_kind === "life" ? "selected" : ""}>인생</option>
+          <option value="mask_care" ${item.item_kind === "mask_care" ? "selected" : ""}>가면관리</option>
+        </select>
+      </td>
       <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${item.effect_type || "pollution_delta"}"></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${item.effect_value || 0}"></td>
-      <td><input class="table-input image-url" data-item-image="${item.id}" value="${item.image_url || ""}"><input type="file" accept="image/*" data-item-file="${item.id}"></td>
+      <td class="image-manage-cell">
+        <input class="table-input image-url" data-item-image="${item.id}" value="${item.image_url || ""}">
+        <label class="file-inline">파일 선택<input type="file" accept="image/*" data-item-file="${item.id}"></label>
+      </td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${item.sort_order || 100}"></td>
       <td><input type="checkbox" data-item-active="${item.id}" ${item.is_active ? "checked" : ""}></td>
       <td class="action-cell">
@@ -161,6 +180,8 @@ async function loadItems() {
           name: document.querySelector(`[data-item-name="${id}"]`).value.trim(),
           price: Number(document.querySelector(`[data-item-price="${id}"]`).value || 0),
           category: document.querySelector(`[data-item-category="${id}"]`).value,
+          audience: document.querySelector(`[data-item-audience="${id}"]`)?.value || "human",
+          item_kind: document.querySelector(`[data-item-kind="${id}"]`)?.value || "regular",
           effect_type: document.querySelector(`[data-item-effect-type="${id}"]`).value.trim() || "pollution_delta",
           effect_value: Number(document.querySelector(`[data-item-effect-value="${id}"]`).value || 0),
           image_url: uploadedUrl || document.querySelector(`[data-item-image="${id}"]`).value.trim() || null,
@@ -344,6 +365,8 @@ qs("#itemForm")?.addEventListener("submit", async (event) => {
     price: Number(qs("#itemPrice").value || 0),
     effect_type: qs("#itemEffectType").value.trim() || "pollution_delta",
     effect_value: Number(qs("#itemEffectValue").value || 0),
+    audience: qs("#itemAudience")?.value || "human",
+    item_kind: qs("#itemKind")?.value || "regular",
     is_active: qs("#itemActive").checked,
     sort_order: Number(qs("#itemSort").value || 100)
   };
