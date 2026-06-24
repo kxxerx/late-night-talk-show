@@ -6210,3 +6210,71 @@ body.entity-mode .category-strip {
     transform: translateY(8px) !important;
   }
 }
+
+
+
+/* v4.3 first-visit invitation modal hard fix */
+
+#firstVisitInviteModal,
+.first-visit-invite-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  background: rgba(0,0,0,.82) !important;
+  padding: 22px !important;
+}
+
+#firstVisitInviteModal.open,
+.first-visit-invite-modal.open {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#firstVisitInviteModal[hidden] {
+  display: none !important;
+}
+
+#firstVisitInviteModal .first-visit-invite-box,
+.first-visit-invite-modal .first-visit-invite-box {
+  display: block !important;
+  width: min(520px, calc(100vw - 34px)) !important;
+  text-align: center !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(214,168,79,.22), transparent 44%),
+    linear-gradient(180deg, #17130a, #050505 78%) !important;
+  color: #f6d98b !important;
+  border: 1px solid rgba(214,168,79,.88) !important;
+  box-shadow:
+    0 0 52px rgba(214,168,79,.42),
+    inset 0 0 28px rgba(214,168,79,.10) !important;
+  transform: none !important;
+}
+
+#firstVisitInviteModal .first-visit-invite-box h2,
+.first-visit-invite-modal .first-visit-invite-box h2 {
+  color: #f6d98b !important;
+  -webkit-text-fill-color: #f6d98b !important;
+  text-shadow: 0 0 16px rgba(214,168,79,.68) !important;
+  font-weight: 900 !important;
+}
+
+#firstVisitInviteModal .first-visit-invite-box p,
+.first-visit-invite-modal .first-visit-invite-box p {
+  color: #f8e7b6 !important;
+  -webkit-text-fill-color: #f8e7b6 !important;
+  font-weight: 800 !important;
+  line-height: 1.85 !important;
+}
+
+#firstVisitInviteModal .first-visit-invite-box button,
+.first-visit-invite-modal .first-visit-invite-box button {
+  background: #050505 !important;
+  color: #f6d98b !important;
+  -webkit-text-fill-color: #f6d98b !important;
+  border: 1px solid rgba(214,168,79,.95) !important;
+  box-shadow: 0 0 18px rgba(214,168,79,.36) !important;
+}

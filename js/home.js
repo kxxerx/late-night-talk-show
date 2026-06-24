@@ -446,10 +446,11 @@ async function loadItems() {
 }
 
 
+
 function openFirstVisitInviteModal(profile) {
   if (!profile?.id) return;
 
-  const key = `golden_invite_notice_seen_${profile.id}`;
+  const key = `golden_invite_notice_seen_v43_${profile.id}`;
   try {
     if (localStorage.getItem(key) === "1") return;
   } catch (_) {}
@@ -477,10 +478,21 @@ function openFirstVisitInviteModal(profile) {
     qs("#confirmFirstVisitInviteBtn").addEventListener("click", () => {
       try { localStorage.setItem(key, "1"); } catch (_) {}
       modal.classList.remove("open");
+      modal.setAttribute("hidden", "");
     });
   }
 
+  modal.removeAttribute("hidden");
   modal.classList.add("open");
+  document.body.classList.add("modal-open");
+}
+
+function scheduleFirstVisitInviteModal(profile) {
+  if (!profile?.id) return;
+  window.clearTimeout(window.__firstVisitInviteTimer);
+  window.__firstVisitInviteTimer = window.setTimeout(() => {
+    openFirstVisitInviteModal(profile);
+  }, 800);
 }
 
 

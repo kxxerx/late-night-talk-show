@@ -1,6 +1,6 @@
-pollution-shop-starter v4.2
-- Lowered text inside side profile stat boxes.
-- Added first-login invitation notice modal.
-- Added black/gold envelope arrival/opening animation.
-- First-login notice is stored per user in localStorage.
+pollution-shop-starter v4.3
+- Fixed first-login invitation notice not showing.
+- Schedules notice modal 0.8s after profile load.
+- Changed localStorage key to v43 so existing users can see it once.
+- Strengthened z-index/display rules for the notice modal.
 - No SQL migration required.
