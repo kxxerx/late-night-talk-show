@@ -452,6 +452,9 @@ function openContractReleaseModal() {
         <div class="torn-contract" aria-hidden="true">
           <span class="paper left"></span>
           <span class="paper right"></span>
+          <span class="paper-piece p1"></span>
+          <span class="paper-piece p2"></span>
+          <span class="paper-piece p3"></span>
           <span class="tear-line"></span>
         </div>
         <h2>계약 파기</h2>

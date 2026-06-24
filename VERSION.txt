@@ -1,7 +1,8 @@
-pollution-shop-starter v3.9
-- Fixed special-hall stuck at receiving state.
-- Reworked redacted invite text as safe line array output.
-- Forced mask-break modal border and shadow red.
-- Added mask pieces falling downward after initial mask display.
-- Fixed golden contract release modal trigger after purchase.
+pollution-shop-starter v4.0
+- Changed invitation corruption to in-place character replacement.
+- Changed mask break title to 가면이 훼손됐습니다.
+- Forced mask confirm button border red.
+- Reworked mask animation so shards fall downward above the title.
+- Improved contract release modal trigger and z-index.
+- Added extra paper pieces to contract tearing animation.
 - No SQL migration required.

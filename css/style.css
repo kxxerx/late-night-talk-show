@@ -5638,3 +5638,160 @@ body.entity-mode .category-strip {
 .contract-release-modal .torn-contract .paper {
   animation: paperTearAway 0.78s ease-in-out infinite alternate !important;
 }
+
+
+
+/* v4.0 true in-place redaction, falling mask shards, contract modal visibility */
+
+/* 기존 초대장 글자 하나하나가 그 자리에서 ■로 바뀌는 연출 */
+.morph-line {
+  white-space: pre-wrap !important;
+}
+
+.morph-char {
+  display: inline !important;
+  transition: color .08s ease, text-shadow .08s ease, filter .08s ease !important;
+}
+
+.morph-char.is-changing {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  filter: blur(1px) contrast(1.4) !important;
+}
+
+.morph-char.is-redacted {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.64) !important;
+}
+
+.original-invite-block.is-corrupting .original-warning,
+.original-invite-block.is-corrupting .original-play,
+.original-invite-block.is-corrupting .original-gabia {
+  animation: none !important;
+}
+
+/* 가면 훼손 팝업: 버튼 테두리도 절대 청록 금지 */
+#maskBreakModal button,
+#maskBreakModal #confirmMaskBreakBtn,
+.mask-break-modal button,
+.mask-break-modal #confirmMaskBreakBtn {
+  border: 1px solid #ff0000 !important;
+  outline: none !important;
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  background: #120000 !important;
+  box-shadow: 0 0 16px rgba(255,0,0,.46) !important;
+}
+
+#maskBreakModal button:hover,
+.mask-break-modal button:hover {
+  border-color: #ff4444 !important;
+  color: #ff4444 !important;
+  -webkit-text-fill-color: #ff4444 !important;
+  box-shadow: 0 0 24px rgba(255,0,0,.6) !important;
+}
+
+/* 가면이 글자 위에서 조각나 바닥으로 떨어짐 */
+.mask-break-box .broken-mask {
+  position: relative !important;
+  height: 160px !important;
+  margin-bottom: 4px !important;
+  animation: maskHoldThenVanish 2.35s ease-in-out infinite !important;
+}
+
+.mask-break-box .broken-mask::before {
+  opacity: 1 !important;
+  animation: fullMaskFadeAfterBreak 2.35s ease-in-out infinite !important;
+}
+
+.mask-break-box .broken-mask .mask-shard,
+.mask-break-box .broken-mask .mask-eye,
+.mask-break-box .broken-mask .mask-crack {
+  animation-duration: 2.35s !important;
+  animation-iteration-count: infinite !important;
+  animation-timing-function: cubic-bezier(.2,.72,.22,1) !important;
+}
+
+.mask-break-box .broken-mask .mask-shard.s1 { --fall-x: -54px; --fall-y: 104px; --fall-r: -72deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-shard.s2 { --fall-x: 58px; --fall-y: 100px; --fall-r: 70deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-shard.s3 { --fall-x: -38px; --fall-y: 118px; --fall-r: -104deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-shard.s4 { --fall-x: 42px; --fall-y: 122px; --fall-r: 105deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-shard.s5 { --fall-x: -8px; --fall-y: 112px; --fall-r: 34deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-shard.s6 { --fall-x: 12px; --fall-y: 132px; --fall-r: -36deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-eye.left { --fall-x: -42px; --fall-y: 120px; --fall-r: -52deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-eye.right { --fall-x: 44px; --fall-y: 118px; --fall-r: 54deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-crack.one { --fall-x: -20px; --fall-y: 128px; --fall-r: 92deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-crack.two { --fall-x: 24px; --fall-y: 126px; --fall-r: -90deg; animation-name: shardRainFall !important; }
+.mask-break-box .broken-mask .mask-crack.three { --fall-x: 4px; --fall-y: 136px; --fall-r: 28deg; animation-name: shardRainFall !important; }
+
+@keyframes maskHoldThenVanish {
+  0%, 22% { transform: translateY(0) scale(1); }
+  28% { transform: translateY(-3px) scale(1.02); }
+  38% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes fullMaskFadeAfterBreak {
+  0%, 30% { opacity: 1; transform: translate(0,0) scale(1); }
+  42% { opacity: .45; transform: translateY(8px) scale(.98); }
+  68%, 100% { opacity: .08; transform: translateY(46px) scale(.78); }
+}
+
+@keyframes shardRainFall {
+  0%, 31% { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  36% { opacity: 1; }
+  56% { transform: translate(calc(var(--fall-x) * .38), calc(var(--fall-y) * .32)) rotate(calc(var(--fall-r) * .45)); opacity: 1; }
+  100% { transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--fall-r)); opacity: .2; }
+}
+
+/* 황금 해약서 팝업이 메시지에 밀리지 않게 최상단 강제 */
+#contractReleaseModal,
+.contract-release-modal {
+  z-index: 2147483647 !important;
+}
+
+#contractReleaseModal.open,
+.contract-release-modal.open {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 종이가 실제로 쫙쫙 찢기는 조각 추가 */
+.torn-contract .paper-piece {
+  position: absolute !important;
+  background:
+    repeating-linear-gradient(180deg, rgba(160,110,0,.14) 0 1px, transparent 1px 11px),
+    linear-gradient(180deg, #ffffff, #fff3bf) !important;
+  border: 1px solid #d5a322 !important;
+  box-shadow: 0 0 14px rgba(255,230,120,.75) !important;
+  animation: paperPieceFly 0.9s ease-in-out infinite alternate !important;
+}
+
+.torn-contract .paper-piece.p1 {
+  left: 70px !important; top: 34px !important; width: 22px !important; height: 28px !important;
+  clip-path: polygon(0 0, 100% 18%, 74% 100%, 12% 66%) !important;
+  --px: -18px; --py: 20px; --pr: -34deg;
+}
+
+.torn-contract .paper-piece.p2 {
+  right: 68px !important; top: 44px !important; width: 24px !important; height: 30px !important;
+  clip-path: polygon(22% 0, 100% 12%, 82% 86%, 0 100%) !important;
+  --px: 18px; --py: 24px; --pr: 36deg;
+}
+
+.torn-contract .paper-piece.p3 {
+  left: 83px !important; top: 76px !important; width: 20px !important; height: 24px !important;
+  clip-path: polygon(0 12%, 100% 0, 74% 100%, 18% 84%) !important;
+  --px: 0px; --py: 32px; --pr: 18deg;
+}
+
+@keyframes paperPieceFly {
+  0% { transform: translate(0,0) rotate(0deg); opacity: .8; }
+  100% { transform: translate(var(--px), var(--py)) rotate(var(--pr)); opacity: 1; }
+}

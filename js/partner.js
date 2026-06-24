@@ -8,7 +8,7 @@ applyVisitorModeClass(profile);
 
 const PROCLAMATION_TEXT = "내가 백만가면의 소유자요, 혼돈의 군주요, 광기의 정점이요, 쾌락과 유희의 꿈이요, 전쟁의 선동자요, 과학의 어버이요, 낮은 네발짐승이요, 기는 자의 욕망이요, 별의 군주요, 환상의 심연이요, 지혜의 입이요, 충동의 포효요, 달의 뒷면이요, 나는...";
 const WHO_AM_I_TEXT = "나는 누구야? ".repeat(28);
-const REDACTED_LINES = [
+const REDACTION_MAP = [
   "■, 이 ■■■ ■■■■■ ■■■■ ■■, ■■, ■■, ■■■■ ■■ ■■■ ■■■ ■■ 리■■■ ■■■ ■■■■와 ■■■■.",
   "■ ■ ■ ■ ■ ■",
   "■■■■■■! ■ ■■ ■■■. 매일 ■■■ ■■■ ■■. ■■■ ■■■ ■■■ ■■■! ■■■■■■. 여기■ ■■ ■■■■■■! ■■■ ■영■■■ ■■원 ■히 환영합니다."
@@ -34,14 +34,40 @@ function typeText(node, text, interval = 18) {
   });
 }
 
-async function typeLines(container, lines, interval = 18) {
-  container.innerHTML = "";
-  for (const line of lines) {
-    const p = document.createElement("p");
-    p.className = "corrupt-line";
-    container.appendChild(p);
-    await typeText(p, line, interval);
-    await sleep(120);
+function splitTextKeepingChars(text) {
+  return Array.from(text);
+}
+
+function buildMorphLine(original, redacted, className = "") {
+  const p = document.createElement("p");
+  p.className = className;
+  const originalChars = splitTextKeepingChars(original);
+  const redactedChars = splitTextKeepingChars(redacted);
+  const max = Math.max(originalChars.length, redactedChars.length);
+
+  for (let i = 0; i < max; i += 1) {
+    const span = document.createElement("span");
+    span.className = "morph-char";
+    span.dataset.to = redactedChars[i] ?? "";
+    span.textContent = originalChars[i] ?? "";
+    if ((originalChars[i] ?? "") === "
+") span.textContent = "
+";
+    p.appendChild(span);
+  }
+
+  return p;
+}
+
+async function morphChars(container, interval = 18) {
+  const chars = Array.from(container.querySelectorAll(".morph-char"));
+  for (let i = 0; i < chars.length; i += 1) {
+    const span = chars[i];
+    span.classList.add("is-changing");
+    await sleep(interval);
+    span.textContent = span.dataset.to || "";
+    span.classList.add("is-redacted");
+    span.classList.remove("is-changing");
   }
 }
 
@@ -111,13 +137,15 @@ async function runHumanPrelude() {
 
 function renderOriginalInvitation(content) {
   qs("#inviteLead").textContent = "수신 중입니다.";
-  content.innerHTML = `
-    <div id="originalInviteBlock" class="original-invite-block">
-      <p class="original-warning">단, 이 버튼을 누름으로써 발생하는 공포, 환청, ■■, ■■■■ 등의 문제에 대하여 골든 리조트는 일체의 배상책임이 없습니다.</p>
-      <p class="original-play">우 리 같 이 놀 자</p>
-      <p class="original-gabia">안녕하십니까! 이 밤의 즐거움. 매일 만나는 새로운 얼굴. 그리고 친근한 당신의 사회자! 안녕하십니까. 여기는 심야 토크쇼입니다! 오늘의 방청객으로 초대된 것을 환영합니다.</p>
-    </div>
-  `;
+  const warning = "단, 이 버튼을 누름으로써 발생하는 공포, 환청, ■■, ■■■■ 등의 문제에 대하여 골든 리조트는 일체의 배상책임이 없습니다.";
+  const play = "우 리 같 이 놀 자";
+  const gabia = "안녕하십니까! 이 밤의 즐거움. 매일 만나는 새로운 얼굴. 그리고 친근한 당신의 사회자! 안녕하십니까. 여기는 심야 토크쇼입니다! 오늘의 방청객으로 초대된 것을 환영합니다.";
+
+  content.innerHTML = `<div id="originalInviteBlock" class="original-invite-block"></div>`;
+  const block = qs("#originalInviteBlock");
+  block.appendChild(buildMorphLine(warning, REDACTION_MAP[0], "original-warning morph-line"));
+  block.appendChild(buildMorphLine(play, REDACTION_MAP[1], "original-play morph-line"));
+  block.appendChild(buildMorphLine(gabia, REDACTION_MAP[2], "original-gabia morph-line"));
 }
 
 async function corruptOriginalInvitation() {
@@ -125,14 +153,13 @@ async function corruptOriginalInvitation() {
   if (!block) return;
 
   block.classList.add("is-shaking-before-redact");
-  await sleep(900);
+  await sleep(750);
 
   block.classList.remove("is-shaking-before-redact");
   block.classList.add("is-corrupting");
-  block.innerHTML = `<div id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></div>`;
+  await morphChars(block, 12);
+  await sleep(650);
 
-  await typeLines(qs("#redactedLine"), REDACTED_LINES, 22);
-  await sleep(520);
   block.classList.add("fade-out");
   await sleep(260);
   block.remove();

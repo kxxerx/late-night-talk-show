@@ -261,7 +261,7 @@ export async function handleEntityCollapseIfNeeded(profile) {
           <span class="mask-shard s5"></span>
           <span class="mask-shard s6"></span>
         </div>
-        <h2>가면이 깨졌습니다.</h2>
+        <h2>가면이 훼손됐습니다.</h2>
         <p>당신의 존재감이 커져 더 이상 이 가면을 사용하기 어렵습니다. 본래 당신의 모습으로 되돌아갑니다.</p>
         <button id="confirmMaskBreakBtn" type="button">확인</button>
       </div>
