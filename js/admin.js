@@ -164,8 +164,7 @@ async function loadItems() {
       <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${safeText(item.effect_type || "pollution_delta")}"></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${Number(item.effect_value || 0)}"></td>
       <td class="image-manage-cell">
-        <div class="current-image-name">${item.image_url ? "이미지 등록됨" : "이미지 없음"}</div>
-        <label class="file-inline">파일 선택<input type="file" accept="image/*" data-item-file="${item.id}"></label>
+        <input class="file-only-input" type="file" accept="image/*" data-item-file="${item.id}">
       </td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${Number(item.sort_order || 100)}"></td>
       <td><input type="checkbox" data-item-active="${item.id}" ${item.is_active ? "checked" : ""}></td>

@@ -1,7 +1,12 @@
-pollution-shop-starter v2.3
-- Fixed broken profile avatar rendering.
-- Reworked shop card layout: image, item name, left-aligned price, detail/buy buttons.
-- Fixed profile status stat layout and status colors.
-- Rewrote admin.js stable to restore member, event code, item, submission, password request lists.
-- Removed remaining image URL dependencies from admin item editing.
-- Made goodbye modal '또 놀 러 와' brighter yellow.
+pollution-shop-starter v2.4
+- Hid image registered text in admin item list.
+- Simplified admin item file input UI.
+- Adjusted profile nickname and stat card sizes.
+- Forced status judgement to bright yellow/red.
+- Right-aligned shop item prices.
+- Removed internal scroll from item detail modal.
+- Updated security contract content and party name.
+- Security contract now resets pollution to 0 and shows completion modal.
+- Strengthened entity-mode whole-screen style.
+- Reworked invitation page with 404 overlay and different human/entity invitation copy.
+- Fixed mobile side profile overlapping shop items.

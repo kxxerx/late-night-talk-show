@@ -28,15 +28,12 @@
   <main class="container narrow-page">
     <section class="page-head-small soft-title">
       <h1>심야 토크쇼 초대장</h1>
-      <p class="muted">골든 마스코트의 기념품샵을 방문한 사람 중 특별한 사람만이 심야 토크쇼 초대장을 받을 수 있습니다. 초대장을 받으시겠습니까?</p>
+      <p class="muted" id="inviteLead">잠시만 기다려 주세요. 수신자를 확인하고 있습니다.</p>
     </section>
     <div id="message" class="message"></div>
 
-    <section class="panel invitation-card midnight-invite">
-      <p>단, 이 버튼을 누름으로써 발생하는 공포, 환청, ■■, ■■■■ 등의 문제에 대하여 골든 리조트는 일체의 배상책임이 없습니다.</p>
-      <p class="play-with-us">우 리 같 이 놀 자</p>
-      <p class="midnight-whisper">안녕하십니까. 이 밤의 즐거움, 매일 만나는 새로운 얼굴. 그리고 친근한 당신의 사회자! 안녕하십니까. 여긴 심야 토크쇼입니다! 오늘의 게스트로 초대된 당신을 환영합니다.</p>
-      <button id="openInviteBtn" type="button">초대장 받기</button>
+    <section class="panel invitation-card midnight-invite" id="inviteCard">
+      <div id="inviteDynamicContent"></div>
     </section>
   </main>
   <script type="module" src="js/partner.js"></script>

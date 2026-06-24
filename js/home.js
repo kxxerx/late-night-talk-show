@@ -418,6 +418,28 @@ async function loadShopHome() {
   }
 }
 
+function openContractCompleteModal() {
+  let modal = qs("#contractCompleteModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "contractCompleteModal";
+    modal.className = "soft-modal contract-complete-modal";
+    modal.innerHTML = `
+      <div class="soft-modal-box contract-complete-box">
+        <h2>축하합니다!</h2>
+        <p>당신은 이제 (주) 백일몽 주식회사의 보안팀에서 근무하게 됩니다!</p>
+        <button id="confirmContractCompleteBtn" type="button">확인</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    qs("#confirmContractCompleteBtn").addEventListener("click", () => {
+      modal.classList.remove("open");
+      location.reload();
+    });
+  }
+  modal.classList.add("open");
+}
+
 function openSecurityContractModal() {
   let modal = qs("#securityContractModal");
   if (!modal) {
@@ -427,11 +449,12 @@ function openSecurityContractModal() {
     modal.innerHTML = `
       <div class="contract-box">
         <h2>표준 보안팀 근로계약서</h2>
+        <p class="contract-parties">갑 청 이사<br>을 ${displayName(cachedProfile)}</p>
         <p class="contract-scroll">
-          갑 청 이사<br>
-          을 오염자<br><br>
-          을은 본 계약의 체결과 동시에 골든 마스코트 기념품샵 및 그 부속 시설에서 발생하는 모든 이상현상, 환청, 기억 오염, 신체 변형, 이름 손실, 사회적 고립, 불합리한 야근, 설명되지 않는 근무 배치에 대하여 이의를 제기하지 않는다.<br><br>
-          을은 본인의 자아가 일부 또는 전부 침식되더라도 업무상 필요한 범위 내에서 이를 감수한다. 갑은 을에게 적절한 휴게시간을 제공할 수 있으나, 휴게시간의 존재 여부는 갑의 해석에 따른다.<br><br>
+          을은 본 계약의 체결과 동시에 (주) 백일몽 주식회사를 위해 몸과 영혼을 바쳐 헌신을 다할 것을 맹세한다.<br><br>
+          을은 (주) 백일몽 주식회사에서 발생하는 모든 이상현상, 환청, 신체 변형, 사회적 고립, 근무 형태, 설명되지 않은 근무 배치에 대하여 이의를 제기하지 않는다.<br><br>
+          을은 갑이 지정한 근무 장소에서 절대 벗어나서는 안 된다.<br><br>
+          을은 (주) 백일몽 주식회사에서 어떤 지시가 내려지든 지정된 범위 내에서 이를 감수하며, 이를 어기지 않는다. 갑은 을에게 적절한 휴게 시간을 제공하며, 을은 정해진 근무 시간과 휴게 시간을 반드시 준수한다.<br><br>
           을은 본 계약서가 충분히 불리하다는 사실을 인지했거나, 인지하지 못했거나, 인지할 능력을 상실했더라도 계약 체결에 동의한 것으로 본다.
         </p>
         <button id="signSecurityContractBtn" type="button">근로계약</button>
@@ -446,7 +469,7 @@ function openSecurityContractModal() {
         return;
       }
       modal.classList.remove("open");
-      showMessage("보안팀 근로계약이 체결되었습니다.", "success");
+      openContractCompleteModal();
       await loadShopHome();
     });
   }
