@@ -6662,3 +6662,46 @@ body.entity-mode .modal-item-image {
     radial-gradient(circle at 50% 35%, rgba(67,226,211,.12), transparent 60%),
     rgba(0,18,20,.44) !important;
 }
+
+
+
+/* v4.9 brand re-fix + special hall center alignment */
+
+/* 특별관 '너는 누구야?' 중앙 정렬 */
+.mad-popup-big,
+.who-are-you,
+#madPopupContent .who-are-you,
+.mad-popup-content .who-are-you {
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 특별관 '이리와' 중앙 정렬 */
+.come-here-wall,
+#comeHereLine,
+#inviteDynamicContent .come-here-wall,
+.invite-corrupt-copy.come-here-wall {
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 혹시 부모 정렬 때문에 좌측으로 끌려가는 경우까지 차단 */
+#inviteDynamicContent,
+.mad-popup-content {
+  text-align: center !important;
+}
+
+#inviteDynamicContent .original-invite-block,
+#inviteDynamicContent .original-warning,
+#inviteDynamicContent .original-play,
+#inviteDynamicContent .original-gabia {
+  text-align: center !important;
+}

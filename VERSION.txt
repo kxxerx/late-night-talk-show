@@ -1,6 +1,5 @@
 pollution-shop-starter v4.9
-- Re-applied brand normalization on top of v4.8.
-- Fixed old/typo labels including 골든 마스코드 기념품샵.
-- Final brand label: 마스코트 골든의 기념품샵.
-- English brand label: Mascot Golden's Souvenir Shop.
+- Re-applied brand replacement to 마스코트 골든의 기념품샵 / Mascot Golden's Souvenir Shop.
+- Center-aligned special hall '너는 누구야?' and '이리와' text.
+- Scanned remaining old brand strings.
 - No SQL migration required.
