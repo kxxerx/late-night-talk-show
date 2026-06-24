@@ -8,9 +8,11 @@ applyVisitorModeClass(profile);
 
 const PROCLAMATION_TEXT = "내가 백만가면의 소유자요, 혼돈의 군주요, 광기의 정점이요, 쾌락과 유희의 꿈이요, 전쟁의 선동자요, 과학의 어버이요, 낮은 네발짐승이요, 기는 자의 욕망이요, 별의 군주요, 환상의 심연이요, 지혜의 입이요, 충동의 포효요, 달의 뒷면이요, 나는...";
 const WHO_AM_I_TEXT = "나는 누구야? ".repeat(28);
-const REDACTED_TEXT = "■, 이 ■■■ ■■■■■ ■■■■ ■■, ■■, ■■, ■■■■ ■■ ■■■ ■■■ ■■ 리■■■ ■■■ ■■■■와 ■■■■.
-■ ■ ■ ■ ■ ■ 
-■■■■■■! ■ ■■ ■■■. 매일 ■■■ ■■■ ■■. ■■■ ■■■ ■■■ ■■■! ■■■■■■. 여기■ ■■ ■■■■■■! ■■■ ■영■■■ ■■원 ■히 환영합니다.";
+const REDACTED_LINES = [
+  "■, 이 ■■■ ■■■■■ ■■■■ ■■, ■■, ■■, ■■■■ ■■ ■■■ ■■■ ■■ 리■■■ ■■■ ■■■■와 ■■■■.",
+  "■ ■ ■ ■ ■ ■",
+  "■■■■■■! ■ ■■ ■■■. 매일 ■■■ ■■■ ■■. ■■■ ■■■ ■■■ ■■■! ■■■■■■. 여기■ ■■ ■■■■■■! ■■■ ■영■■■ ■■원 ■히 환영합니다."
+];
 const COME_HERE_TEXT = "이리와".repeat(90);
 
 function sleep(ms) {
@@ -32,8 +34,19 @@ function typeText(node, text, interval = 18) {
   });
 }
 
+async function typeLines(container, lines, interval = 18) {
+  container.innerHTML = "";
+  for (const line of lines) {
+    const p = document.createElement("p");
+    p.className = "corrupt-line";
+    container.appendChild(p);
+    await typeText(p, line, interval);
+    await sleep(120);
+  }
+}
+
 function showNotFoundOverlay() {
-  let modal = document.createElement("div");
+  const modal = document.createElement("div");
   modal.className = "not-found-overlay open";
   modal.innerHTML = `
     <div class="not-found-box">
@@ -116,11 +129,9 @@ async function corruptOriginalInvitation() {
 
   block.classList.remove("is-shaking-before-redact");
   block.classList.add("is-corrupting");
-  block.innerHTML = `
-    <p id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></p>
-  `;
+  block.innerHTML = `<div id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></div>`;
 
-  await typeText(qs("#redactedLine"), REDACTED_TEXT, 22);
+  await typeLines(qs("#redactedLine"), REDACTED_LINES, 22);
   await sleep(520);
   block.classList.add("fade-out");
   await sleep(260);
@@ -129,6 +140,7 @@ async function corruptOriginalInvitation() {
 
 async function renderHumanInvite() {
   const content = qs("#inviteDynamicContent");
+  qs("#inviteLead").textContent = "수신 중입니다.";
 
   await runHumanPrelude();
 
@@ -143,17 +155,13 @@ async function renderHumanInvite() {
     <button id="openInviteBtn" type="button" hidden>방청하기</button>
   `);
 
-  const comeHere = qs("#comeHereLine");
-  const audience = qs("#audienceInvite");
-  const button = qs("#openInviteBtn");
-
-  await typeText(comeHere, COME_HERE_TEXT, 5);
+  await typeText(qs("#comeHereLine"), COME_HERE_TEXT, 5);
   await sleep(350);
 
-  audience.hidden = false;
+  qs("#audienceInvite").hidden = false;
   qs("#inviteLead").textContent = "수신이 완료되었습니다.";
   await sleep(260);
-  button.hidden = false;
+  qs("#openInviteBtn").hidden = false;
 }
 
 async function renderEntityInvite() {
@@ -179,9 +187,15 @@ async function renderEntityInvite() {
 function renderInvite() {
   if (profile?.visitor_type === "entity") {
     document.body.classList.add("entity-invite-page");
-    renderEntityInvite();
+    renderEntityInvite().catch(error => {
+      console.error(error);
+      showMessage(error.message, "error");
+    });
   } else {
-    renderHumanInvite();
+    renderHumanInvite().catch(error => {
+      console.error(error);
+      showMessage(error.message, "error");
+    });
   }
 }
 

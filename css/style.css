@@ -5505,3 +5505,136 @@ body.entity-mode .category-strip {
   0% { letter-spacing: 0; opacity: .9; }
   100% { letter-spacing: .18em; opacity: .45; }
 }
+
+
+
+/* v3.9 bugfix: invite runtime, mask red border/fall, contract modal force */
+
+/* 초대장 ■ 여러 줄 */
+.corrupting-redacted .corrupt-line {
+  margin: 0 0 7px !important;
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.62 !important;
+  font-weight: 800 !important;
+  text-align: left !important;
+  word-break: break-all !important;
+  text-shadow: 0 0 9px rgba(255,0,0,.62) !important;
+}
+
+/* 가면 파손 모달: 주변 테두리도 빨간색 고정 */
+#maskBreakModal .soft-modal-box,
+.mask-break-modal .soft-modal-box,
+.mask-break-box {
+  border: 2px solid #ff0000 !important;
+  outline: 1px solid rgba(255,0,0,.42) !important;
+  box-shadow: 0 0 58px rgba(255,0,0,.52), inset 0 0 24px rgba(255,0,0,.18) !important;
+}
+
+/* 가면이 먼저 떠 있다가 와르르 조각나 바닥으로 떨어지는 느낌 */
+.broken-mask {
+  transform-origin: center top !important;
+  animation: maskHangThenBreak 2.1s ease-in-out infinite !important;
+}
+
+.broken-mask::before {
+  animation: maskBaseDrop 2.1s ease-in-out infinite !important;
+}
+
+.broken-mask .mask-eye,
+.broken-mask .mask-crack,
+.broken-mask .mask-shard {
+  animation-duration: 2.1s !important;
+  animation-timing-function: cubic-bezier(.18,.8,.2,1) !important;
+  animation-iteration-count: infinite !important;
+}
+
+.broken-mask .mask-eye.left {
+  --fall-x: -36px; --fall-y: 72px; --fall-r: -42deg;
+  animation-name: maskPieceFall !important;
+}
+.broken-mask .mask-eye.right {
+  --fall-x: 36px; --fall-y: 74px; --fall-r: 43deg;
+  animation-name: maskPieceFall !important;
+}
+.broken-mask .mask-crack.one {
+  --fall-x: -18px; --fall-y: 86px; --fall-r: 65deg;
+  animation-name: maskCrackFall !important;
+}
+.broken-mask .mask-crack.two {
+  --fall-x: 22px; --fall-y: 88px; --fall-r: -62deg;
+  animation-name: maskCrackFall !important;
+}
+.broken-mask .mask-crack.three {
+  --fall-x: 4px; --fall-y: 92px; --fall-r: 18deg;
+  animation-name: maskCrackFall !important;
+}
+
+.broken-mask .mask-shard {
+  animation-name: maskPieceFall !important;
+}
+
+@keyframes maskHangThenBreak {
+  0%, 24% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 18px rgba(255,0,0,.55)); }
+  32% { transform: translateY(-2px) rotate(-1deg); }
+  42% { transform: translateY(4px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 28px rgba(255,0,0,.85)); }
+}
+
+@keyframes maskBaseDrop {
+  0%, 28% { transform: translate(0,0) scale(1); opacity: 1; }
+  45% { transform: translate(0,8px) scale(.98); opacity: .75; }
+  100% { transform: translate(0,46px) scale(.8); opacity: .16; }
+}
+
+@keyframes maskPieceFall {
+  0%, 30% { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  48% { transform: translate(calc(var(--fall-x) * .35), calc(var(--fall-y) * .25)) rotate(calc(var(--fall-r) * .35)); opacity: 1; }
+  100% { transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--fall-r)); opacity: .22; }
+}
+
+@keyframes maskCrackFall {
+  0%, 30% { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--fall-r)); opacity: .2; }
+}
+
+/* 황금 해약서 팝업 강제 표시 보정 */
+#contractReleaseModal.open,
+.contract-release-modal.open {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#contractReleaseModal .contract-release-box,
+.contract-release-modal .contract-release-box {
+  background:
+    radial-gradient(circle at 50% 0%, #ffffff 0%, #fffef5 44%, #fff0aa 100%) !important;
+  border: 3px solid #ffd95a !important;
+  color: #c89100 !important;
+  box-shadow: 0 0 70px rgba(255,232,124,.9), 0 18px 55px rgba(0,0,0,.42) !important;
+}
+
+#contractReleaseModal .contract-release-box h2,
+#contractReleaseModal .contract-release-box p,
+.contract-release-modal .contract-release-box h2,
+.contract-release-modal .contract-release-box p {
+  color: #c89100 !important;
+  -webkit-text-fill-color: #c89100 !important;
+  text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 18px rgba(255,218,82,.75) !important;
+  font-weight: 900 !important;
+}
+
+/* 계약서 종이 찢김 가시성 */
+#contractReleaseModal .torn-contract,
+.contract-release-modal .torn-contract {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+#contractReleaseModal .torn-contract .paper,
+.contract-release-modal .torn-contract .paper {
+  animation: paperTearAway 0.78s ease-in-out infinite alternate !important;
+}

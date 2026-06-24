@@ -1,8 +1,7 @@
-pollution-shop-starter v3.8
-- Changed invitation corruption text to multiline redacted blocks.
-- Updated mask break modal copy.
-- Forced mask break modal text to bold red.
-- Added more shattering mask shard animation.
-- Enhanced golden contract release modal with white background and radiant gold text.
-- Strengthened contract tearing animation.
+pollution-shop-starter v3.9
+- Fixed special-hall stuck at receiving state.
+- Reworked redacted invite text as safe line array output.
+- Forced mask-break modal border and shadow red.
+- Added mask pieces falling downward after initial mask display.
+- Fixed golden contract release modal trigger after purchase.
 - No SQL migration required.
