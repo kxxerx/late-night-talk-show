@@ -1,0 +1,41 @@
+-- Upgrade to v2.2
+-- Security contract conversion for fully contaminated human visitors.
+
+create or replace function public.accept_security_contract()
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_profile public.profiles;
+begin
+  select * into v_profile
+  from public.profiles
+  where id = auth.uid()
+  for update;
+
+  if v_profile.id is null then
+    raise exception '방문객 정보를 찾을 수 없습니다.';
+  end if;
+
+  if v_profile.visitor_type <> 'human' then
+    raise exception '일반 방문객만 근로계약을 체결할 수 있습니다.';
+  end if;
+
+  if v_profile.pollution < 100 then
+    raise exception '아직 계약 대상이 아닙니다.';
+  end if;
+
+  update public.profiles
+  set visitor_type = 'infected'
+  where id = auth.uid();
+
+  insert into public.admin_logs (admin_id, target_user_id, action, detail)
+  values (auth.uid(), auth.uid(), 'accept_security_contract', '오염도 100 도달 후 보안팀 근로계약 체결');
+
+  return jsonb_build_object('ok', true, 'message', '보안팀 근로계약이 체결되었습니다.');
+end;
+$$;
+
+grant execute on function public.accept_security_contract() to authenticated;

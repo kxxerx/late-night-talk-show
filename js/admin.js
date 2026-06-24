@@ -158,7 +158,7 @@ async function loadItems() {
       <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${item.effect_type || "pollution_delta"}"></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${item.effect_value || 0}"></td>
       <td class="image-manage-cell">
-        <input class="table-input image-url" data-item-image="${item.id}" value="${item.image_url || ""}">
+        <div class="current-image-name">${item.image_url ? "이미지 등록됨" : "이미지 없음"}</div>
         <label class="file-inline">파일 선택<input type="file" accept="image/*" data-item-file="${item.id}"></label>
       </td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${item.sort_order || 100}"></td>
@@ -188,6 +188,11 @@ async function loadItems() {
           sort_order: Number(document.querySelector(`[data-item-sort="${id}"]`).value || 100),
           is_active: document.querySelector(`[data-item-active="${id}"]`).checked
         };
+        const file = document.querySelector(`[data-item-file="${id}"]`)?.files?.[0];
+        if (file) {
+          payload.image_url = await uploadItemImage(file, id);
+        }
+
         const { error } = await supabase.from("items").update(payload).eq("id", id);
         if (error) throw error;
         showMessage("아이템 저장 완료", "success");

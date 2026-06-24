@@ -1,12 +1,10 @@
-pollution-shop-starter v2.1
-- Added infected visitor type.
-- Added entity mask collapse system.
-- Added item audience and item kind fields.
-- Added entity-only life products and mask-care items.
-- Entity shop now shows life products first and mask-care items after a life is purchased.
-- Current life product is shown as sold out for that entity.
-- Added entity glitch styling for Midnight Talk Show invitation page.
-- Fixed detail/buy button horizontal layout.
-- Removed white translucent background artifacts.
-- Adjusted profile status to show number + status text.
-- Fixed admin item image upload layout and sale checkbox alignment.
+pollution-shop-starter v2.2
+- Fixed renderItems is not defined.
+- Rewrote shop home rendering safely.
+- Removed item image URL inputs; file upload only.
+- Fixed profile status card overlap: number + judgment stacked.
+- Added security contract modal for human visitors who reach status 100.
+- Accepting the contract converts visitor_type from human to infected.
+- Added goodbye modal before logout.
+- Strengthened CSS to remove white translucent background artifacts.
+- Added spacing between item detail image and title.
