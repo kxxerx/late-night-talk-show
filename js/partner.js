@@ -8,7 +8,9 @@ applyVisitorModeClass(profile);
 
 const PROCLAMATION_TEXT = "내가 백만가면의 소유자요, 혼돈의 군주요, 광기의 정점이요, 쾌락과 유희의 꿈이요, 전쟁의 선동자요, 과학의 어버이요, 낮은 네발짐승이요, 기는 자의 욕망이요, 별의 군주요, 환상의 심연이요, 지혜의 입이요, 충동의 포효요, 달의 뒷면이요, 나는...";
 const WHO_AM_I_TEXT = "나는 누구야? ".repeat(28);
-const REDACTED_TEXT = "■, 이 ■■■ ■■■■■ ■■■■ ■■, ■■, ■■, ■■■■ ■■ ■■■ ■■■ ■■ 리■■■ ■■■ ■■■■와 ■■■■.";
+const REDACTED_TEXT = "■, 이 ■■■ ■■■■■ ■■■■ ■■, ■■, ■■, ■■■■ ■■ ■■■ ■■■ ■■ 리■■■ ■■■ ■■■■와 ■■■■.
+■ ■ ■ ■ ■ ■ 
+■■■■■■! ■ ■■ ■■■. 매일 ■■■ ■■■ ■■. ■■■ ■■■ ■■■ ■■■! ■■■■■■. 여기■ ■■ ■■■■■■! ■■■ ■영■■■ ■■원 ■히 환영합니다.";
 const COME_HERE_TEXT = "이리와".repeat(90);
 
 function sleep(ms) {
@@ -109,14 +111,17 @@ async function corruptOriginalInvitation() {
   const block = qs("#originalInviteBlock");
   if (!block) return;
 
-  block.classList.add("is-corrupting");
-  await sleep(280);
+  block.classList.add("is-shaking-before-redact");
+  await sleep(900);
 
+  block.classList.remove("is-shaking-before-redact");
+  block.classList.add("is-corrupting");
   block.innerHTML = `
     <p id="redactedLine" class="invite-corrupt-copy corrupting-redacted"></p>
   `;
-  await typeText(qs("#redactedLine"), REDACTED_TEXT, 24);
-  await sleep(420);
+
+  await typeText(qs("#redactedLine"), REDACTED_TEXT, 22);
+  await sleep(520);
   block.classList.add("fade-out");
   await sleep(260);
   block.remove();

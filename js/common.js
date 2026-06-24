@@ -254,9 +254,15 @@ export async function handleEntityCollapseIfNeeded(profile) {
           <span class="mask-crack one"></span>
           <span class="mask-crack two"></span>
           <span class="mask-crack three"></span>
+          <span class="mask-shard s1"></span>
+          <span class="mask-shard s2"></span>
+          <span class="mask-shard s3"></span>
+          <span class="mask-shard s4"></span>
+          <span class="mask-shard s5"></span>
+          <span class="mask-shard s6"></span>
         </div>
-        <h2>동기화가 해제되었습니다.</h2>
-        <p>빌린 인생이 금이 가고, 가면은 원래의 얼굴을 더 이상 붙잡지 못합니다.</p>
+        <h2>가면이 깨졌습니다.</h2>
+        <p>당신의 존재감이 커져 더 이상 이 가면을 사용하기 어렵습니다. 본래 당신의 모습으로 되돌아갑니다.</p>
         <button id="confirmMaskBreakBtn" type="button">확인</button>
       </div>
     `;
