@@ -3776,3 +3776,193 @@ body.entity-mode .come-again,
     font-size: 11.5px !important;
   }
 }
+
+
+
+/* v3.0 final invitation/entity/profile corrections */
+
+/* 최종 초대 문구: 굵고 하얗고 큰 글씨 금지 */
+#inviteDynamicContent .final-invite-line,
+.midnight-invite .final-invite-line,
+#audienceInvite.final-invite-line {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  text-align: left !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.56) !important;
+  margin: 16px 0 !important;
+}
+
+/* 일반/오염자 작별 팝업: 또 놀 러 와 무조건 샛노란색 */
+.goodbye-modal .come-again,
+.goodbye-box .come-again,
+#goodbyeModal .come-again,
+.come-again {
+  color: #ffff00 !important;
+  text-shadow: 0 0 18px rgba(255,255,0,.95) !important;
+  font-weight: 1000 !important;
+}
+
+/* 404는 괴이 모드에서도 붉게 고정 */
+.not-found-overlay,
+.not-found-overlay *,
+.entity-mode .not-found-overlay,
+.entity-mode .not-found-overlay * {
+  color: #ff0000 !important;
+  border-color: #ff0000 !important;
+  text-shadow: 0 0 12px rgba(255,0,0,.8) !important;
+}
+
+/* 괴이 초대장 타이핑 문구 */
+.entity-mode .entity-welcome,
+.entity-mode .entity-copy {
+  color: #b7fff3 !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  line-height: 1.85 !important;
+  min-height: 1.85em !important;
+}
+
+/* 프로필 수치 박스 완전 중앙 정렬. 아래 공백 금지. */
+.profile-stats.two-stats {
+  align-items: stretch !important;
+}
+
+.profile-stats.two-stats > div,
+.status-only-card {
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  place-items: center !important;
+  align-content: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  min-height: 48px !important;
+  height: auto !important;
+  padding: 5px 6px !important;
+  box-sizing: border-box !important;
+}
+
+.profile-stats.two-stats span,
+.status-only-card > span {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 17px !important;
+  line-height: 1 !important;
+}
+
+.profile-stats.two-stats small,
+.profile-status-text,
+.status-only-card > small {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+}
+
+/* 괴이 모드: 카테고리/사이드 버튼 강제 청록. 기존 .blog-header.noir .category-link보다 더 구체적으로 */
+html.entity-mode body .blog-header.noir .category-strip .category-link,
+html.entity-mode body .blog-header.slim.noir .category-strip .category-link,
+html.entity-mode body .category-strip .category-link,
+body.entity-mode .blog-header.noir .category-strip .category-link,
+body.entity-mode .blog-header.slim.noir .category-strip .category-link,
+body.entity-mode .category-strip .category-link,
+html.entity-mode body .side-actions a.button,
+html.entity-mode body .side-actions button.button,
+html.entity-mode body .side-actions a,
+html.entity-mode body .side-actions button,
+body.entity-mode .side-actions a.button,
+body.entity-mode .side-actions button.button,
+body.entity-mode .side-actions a,
+body.entity-mode .side-actions button {
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.72) !important;
+  box-shadow: none !important;
+}
+
+/* 괴이 모드 hover/active */
+html.entity-mode body .blog-header.noir .category-strip .category-link.active,
+html.entity-mode body .blog-header.noir .category-strip .category-link:hover,
+html.entity-mode body .category-strip .category-link.active,
+html.entity-mode body .category-strip .category-link:hover,
+body.entity-mode .blog-header.noir .category-strip .category-link.active,
+body.entity-mode .blog-header.noir .category-strip .category-link:hover,
+body.entity-mode .category-strip .category-link.active,
+body.entity-mode .category-strip .category-link:hover,
+html.entity-mode body .side-actions a:hover,
+html.entity-mode body .side-actions button:hover,
+body.entity-mode .side-actions a:hover,
+body.entity-mode .side-actions button:hover {
+  color: #ffffff !important;
+  border-color: #53d2bf !important;
+  box-shadow: 0 0 0 2px rgba(83,210,191,.2), 0 0 18px rgba(83,210,191,.18) !important;
+}
+
+/* 괴이 모드 작별 팝업에서 설명 문장은 청록, 또 놀 러 와만 노랑 */
+html.entity-mode body #goodbyeModal .goodbye-box h2,
+body.entity-mode #goodbyeModal .goodbye-box h2 {
+  color: #b7fff3 !important;
+}
+
+html.entity-mode body #goodbyeModal .goodbye-box p:not(.come-again),
+body.entity-mode #goodbyeModal .goodbye-box p:not(.come-again) {
+  color: #b7fff3 !important;
+}
+
+html.entity-mode body #goodbyeModal .come-again,
+body.entity-mode #goodbyeModal .come-again {
+  color: #ffff00 !important;
+  text-shadow: 0 0 18px rgba(255,255,0,.95) !important;
+}
+
+/* 괴이 모드 게이지: 붉게 차오름 */
+html.entity-mode body .status-fill,
+html.entity-mode body .pollution-fill,
+html.entity-mode body .meter-fill,
+html.entity-mode body .gauge-fill,
+body.entity-mode .status-fill,
+body.entity-mode .pollution-fill,
+body.entity-mode .meter-fill,
+body.entity-mode .gauge-fill,
+html.entity-mode body [class*="progress"] [class*="fill"],
+body.entity-mode [class*="progress"] [class*="fill"] {
+  background: linear-gradient(90deg, #3a0000, #ff0000) !important;
+  box-shadow: 0 0 16px rgba(255,0,0,.55) !important;
+}
+
+/* 괴이 모드에서 무지갯빛 배경/금색 게이지 흔적 줄이기 */
+html.entity-mode body .status-bar,
+html.entity-mode body .pollution-bar,
+html.entity-mode body .meter-bar,
+html.entity-mode body .gauge-bar,
+body.entity-mode .status-bar,
+body.entity-mode .pollution-bar,
+body.entity-mode .meter-bar,
+body.entity-mode .gauge-bar {
+  background: #020605 !important;
+  border-color: rgba(255,0,0,.45) !important;
+}
+
+@media (max-width: 640px) {
+  .profile-stats.two-stats > div,
+  .status-only-card {
+    min-height: 50px !important;
+    padding: 5px 5px !important;
+  }
+
+  .profile-stats.two-stats span,
+  .status-only-card > span {
+    font-size: 16px !important;
+  }
+
+  .profile-stats.two-stats small,
+  .profile-status-text,
+  .status-only-card > small {
+    font-size: 10.5px !important;
+  }
+}

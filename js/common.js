@@ -175,4 +175,9 @@ export function applyVisitorModeClass(profile) {
   document.body.classList.toggle("entity-mode", isEntity);
   document.documentElement.classList.toggle("infected-mode", isInfected);
   document.body.classList.toggle("infected-mode", isInfected);
+  try {
+    if (isEntity) localStorage.setItem("visitor_mode", "entity");
+    else if (isInfected) localStorage.setItem("visitor_mode", "infected");
+    else localStorage.setItem("visitor_mode", "human");
+  } catch (_) {}
 }

@@ -1,8 +1,10 @@
-pollution-shop-starter v2.9
-- Fixed mobile profile card width.
-- Rebuilt invitation animation order: 404 -> redacted text -> come-here text -> audience invite -> button.
-- Forced invite come-here typography to red default copy.
-- Applied entity-mode class to html and body for all profile-based pages.
-- Hardened entity mode color overrides across category menu, side actions, profile, messages, and goodbye modal.
-- Centered profile stat content vertically.
+pollution-shop-starter v3.0
+- Fixed final invitation line style.
+- Invite lead changes to 수신이 완료되었습니다 after full animation.
+- Entity invitation text now types character by character.
+- Forced 404 NOT FOUND to stay red in entity mode.
+- Forced 또 놀 러 와 to bright yellow in all modes.
+- Strengthened entity mode category and side-action color overrides.
+- Entity status gauge fills red.
+- Profile stat boxes vertically centered.
 - No SQL migration required.

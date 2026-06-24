@@ -7,6 +7,14 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<script>
+  try {
+    if (localStorage.getItem("visitor_mode") === "entity") {
+      document.documentElement.classList.add("entity-mode");
+      document.body && document.body.classList.add("entity-mode");
+    }
+  } catch (_) {}
+</script>
 
   <header class="blog-header slim noir">
     <div class="brand-stage">

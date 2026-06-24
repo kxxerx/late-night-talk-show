@@ -48,7 +48,7 @@ async function renderHumanInvite() {
   content.innerHTML = `
     <p id="redactedLine" class="invite-corrupt-copy"></p>
     <p id="comeHereLine" class="invite-corrupt-copy come-here-wall" hidden></p>
-    <p id="audienceInvite" class="audience-invite" hidden>심야토크쇼의 방청객으로 초대되셨습니다.</p>
+    <p id="audienceInvite" class="audience-invite final-invite-line" hidden>심야토크쇼의 방청객으로 초대되셨습니다.</p>
     <button id="openInviteBtn" type="button" hidden>방청하기</button>
   `;
 
@@ -66,19 +66,29 @@ async function renderHumanInvite() {
   await new Promise(r => setTimeout(r, 350));
 
   audience.hidden = false;
+  qs("#inviteLead").textContent = "수신이 완료되었습니다.";
   await new Promise(r => setTimeout(r, 260));
   button.hidden = false;
 }
 
-function renderEntityInvite() {
+async function renderEntityInvite() {
   const content = qs("#inviteDynamicContent");
-  qs("#inviteLead").textContent = "게스트 확인이 완료되었습니다.";
+  qs("#inviteLead").textContent = "게스트 확인 중입니다.";
   content.innerHTML = `
-    <p class="entity-welcome">어서 오세요, 게스트님.</p>
-    <p class="entity-copy">당신은 심야 토크쇼의 게스트로 초대되었습니다.<br>오늘도 멋진 경험담 들려주세요.</p>
-    <p class="entity-smile">😊</p>
-    <button id="openInviteBtn" type="button">참여하기</button>
+    <p id="entityLine1" class="entity-welcome"></p>
+    <p id="entityLine2" class="entity-copy"></p>
+    <p id="entityLine3" class="entity-copy"></p>
+    <p id="entitySmile" class="entity-smile" hidden>😊</p>
+    <button id="openInviteBtn" type="button" hidden>참여하기</button>
   `;
+
+  await typeText(qs("#entityLine1"), "어서 오세요, 게스트님.", 45);
+  await typeText(qs("#entityLine2"), "당신은 심야 토크쇼의 게스트로 초대되었습니다.", 35);
+  await typeText(qs("#entityLine3"), "오늘도 멋진 경험담 들려주세요.", 35);
+  qs("#entitySmile").hidden = false;
+  await new Promise(r => setTimeout(r, 320));
+  qs("#inviteLead").textContent = "게스트 확인이 완료되었습니다.";
+  qs("#openInviteBtn").hidden = false;
 }
 
 function renderInvite() {
