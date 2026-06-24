@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass } from "./common.js";
 
 let cachedSession = null;
 let cachedProfile = null;
@@ -194,8 +194,7 @@ async function fetchProfile(session) {
 
   if (error) throw error;
 
-  document.body.classList.toggle("entity-mode", data.visitor_type === "entity");
-  document.body.classList.toggle("infected-mode", data.visitor_type === "infected");
+  applyVisitorModeClass(data);
   return data;
 }
 

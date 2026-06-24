@@ -3461,3 +3461,318 @@ body.entity-mode .profile-status-text.status-red {
     height: 72px !important;
   }
 }
+
+
+
+/* v2.9 mobile profile width, sequential invite, entity mode hard override */
+
+/* 모바일 프로필 폭 복구: 상품 카드와 같은 컨테이너 폭 사용 */
+@media (max-width: 860px) {
+  .app-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  #sidePanel,
+  .side-panel,
+  aside {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    position: static !important;
+    top: auto !important;
+    align-self: stretch !important;
+  }
+
+  #sidePanel .profile-card,
+  .side-panel .profile-card,
+  aside .profile-card {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 프로필 수치 박스: 위에 붙지 않고 정확히 가운데 */
+.profile-stats.two-stats > div,
+.status-only-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  min-height: 50px !important;
+  padding: 5px 6px !important;
+  overflow: hidden !important;
+}
+
+.profile-stats.two-stats span,
+.status-only-card > span {
+  display: block !important;
+  font-size: 17px !important;
+  line-height: 1.05 !important;
+  margin: 0 !important;
+}
+
+.profile-stats.two-stats small,
+.profile-status-text,
+.status-only-card > small {
+  display: block !important;
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+}
+
+/* 초대장: ■가 끝난 후 이리와가 시작되도록 분리된 문장 스타일 */
+#inviteDynamicContent .invite-corrupt-copy,
+.midnight-invite #redactedLine,
+.midnight-invite #comeHereLine,
+.midnight-invite .come-here-wall.invite-corrupt-copy {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.56) !important;
+  word-break: break-all !important;
+  white-space: normal !important;
+  max-height: none !important;
+  overflow: visible !important;
+  opacity: .97 !important;
+}
+
+#comeHereLine[hidden],
+#redactedLine[hidden],
+#audienceInvite[hidden],
+#openInviteBtn[hidden] {
+  display: none !important;
+}
+
+/* 괴이 모드: html/body 양쪽 클래스 모두 강제 */
+html.entity-mode,
+body.entity-mode {
+  --text: #b7fff3 !important;
+  --muted: #78bfb2 !important;
+  --line: rgba(83,210,191,.52) !important;
+  --accent: #53d2bf !important;
+  --accent-2: #b7fff3 !important;
+  --warning: #53d2bf !important;
+  color: #b7fff3 !important;
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.025) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 85% 0%, rgba(83,210,191,.12), transparent 24rem),
+    #020605 !important;
+}
+
+html.entity-mode body,
+html.entity-mode main,
+html.entity-mode .container,
+html.entity-mode .app-layout,
+html.entity-mode .narrow-page,
+html.entity-mode .page-shell,
+body.entity-mode main,
+body.entity-mode .container,
+body.entity-mode .app-layout,
+body.entity-mode .narrow-page,
+body.entity-mode .page-shell {
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.025) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 85% 0%, rgba(83,210,191,.12), transparent 24rem),
+    #020605 !important;
+  color: #b7fff3 !important;
+}
+
+/* 헤더/카테고리/메뉴 */
+html.entity-mode .blog-header,
+html.entity-mode .blog-header.noir,
+html.entity-mode .blog-header.slim,
+html.entity-mode .blog-header.slim.noir,
+html.entity-mode .category-strip,
+html.entity-mode .main-menu,
+body.entity-mode .blog-header,
+body.entity-mode .blog-header.noir,
+body.entity-mode .blog-header.slim,
+body.entity-mode .blog-header.slim.noir,
+body.entity-mode .category-strip,
+body.entity-mode .main-menu {
+  background:
+    repeating-linear-gradient(90deg, rgba(83,210,191,.045) 0 1px, transparent 1px 10px),
+    #020605 !important;
+  border-color: rgba(83,210,191,.66) !important;
+  color: #b7fff3 !important;
+}
+
+/* 모든 버튼/링크형 버튼 */
+html.entity-mode .category-link,
+html.entity-mode .main-menu a,
+html.entity-mode .side-actions a,
+html.entity-mode .side-actions button,
+html.entity-mode button,
+html.entity-mode .button,
+body.entity-mode .category-link,
+body.entity-mode .main-menu a,
+body.entity-mode .side-actions a,
+body.entity-mode .side-actions button,
+body.entity-mode button,
+body.entity-mode .button {
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.68) !important;
+  box-shadow: none !important;
+}
+
+/* 버튼 hover/active */
+html.entity-mode .category-link.active,
+html.entity-mode .category-link:hover,
+html.entity-mode .main-menu a:hover,
+html.entity-mode button:hover,
+html.entity-mode .button:hover,
+body.entity-mode .category-link.active,
+body.entity-mode .category-link:hover,
+body.entity-mode .main-menu a:hover,
+body.entity-mode button:hover,
+body.entity-mode .button:hover {
+  color: #ffffff !important;
+  border-color: #53d2bf !important;
+  box-shadow: 0 0 0 2px rgba(83,210,191,.18), 0 0 18px rgba(83,210,191,.16) !important;
+}
+
+/* 카드/프로필/쇼핑백/팝업 */
+html.entity-mode .panel,
+html.entity-mode .profile-card,
+html.entity-mode .item-card,
+html.entity-mode .card,
+html.entity-mode .soft-modal-box,
+html.entity-mode .empty-inventory-box,
+html.entity-mode .empty-panel,
+body.entity-mode .panel,
+body.entity-mode .profile-card,
+body.entity-mode .item-card,
+body.entity-mode .card,
+body.entity-mode .soft-modal-box,
+body.entity-mode .empty-inventory-box,
+body.entity-mode .empty-panel {
+  background:
+    repeating-linear-gradient(135deg, rgba(83,210,191,.028) 0 1px, transparent 1px 8px),
+    #050908 !important;
+  border-color: rgba(83,210,191,.52) !important;
+  color: #b7fff3 !important;
+  box-shadow: 0 0 34px rgba(83,210,191,.12), 0 18px 45px rgba(0,0,0,.6) !important;
+}
+
+/* 텍스트 */
+html.entity-mode h1,
+html.entity-mode h2,
+html.entity-mode h3,
+html.entity-mode .item-card h2,
+html.entity-mode .profile-card h2,
+html.entity-mode .brand-title,
+html.entity-mode .site-title,
+html.entity-mode .logo-text,
+html.entity-mode label,
+body.entity-mode h1,
+body.entity-mode h2,
+body.entity-mode h3,
+body.entity-mode .item-card h2,
+body.entity-mode .profile-card h2,
+body.entity-mode .brand-title,
+body.entity-mode .site-title,
+body.entity-mode .logo-text,
+body.entity-mode label {
+  color: #b7fff3 !important;
+}
+
+html.entity-mode .muted,
+html.entity-mode small,
+html.entity-mode .lead,
+html.entity-mode .profile-stats small,
+html.entity-mode .current-image-name,
+html.entity-mode .empty-inventory-box,
+body.entity-mode .muted,
+body.entity-mode small,
+body.entity-mode .lead,
+body.entity-mode .profile-stats small,
+body.entity-mode .current-image-name,
+body.entity-mode .empty-inventory-box {
+  color: #78bfb2 !important;
+}
+
+/* 이미지 테두리/프로필 수치박스 */
+html.entity-mode .item-image-wrap,
+html.entity-mode .detail-image-wrap,
+html.entity-mode .profile-avatar,
+html.entity-mode .profile-stats.two-stats > div,
+html.entity-mode .status-only-card,
+body.entity-mode .item-image-wrap,
+body.entity-mode .detail-image-wrap,
+body.entity-mode .profile-avatar,
+body.entity-mode .profile-stats.two-stats > div,
+body.entity-mode .status-only-card {
+  border-color: rgba(83,210,191,.54) !important;
+  background: #020605 !important;
+}
+
+/* 가격/메시지 */
+html.entity-mode .price,
+html.entity-mode .detail-price,
+html.entity-mode .profile-stats span,
+html.entity-mode .message,
+html.entity-mode .message.success,
+body.entity-mode .price,
+body.entity-mode .detail-price,
+body.entity-mode .profile-stats span,
+body.entity-mode .message,
+body.entity-mode .message.success {
+  color: #53d2bf !important;
+  border-color: rgba(83,210,191,.5) !important;
+  background: #020605 !important;
+}
+
+/* 입력 */
+html.entity-mode input,
+html.entity-mode textarea,
+html.entity-mode select,
+body.entity-mode input,
+body.entity-mode textarea,
+body.entity-mode select {
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.5) !important;
+}
+
+/* 작별 팝업: 괴이 모드에서도 또 놀 러 와는 쨍한 노란색 유지 */
+html.entity-mode .goodbye-box p,
+body.entity-mode .goodbye-box p {
+  color: #b7fff3 !important;
+}
+
+html.entity-mode .come-again,
+body.entity-mode .come-again,
+.come-again {
+  color: #ffff00 !important;
+  text-shadow: 0 0 16px rgba(255,255,0,.85) !important;
+  font-weight: 1000 !important;
+}
+
+@media (max-width: 640px) {
+  .profile-stats.two-stats > div,
+  .status-only-card {
+    min-height: 54px !important;
+    padding: 6px 6px !important;
+  }
+
+  .profile-stats.two-stats span,
+  .status-only-card > span {
+    font-size: 18px !important;
+  }
+
+  .profile-stats.two-stats small,
+  .profile-status-text,
+  .status-only-card > small {
+    font-size: 11.5px !important;
+  }
+}

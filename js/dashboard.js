@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel } from "./common.js";
+import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, applyVisitorModeClass } from "./common.js";
 
 await renderNav();
 let currentProfile = null;
@@ -28,6 +28,7 @@ async function uploadAvatarIfSelected(profile) {
 
 async function loadDashboard() {
   const profile = await getMyProfile();
+applyVisitorModeClass(profile);
   if (!profile) return;
   currentProfile = profile;
   const visitorName = displayVisitorName(profile);

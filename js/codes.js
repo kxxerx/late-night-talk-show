@@ -1,8 +1,9 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, formatDate } from "./common.js";
+import { qs, showMessage, getMyProfile, formatDate, applyVisitorModeClass } from "./common.js";
 
 async function loadSubmissions() {
   const profile = await getMyProfile();
+applyVisitorModeClass(profile);
   if (!profile) return;
 
   const { data, error } = await supabase

@@ -166,3 +166,13 @@ export function maskCollapseJudgment(value) {
   if (n <= 99) return "식별 임박";
   return "가면 붕괴";
 }
+
+
+export function applyVisitorModeClass(profile) {
+  const isEntity = profile?.visitor_type === "entity";
+  const isInfected = profile?.visitor_type === "infected";
+  document.documentElement.classList.toggle("entity-mode", isEntity);
+  document.body.classList.toggle("entity-mode", isEntity);
+  document.documentElement.classList.toggle("infected-mode", isInfected);
+  document.body.classList.toggle("infected-mode", isInfected);
+}

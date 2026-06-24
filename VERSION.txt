@@ -1,9 +1,8 @@
-pollution-shop-starter v2.8
-- Strongly corrected general/infected invite '이리와' style to red default copy.
-- Harmonized empty shopping bag panel with black/gold theme.
-- Hardened entity mode palette across category menu, profile, item image borders, inputs and messages.
-- Added entity-specific category labels: 인생 진열장 / 가면 수선소 / ■■ ■■.
-- Changed human/infected cleanse label to 스낵.
-- Reduced profile stat boxes further.
-- Added entity mask collapse judgement labels.
+pollution-shop-starter v2.9
+- Fixed mobile profile card width.
+- Rebuilt invitation animation order: 404 -> redacted text -> come-here text -> audience invite -> button.
+- Forced invite come-here typography to red default copy.
+- Applied entity-mode class to html and body for all profile-based pages.
+- Hardened entity mode color overrides across category menu, side actions, profile, messages, and goodbye modal.
+- Centered profile stat content vertically.
 - No SQL migration required.

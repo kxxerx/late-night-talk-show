@@ -1,9 +1,10 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile } from "./common.js";
+import { qs, showMessage, getMyProfile, applyVisitorModeClass } from "./common.js";
 
 async function loadInventory() {
   const profile = await getMyProfile();
+applyVisitorModeClass(profile);
   if (!profile) return;
 
   const { data, error } = await supabase
