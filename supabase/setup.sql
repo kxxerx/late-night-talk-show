@@ -1065,7 +1065,7 @@ begin
 end $$;
 
 -- Upgrade to v0.9
--- Golden Mascot gift shop theme + withdrawn profile purge + sample gift shop items.
+-- Mascot Golden gift shop theme + withdrawn profile purge + sample gift shop items.
 
 create or replace function public.admin_purge_withdrawn_profile(p_target_user_id uuid)
 returns jsonb
@@ -1128,7 +1128,7 @@ where name = '정화수';
 update public.items
 set
   name = '금빛 리본 부적',
-  description = '골든 마스코트가 직접 묶었다고 주장하는 리본 부적. 주장일 뿐입니다.',
+  description = '마스코트 골든가 직접 묶었다고 주장하는 리본 부적. 주장일 뿐입니다.',
   category = 'cleanse',
   price = 70
 where name = '맑은 부적';
