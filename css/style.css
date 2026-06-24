@@ -4614,3 +4614,174 @@ body.entity-mode .ornament-line {
   border-color: rgba(83,210,191,.62) !important;
   background: rgba(83,210,191,.62) !important;
 }
+
+
+
+/* v3.4 profile stat vertical center + full-screen special intro + entity avatar cyan */
+
+/* 프로필 카드 수치 박스: 스샷 기준으로 상단에 붙는 문제 강제 해결 */
+.profile-card .profile-stats.two-stats {
+  align-items: stretch !important;
+}
+
+.profile-card .profile-stats.two-stats > div,
+.profile-card .status-only-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-content: center !important;
+  text-align: center !important;
+  gap: 3px !important;
+  min-height: 60px !important;
+  height: 60px !important;
+  padding: 0 6px !important;
+  box-sizing: border-box !important;
+}
+
+.profile-card .profile-stats.two-stats > div span,
+.profile-card .status-only-card > span {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  line-height: 1.05 !important;
+  transform: none !important;
+}
+
+.profile-card .profile-stats.two-stats > div small,
+.profile-card .profile-status-text,
+.profile-card .status-only-card > small {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  line-height: 1.15 !important;
+  transform: none !important;
+}
+
+/* 방문객 정보 페이지 카드에는 기존보다 과도하게 붙지 않도록 별도 균형 */
+.compact-stats.two-card-stats .card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 84px !important;
+  padding: 12px !important;
+  text-align: center !important;
+}
+
+/* 일반/오염자 특별관: 404 뒤 전체 검은 화면 컷 전환 */
+.mad-intro-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 28px !important;
+  background: #000 !important;
+  color: #ff0000 !important;
+}
+
+.mad-intro-overlay.open {
+  display: flex !important;
+}
+
+.mad-intro-content {
+  width: min(860px, 100%) !important;
+  color: #ff0000 !important;
+}
+
+.mad-big-flash {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-size: clamp(54px, 13vw, 120px) !important;
+  font-weight: 1000 !important;
+  text-align: center !important;
+  line-height: 1.05 !important;
+  text-shadow: 0 0 26px rgba(255,0,0,.95), 0 0 4px #ff0000 !important;
+  animation: madScreenPop .38s cubic-bezier(.2,1.6,.2,1) both !important;
+}
+
+.mad-fullscreen-text {
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size: clamp(15px, 3.5vw, 24px) !important;
+  font-weight: 750 !important;
+  line-height: 1.7 !important;
+  text-align: left !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+  text-shadow: 0 0 10px rgba(255,0,0,.62) !important;
+}
+
+.who-am-i-screen {
+  word-break: break-all !important;
+  text-align: left !important;
+}
+
+.who-are-you {
+  font-size: clamp(48px, 12vw, 112px) !important;
+}
+
+@keyframes madScreenPop {
+  0% { transform: scale(.68); opacity: 0; filter: blur(9px); }
+  60% { transform: scale(1.08); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 괴이 모드 기본 프로필 앞글자: 남아 있는 금색을 텍스트 페인트까지 강제 제거 */
+html.entity-mode body .profile-card .profile-avatar,
+html.entity-mode body .profile-card .profile-avatar span,
+html.entity-mode body .profile-avatar span,
+html.entity-mode body .avatar span,
+body.entity-mode .profile-card .profile-avatar,
+body.entity-mode .profile-card .profile-avatar span,
+body.entity-mode .profile-avatar span,
+body.entity-mode .avatar span {
+  color: #b7fff3 !important;
+  -webkit-text-fill-color: #b7fff3 !important;
+  text-shadow: 0 0 12px rgba(83,210,191,.72) !important;
+  border-color: rgba(83,210,191,.74) !important;
+}
+
+/* 혹시 이전 span 규칙이 더 세게 먹을 때 */
+html.entity-mode body .profile-avatar > *,
+body.entity-mode .profile-avatar > * {
+  color: #b7fff3 !important;
+  -webkit-text-fill-color: #b7fff3 !important;
+}
+
+/* 괴이 모드 카테고리 위쪽 선 최종 추가 보정 */
+html.entity-mode body header,
+html.entity-mode body .blog-header,
+html.entity-mode body .blog-header::before,
+html.entity-mode body .blog-header::after,
+html.entity-mode body .category-strip,
+html.entity-mode body .category-strip::before,
+html.entity-mode body .category-strip::after,
+body.entity-mode header,
+body.entity-mode .blog-header,
+body.entity-mode .blog-header::before,
+body.entity-mode .blog-header::after,
+body.entity-mode .category-strip,
+body.entity-mode .category-strip::before,
+body.entity-mode .category-strip::after {
+  border-color: rgba(83,210,191,.68) !important;
+  box-shadow: inset 0 1px rgba(83,210,191,.20), inset 0 -1px rgba(83,210,191,.26) !important;
+}
+
+@media (max-width: 640px) {
+  .profile-card .profile-stats.two-stats > div,
+  .profile-card .status-only-card {
+    min-height: 58px !important;
+    height: 58px !important;
+  }
+
+  .mad-fullscreen-text {
+    font-size: 15px !important;
+  }
+}

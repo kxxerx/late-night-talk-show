@@ -1,8 +1,6 @@
-pollution-shop-starter v3.3
-- Added dramatic human/infected special-hall intro after 404.
-- Reworked mask-break animation into a clearer mask silhouette.
-- Mask-break modal now waits for user confirmation before releasing life.
-- Forced mask-break text/buttons red.
-- Fixed entity fallback avatar text color to cyan.
-- Added stronger entity line/border overrides for logo/category separators.
+pollution-shop-starter v3.4
+- Re-centered profile stat boxes in the side profile card.
+- Rebuilt human/infected special-hall prelude as full-screen black cut transitions.
+- Forced entity fallback avatar letters to cyan with text-fill-color.
+- Added stronger entity header/category separator overrides.
 - No SQL migration required.
