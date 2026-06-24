@@ -1,8 +1,11 @@
-pollution-shop-starter v3.1
-- Applied snack/entity category labels across all pages.
-- Hardened entity mode colors for empty inventory, category borders, placeholders, avatar, pager, and side buttons.
-- Preserved danger-zone red in entity mode.
-- Made entity invitation typing text red.
-- Centered profile stat boxes horizontally and vertically.
-- Dashboard gauge now uses mask_collapse_rate for entity users and fills red.
-- Admin status adjustments now update mask_collapse_rate for entity users via SQL migration.
+pollution-shop-starter v3.2
+- Centered final invitation line above audience button.
+- Profile avatar fallback now uses band nickname first.
+- Added avatar delete button on mypage.
+- Adjusted stat card vertical alignment on shop and mypage.
+- Changed contract party from 청 이사 to 청달래.
+- Updated entity sync judgement labels.
+- Added mask break animation and release_entity_life RPC.
+- Added entity life cancel item: 물거품 귀환권.
+- Clears entity CSS mode on logout.
+- Added mode-specific scrollbar styles.

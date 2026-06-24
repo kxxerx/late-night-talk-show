@@ -59,6 +59,7 @@ export async function getMyProfile() {
   if (error) throw error;
 
   applyVisitorModeClass(data);
+  handleEntityCollapseIfNeeded(data);
 
   if (data?.status === "withdrawn") {
     await supabase.auth.signOut();
@@ -87,10 +88,18 @@ export async function requireAdmin() {
   return profile;
 }
 
+export function clearVisitorModeClass() {
+  document.documentElement.classList.remove("entity-mode", "infected-mode");
+  document.body.classList.remove("entity-mode", "infected-mode");
+  try { localStorage.setItem("visitor_mode", "human"); } catch (_) {}
+  updateGlobalCategoryLabels("human");
+}
+
 export async function logout() {
   const ok = confirm("다시 방문하시겠습니까?");
   if (!ok) return;
   await supabase.auth.signOut();
+  clearVisitorModeClass();
   location.href = "index.html";
 }
 
@@ -104,8 +113,8 @@ export function profileAvatar(profile) {
   if (profile?.avatar_url) {
     return `<img src="${profile.avatar_url}" alt="프로필 이미지" onerror="this.style.display='none'">`;
   }
-  const name = profile?.display_name || "?";
-  return `<span>${name.slice(0, 2).toUpperCase()}</span>`;
+  const name = profile?.band_nickname || profile?.display_name || "?";
+  return `<span>${String(name).slice(0, 2).toUpperCase()}</span>`;
 }
 
 export function pollutionLabel(value) {
@@ -168,11 +177,10 @@ export function visitorKindLabel(profile) {
 
 export function maskCollapseJudgment(value) {
   const n = Number(value || 0);
-  if (n <= 20) return "가면 안정";
-  if (n <= 40) return "틈새 발생";
-  if (n <= 70) return "위장 불안정";
-  if (n <= 99) return "식별 임박";
-  return "가면 붕괴";
+  if (n >= 100) return "동기화가 해제되었습니다.";
+  if (n >= 76) return "동기화 해제 위험";
+  if (n >= 40) return "동기화 불안정";
+  return "동기화 안정적";
 }
 
 
@@ -223,3 +231,45 @@ export function updateGlobalCategoryLabels(profileOrMode = null) {
 }
 
 updateGlobalCategoryLabels();
+
+
+export async function handleEntityCollapseIfNeeded(profile) {
+  if (!profile || profile.visitor_type !== "entity") return false;
+  if (!profile.current_life_item_id) return false;
+  if (Number(profile.mask_collapse_rate || 0) < 100) return false;
+  if (window.__entityCollapseHandling) return true;
+
+  window.__entityCollapseHandling = true;
+
+  let modal = document.querySelector("#maskBreakModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "maskBreakModal";
+    modal.className = "soft-modal mask-break-modal open";
+    modal.innerHTML = `
+      <div class="soft-modal-box mask-break-box">
+        <div class="broken-mask" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <h2>동기화가 해제되었습니다.</h2>
+        <p>빌린 인생이 금이 가고, 가면은 원래의 얼굴을 더 이상 붙잡지 못합니다.</p>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  modal.classList.add("open");
+
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1600));
+    await supabase.rpc("release_entity_life", { p_reason: "동기화가 해제되었습니다." });
+  } catch (error) {
+    console.error(error);
+  }
+
+  setTimeout(() => {
+    location.reload();
+  }, 600);
+
+  return true;
+}

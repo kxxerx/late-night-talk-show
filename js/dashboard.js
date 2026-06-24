@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, applyVisitorModeClass } from "./common.js";
+import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, applyVisitorModeClass, clearVisitorModeClass } from "./common.js";
 
 await renderNav();
 let currentProfile = null;
@@ -13,9 +13,12 @@ function safeFileName(name) {
   return String(name || "avatar.png").toLowerCase().replace(/[^a-z0-9._-]/g, "-").slice(0, 80);
 }
 
+let avatarDeleteRequested = false;
+
 async function uploadAvatarIfSelected(profile) {
   const input = qs("#avatarFile");
   const file = input?.files?.[0];
+  if (avatarDeleteRequested) return "";
   if (!file) return qs("#avatarUrl")?.value.trim() || profile.avatar_url || "";
   if (!file.type.startsWith("image/")) throw new Error("이미지 파일만 업로드할 수 있습니다.");
   if (file.size > 2 * 1024 * 1024) throw new Error("프로필 이미지는 2MB 이하로 올려주세요.");
@@ -54,7 +57,8 @@ applyVisitorModeClass(profile);
 
   const bar = qs("#pollutionBar");
   if (bar) {
-    const metric = Number(visitorMetricValue(profile) || 0);
+    const rawMetric = visitorMetricValue(profile);
+    const metric = Number.isFinite(Number(rawMetric)) ? Number(rawMetric) : 0;
     bar.style.width = `${metric}%`;
     bar.textContent = `${metric}%`;
   }
@@ -75,6 +79,7 @@ qs("#profileForm")?.addEventListener("submit", async (event) => {
     const { error } = await supabase.rpc("update_my_profile", { p_display_name: displayName, p_band_nickname: bandNickname, p_avatar_url: avatarUrl });
     if (error) throw error;
     showMessage("방문객 정보 저장 완료", "success");
+    avatarDeleteRequested = false;
     if (qs("#avatarFile")) qs("#avatarFile").value = "";
     await loadDashboard();
   } catch (error) {
@@ -118,6 +123,7 @@ function openExitModal() {
       }
       showMessage(data.message, "success");
       await supabase.auth.signOut();
+      clearVisitorModeClass();
       setTimeout(() => location.href = "index.html", 700);
     });
   }
@@ -129,4 +135,12 @@ qs("#withdrawBtn")?.addEventListener("click", () => openExitModal());
 loadDashboard().catch(error => {
   console.error(error);
   showMessage(error.message, "error");
+});
+
+
+qs("#clearAvatarBtn")?.addEventListener("click", () => {
+  avatarDeleteRequested = true;
+  if (qs("#avatarUrl")) qs("#avatarUrl").value = "";
+  if (qs("#avatarFile")) qs("#avatarFile").value = "";
+  showMessage("프로필 이미지 삭제 예약됨. 저장을 누르면 반영됩니다.", "info");
 });

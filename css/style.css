@@ -4153,3 +4153,246 @@ body.entity-mode .profile-card button {
     padding: 5px 5px !important;
   }
 }
+
+
+
+/* v3.2 profile/avatar/entity-life/scroller refinements */
+
+/* 초대장 마지막 문구는 방청하기 버튼 위 중앙에 붙임 */
+#inviteDynamicContent .final-invite-line,
+.midnight-invite .final-invite-line,
+#audienceInvite.final-invite-line {
+  text-align: center !important;
+  margin: 18px auto 8px !important;
+  color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+/* 프로필 수치 카드 균형: 기본 페이지/방문객 정보 페이지 각각 보정 */
+.profile-stats.two-stats > div,
+.status-only-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 2px !important;
+  min-height: 50px !important;
+  padding: 6px !important;
+}
+
+.profile-stats.two-stats span,
+.status-only-card > span,
+.profile-stats.two-stats small,
+.status-only-card > small,
+.profile-status-text {
+  text-align: center !important;
+  align-self: center !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.compact-stats.two-card-stats .card {
+  min-height: 86px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 5px !important;
+  padding: 14px 12px !important;
+}
+
+.compact-stats.two-card-stats .card .muted,
+.compact-stats.two-card-stats .card .stat {
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.compact-stats.two-card-stats .card .stat {
+  line-height: 1.2 !important;
+}
+
+/* 괴이 모드 잔여선/빈 쇼핑백 강제 */
+html.entity-mode body .blog-header,
+body.entity-mode .blog-header {
+  border-bottom-color: rgba(83,210,191,.65) !important;
+  box-shadow: inset 0 -1px rgba(83,210,191,.28) !important;
+}
+
+html.entity-mode body .empty-inventory-box,
+body.entity-mode .empty-inventory-box,
+html.entity-mode body #inventoryList .empty-inventory-box,
+body.entity-mode #inventoryList .empty-inventory-box {
+  color: #78bfb2 !important;
+  border: 1px solid rgba(83,210,191,.56) !important;
+  background: #050908 !important;
+  box-shadow: 0 0 22px rgba(83,210,191,.09) !important;
+}
+
+/* 인생 동기화 해제 애니메이션 */
+.mask-break-modal {
+  z-index: 2147483647 !important;
+}
+
+.mask-break-box {
+  text-align: center !important;
+  border-color: rgba(255,0,0,.7) !important;
+  background: #020000 !important;
+  color: #ff2020 !important;
+  box-shadow: 0 0 48px rgba(255,0,0,.32) !important;
+}
+
+.mask-break-box h2,
+.mask-break-box p {
+  color: #ff2020 !important;
+}
+
+.broken-mask {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 0 auto 18px !important;
+  position: relative !important;
+  filter: drop-shadow(0 0 18px rgba(255,0,0,.55)) !important;
+}
+
+.broken-mask::before,
+.broken-mask::after,
+.broken-mask span {
+  content: "" !important;
+  position: absolute !important;
+  background: #f4e9d0 !important;
+  border: 2px solid #ff0000 !important;
+  box-shadow: inset 0 0 12px rgba(255,0,0,.25) !important;
+  animation: maskShardBreak 1.25s ease-in-out forwards !important;
+}
+
+.broken-mask::before {
+  width: 52px !important;
+  height: 92px !important;
+  left: 18px !important;
+  top: 12px !important;
+  border-radius: 70% 20% 50% 40% !important;
+  clip-path: polygon(0 0, 100% 6%, 70% 100%, 8% 78%) !important;
+}
+
+.broken-mask::after {
+  width: 52px !important;
+  height: 92px !important;
+  right: 18px !important;
+  top: 12px !important;
+  border-radius: 20% 70% 40% 50% !important;
+  clip-path: polygon(0 6%, 100% 0, 92% 78%, 30% 100%) !important;
+}
+
+.broken-mask span:nth-child(1) {
+  width: 24px !important;
+  height: 26px !important;
+  left: 48px !important;
+  top: 20px !important;
+  clip-path: polygon(0 0, 100% 30%, 45% 100%) !important;
+  animation-delay: .08s !important;
+}
+
+.broken-mask span:nth-child(2) {
+  width: 20px !important;
+  height: 24px !important;
+  left: 34px !important;
+  top: 72px !important;
+  clip-path: polygon(40% 0, 100% 100%, 0 72%) !important;
+  animation-delay: .14s !important;
+}
+
+.broken-mask span:nth-child(3) {
+  width: 22px !important;
+  height: 30px !important;
+  right: 35px !important;
+  top: 66px !important;
+  clip-path: polygon(0 100%, 75% 0, 100% 70%) !important;
+  animation-delay: .18s !important;
+}
+
+.broken-mask span:nth-child(4) {
+  width: 18px !important;
+  height: 22px !important;
+  right: 48px !important;
+  top: 28px !important;
+  clip-path: polygon(0 20%, 100% 0, 72% 100%) !important;
+  animation-delay: .22s !important;
+}
+
+@keyframes maskShardBreak {
+  0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+  45% { transform: translate(var(--x, 0), var(--y, 0)) rotate(6deg) scale(1.02); opacity: 1; }
+  100% { transform: translate(0, 34px) rotate(22deg) scale(.72); opacity: 0; }
+}
+
+.broken-mask::before { --x: -14px; --y: -8px; }
+.broken-mask::after { --x: 14px; --y: -8px; }
+
+/* 스크롤바: 기본/오염자/괴이 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d6a84f #070707;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070707;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d6a84f, #6e4b14);
+  border-radius: 999px;
+  border: 2px solid #070707;
+}
+
+.infected-mode * {
+  scrollbar-color: #ff3030 #090000;
+}
+
+.infected-mode ::-webkit-scrollbar-track {
+  background: #090000;
+}
+
+.infected-mode ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff3030, #6b0000);
+  border-color: #090000;
+}
+
+html.entity-mode *,
+body.entity-mode * {
+  scrollbar-color: #53d2bf #020605;
+}
+
+html.entity-mode ::-webkit-scrollbar-track,
+body.entity-mode ::-webkit-scrollbar-track {
+  background: #020605;
+}
+
+html.entity-mode ::-webkit-scrollbar-thumb,
+body.entity-mode ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #53d2bf, #0c6158);
+  border-color: #020605;
+}
+
+/* 프로필 이미지 삭제 버튼 정리 */
+.form-actions {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+@media (max-width: 640px) {
+  .compact-stats.two-card-stats .card {
+    min-height: 78px !important;
+  }
+}

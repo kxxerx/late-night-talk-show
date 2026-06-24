@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass } from "./common.js";
+import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass, handleEntityCollapseIfNeeded, clearVisitorModeClass } from "./common.js";
 
 let cachedSession = null;
 let cachedProfile = null;
@@ -184,7 +184,10 @@ function wireCategoryButtons() {
 
 async function fetchProfile(session) {
   document.querySelectorAll(".requires-login").forEach((node) => { node.hidden = !session; });
-  if (!session) return null;
+  if (!session) {
+    clearVisitorModeClass();
+    return null;
+  }
 
   const { data, error } = await supabase
     .from("profiles")
@@ -195,6 +198,7 @@ async function fetchProfile(session) {
   if (error) throw error;
 
   applyVisitorModeClass(data);
+  handleEntityCollapseIfNeeded(data);
   return data;
 }
 
@@ -378,6 +382,7 @@ function openGoodbyeModal() {
 
     qs("#confirmGoodbyeBtn").addEventListener("click", async () => {
       await supabase.auth.signOut();
+      clearVisitorModeClass();
       location.href = "index.html";
     });
   }
@@ -466,7 +471,7 @@ function openSecurityContractModal() {
     modal.innerHTML = `
       <div class="contract-box">
         <h2>표준 보안팀 근로계약서</h2>
-        <p class="contract-parties">갑 청 이사<br>을 ${displayName(cachedProfile)}</p>
+        <p class="contract-parties">갑 청달래<br>을 ${displayName(cachedProfile)}</p>
         <p class="contract-scroll">
           을은 본 계약의 체결과 동시에 (주) 백일몽 주식회사를 위해 몸과 영혼을 바쳐 헌신을 다할 것을 맹세한다.<br><br>
           을은 (주) 백일몽 주식회사에서 발생하는 모든 이상현상, 환청, 신체 변형, 사회적 고립, 근무 형태, 설명되지 않은 근무 배치에 대하여 이의를 제기하지 않는다.<br><br>
