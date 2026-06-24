@@ -3073,3 +3073,150 @@ body.entity-mode,
     font-size: 12px !important;
   }
 }
+
+
+/* v2.7 mobile scale + red invitation copy correction */
+
+/* 일반/오염자 초대장의 이리와 블록: 경고문과 같은 계열의 빨간 일반 글씨 */
+.midnight-invite .invite-red-copy,
+.midnight-invite .come-here-wall.invite-red-copy,
+.midnight-invite .glitched-warning.invite-red-copy {
+  color: #ff0000 !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.52) !important;
+}
+
+.midnight-invite .come-here-wall.invite-red-copy {
+  font-size: 14px !important;
+  line-height: 1.48 !important;
+  word-break: break-all !important;
+  max-height: none !important;
+  overflow: visible !important;
+  opacity: .96 !important;
+  margin: 16px 0 !important;
+}
+
+.midnight-invite .glitched-warning.invite-red-copy {
+  font-size: 14px !important;
+  line-height: 1.62 !important;
+  word-break: break-all !important;
+}
+
+.midnight-invite .play-with-us {
+  font-family: inherit !important;
+}
+
+/* 모바일에서 너무 작아진 프로필/상품 복구 */
+@media (max-width: 640px) {
+  .container {
+    width: min(100% - 22px, 1120px) !important;
+  }
+
+  .app-layout {
+    gap: 16px !important;
+  }
+
+  .profile-card {
+    padding: 16px !important;
+  }
+
+  .profile-avatar {
+    width: 76px !important;
+    height: 76px !important;
+  }
+
+  .profile-card h2 {
+    font-size: 19px !important;
+    margin: 6px 0 13px !important;
+  }
+
+  .profile-stats.two-stats {
+    gap: 9px !important;
+  }
+
+  .profile-stats.two-stats > div,
+  .status-only-card {
+    min-height: 70px !important;
+    padding: 9px 7px !important;
+    border-radius: 14px !important;
+  }
+
+  .profile-stats.two-stats span,
+  .status-only-card > span {
+    font-size: 22px !important;
+  }
+
+  .profile-stats.two-stats small,
+  .profile-status-text,
+  .status-only-card > small {
+    font-size: 13px !important;
+  }
+
+  .shop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .luxury-item-card {
+    padding: 10px !important;
+  }
+
+  .luxury-item-card .item-image-wrap {
+    height: 128px !important;
+    min-height: 128px !important;
+  }
+
+  .luxury-item-card .item-image-wrap img {
+    height: 128px !important;
+  }
+
+  .luxury-item-card h2 {
+    font-size: 14px !important;
+    min-height: 2.8em !important;
+  }
+
+  .luxury-item-card .price {
+    font-size: 13px !important;
+  }
+
+  .item-actions {
+    gap: 6px !important;
+  }
+
+  .item-actions button,
+  .item-actions .button {
+    font-size: 12px !important;
+    padding: 7px 4px !important;
+  }
+
+  .midnight-invite .come-here-wall.invite-red-copy,
+  .midnight-invite .glitched-warning.invite-red-copy {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* 아주 좁은 화면에서도 읽을 수만 있게, 상품을 카드 한 장 폭으로 너무 찌그러뜨리지 않음 */
+@media (max-width: 390px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .luxury-item-card .item-image-wrap {
+    height: 112px !important;
+    min-height: 112px !important;
+  }
+
+  .luxury-item-card .item-image-wrap img {
+    height: 112px !important;
+  }
+
+  .item-actions button,
+  .item-actions .button {
+    font-size: 11.5px !important;
+  }
+}

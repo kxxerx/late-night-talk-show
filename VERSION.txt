@@ -1,6 +1,5 @@
-pollution-shop-starter v2.6
-- Reduced profile stat card size and font scale.
-- Changed invitation '이리와' animation text to red, non-Gabia, button-like typography.
-- Removed nested contract scroll and styled the outer contract scrollbar in black/gold.
-- Unified entity mode colors toward black/cyan instead of leftover gold.
+pollution-shop-starter v2.7
+- Corrected 일반/오염자 invite 이리와 block to red default typography, matching warning copy.
+- Removed unintended Gabia/yellow emphasis from the repeated invite text.
+- Rebalanced mobile profile and item card sizing after v2.6 shrink.
 - No SQL migration required.
