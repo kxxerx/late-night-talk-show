@@ -445,6 +445,45 @@ async function loadItems() {
   cachedItems = data || [];
 }
 
+
+function openFirstVisitInviteModal(profile) {
+  if (!profile?.id) return;
+
+  const key = `golden_invite_notice_seen_${profile.id}`;
+  try {
+    if (localStorage.getItem(key) === "1") return;
+  } catch (_) {}
+
+  let modal = qs("#firstVisitInviteModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "firstVisitInviteModal";
+    modal.className = "soft-modal first-visit-invite-modal open";
+    modal.innerHTML = `
+      <div class="soft-modal-box first-visit-invite-box">
+        <div class="flying-envelope" aria-hidden="true">
+          <span class="letter-shadow"></span>
+          <span class="envelope-body"></span>
+          <span class="envelope-flap"></span>
+          <span class="letter-card"></span>
+          <span class="seal"></span>
+        </div>
+        <h2>초대장이 도착했습니다.</h2>
+        <p>방문객님을 환영합니다.<br>당신에게 초대장이 도착했습니다.<br>특별관을 확인해 주세요!</p>
+        <button id="confirmFirstVisitInviteBtn" type="button">확인</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    qs("#confirmFirstVisitInviteBtn").addEventListener("click", () => {
+      try { localStorage.setItem(key, "1"); } catch (_) {}
+      modal.classList.remove("open");
+    });
+  }
+
+  modal.classList.add("open");
+}
+
+
 async function loadShopHome() {
   cachedSession = await getSession();
   cachedProfile = await fetchProfile(cachedSession);
@@ -554,3 +593,5 @@ loadShopHome().catch(error => {
   console.error(error);
   showMessage(error.message, "error");
 });
+
+// v4.2 notice insertion fallback could not find cachedProfile assignment

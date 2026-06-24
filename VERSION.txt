@@ -1,7 +1,6 @@
-pollution-shop-starter v4.1
-- Fixed special-hall stuck at receiving state caused by JS newline syntax.
-- Rewrote invitation corruption as safe in-place character replacement.
-- Forced contract release purchase to show a separate modal overlay.
-- Reworked mask damage animation so base mask disappears and shards remain fallen.
-- Forced mask confirm button border red.
+pollution-shop-starter v4.2
+- Lowered text inside side profile stat boxes.
+- Added first-login invitation notice modal.
+- Added black/gold envelope arrival/opening animation.
+- First-login notice is stored per user in localStorage.
 - No SQL migration required.
