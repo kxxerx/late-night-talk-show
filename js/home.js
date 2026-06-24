@@ -447,19 +447,30 @@ async function loadItems() {
 
 
 
-function openFirstVisitInviteModal(profile) {
-  if (!profile?.id) return;
 
-  const key = `golden_invite_notice_seen_v43_${profile.id}`;
+function hasVisitedSpecialHall(profile) {
+  if (!profile?.id) return true;
   try {
-    if (localStorage.getItem(key) === "1") return;
+    return localStorage.getItem(`special_hall_seen_v44_${profile.id}`) === "1";
+  } catch (_) {
+    return false;
+  }
+}
+
+function openSpecialHallInviteNotice(profile) {
+  if (!profile?.id) return;
+  if (hasVisitedSpecialHall(profile)) return;
+
+  const sessionCloseKey = `special_hall_invite_notice_closed_v44_${profile.id}`;
+  try {
+    if (sessionStorage.getItem(sessionCloseKey) === "1") return;
   } catch (_) {}
 
-  let modal = qs("#firstVisitInviteModal");
+  let modal = qs("#specialHallInviteNoticeModal");
   if (!modal) {
     modal = document.createElement("div");
-    modal.id = "firstVisitInviteModal";
-    modal.className = "soft-modal first-visit-invite-modal open";
+    modal.id = "specialHallInviteNoticeModal";
+    modal.className = "soft-modal first-visit-invite-modal special-hall-invite-notice open";
     modal.innerHTML = `
       <div class="soft-modal-box first-visit-invite-box">
         <div class="flying-envelope" aria-hidden="true">
@@ -471,12 +482,20 @@ function openFirstVisitInviteModal(profile) {
         </div>
         <h2>초대장이 도착했습니다.</h2>
         <p>방문객님을 환영합니다.<br>당신에게 초대장이 도착했습니다.<br>특별관을 확인해 주세요!</p>
-        <button id="confirmFirstVisitInviteBtn" type="button">확인</button>
+        <div class="notice-actions">
+          <button id="goSpecialHallBtn" type="button">특별관 확인하기</button>
+          <button id="closeSpecialHallInviteBtn" type="button" class="button secondary">나중에 확인</button>
+        </div>
       </div>
     `;
     document.body.appendChild(modal);
-    qs("#confirmFirstVisitInviteBtn").addEventListener("click", () => {
-      try { localStorage.setItem(key, "1"); } catch (_) {}
+
+    qs("#goSpecialHallBtn").addEventListener("click", () => {
+      location.href = "partner.html";
+    });
+
+    qs("#closeSpecialHallInviteBtn").addEventListener("click", () => {
+      try { sessionStorage.setItem(sessionCloseKey, "1"); } catch (_) {}
       modal.classList.remove("open");
       modal.setAttribute("hidden", "");
     });
@@ -487,11 +506,13 @@ function openFirstVisitInviteModal(profile) {
   document.body.classList.add("modal-open");
 }
 
-function scheduleFirstVisitInviteModal(profile) {
+function scheduleSpecialHallInviteNotice(profile) {
   if (!profile?.id) return;
-  window.clearTimeout(window.__firstVisitInviteTimer);
-  window.__firstVisitInviteTimer = window.setTimeout(() => {
-    openFirstVisitInviteModal(profile);
+  if (hasVisitedSpecialHall(profile)) return;
+
+  window.clearTimeout(window.__specialHallInviteNoticeTimer);
+  window.__specialHallInviteNoticeTimer = window.setTimeout(() => {
+    openSpecialHallInviteNotice(profile);
   }, 800);
 }
 
@@ -499,6 +520,7 @@ function scheduleFirstVisitInviteModal(profile) {
 async function loadShopHome() {
   cachedSession = await getSession();
   cachedProfile = await fetchProfile(cachedSession);
+  scheduleSpecialHallInviteNotice(cachedProfile);
   await loadItems();
   renderSidePanel();
   updateCategoryLabels();
@@ -606,4 +628,3 @@ loadShopHome().catch(error => {
   showMessage(error.message, "error");
 });
 
-// v4.2 notice insertion fallback could not find cachedProfile assignment

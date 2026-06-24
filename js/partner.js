@@ -6,6 +6,11 @@ await revealMemberLinks();
 const profile = await getMyProfile();
 applyVisitorModeClass(profile);
 
+try {
+  if (profile?.id) localStorage.setItem(`special_hall_seen_v44_${profile.id}`, "1");
+} catch (_) {}
+
+
 const PROCLAMATION_TEXT = "내가 백만가면의 소유자요, 혼돈의 군주요, 광기의 정점이요, 쾌락과 유희의 꿈이요, 전쟁의 선동자요, 과학의 어버이요, 낮은 네발짐승이요, 기는 자의 욕망이요, 별의 군주요, 환상의 심연이요, 지혜의 입이요, 충동의 포효요, 달의 뒷면이요, 나는...";
 const WHO_AM_I_TEXT = "나는 누구야? ".repeat(28);
 const REDACTION_MAP = [

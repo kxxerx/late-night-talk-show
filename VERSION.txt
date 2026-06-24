@@ -1,6 +1,6 @@
-pollution-shop-starter v4.3
-- Fixed first-login invitation notice not showing.
-- Schedules notice modal 0.8s after profile load.
-- Changed localStorage key to v43 so existing users can see it once.
-- Strengthened z-index/display rules for the notice modal.
+pollution-shop-starter v4.4
+- Invitation notice now appears for accounts that have not visited the special hall.
+- Visiting partner.html stores special_hall_seen_v44_USERID in localStorage.
+- Closing the notice only suppresses it for the current browser session.
+- Added Special Hall confirmation button in the notice modal.
 - No SQL migration required.
