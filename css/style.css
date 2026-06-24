@@ -5795,3 +5795,203 @@ body.entity-mode .category-strip {
   0% { transform: translate(0,0) rotate(0deg); opacity: .8; }
   100% { transform: translate(var(--px), var(--py)) rotate(var(--pr)); opacity: 1; }
 }
+
+
+
+/* v4.1 hard fixes: invite JS, contract release popup, final mask fall */
+
+/* 초대장 원문 문자별 변질 */
+.morph-line {
+  white-space: pre-wrap !important;
+}
+
+.morph-char {
+  display: inline !important;
+}
+
+.morph-char.is-changing {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  filter: blur(1px) contrast(1.4) !important;
+}
+
+.morph-char.is-redacted {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  font-family: "Noto Sans KR", system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 0 8px rgba(255,0,0,.64) !important;
+}
+
+.original-invite-block.is-corrupting .original-warning,
+.original-invite-block.is-corrupting .original-play,
+.original-invite-block.is-corrupting .original-gabia {
+  animation: none !important;
+}
+
+/* 가면 훼손 팝업 테두리/버튼 전부 붉은색 */
+#maskBreakModal .soft-modal-box,
+#maskBreakModal .mask-break-box,
+.mask-break-modal .soft-modal-box,
+.mask-break-box {
+  border: 2px solid #ff0000 !important;
+  outline: 1px solid rgba(255,0,0,.5) !important;
+  box-shadow: 0 0 58px rgba(255,0,0,.52), inset 0 0 24px rgba(255,0,0,.18) !important;
+}
+
+#maskBreakModal button,
+#maskBreakModal #confirmMaskBreakBtn,
+.mask-break-modal button,
+.mask-break-modal #confirmMaskBreakBtn {
+  border: 1px solid #ff0000 !important;
+  outline: none !important;
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  background: #120000 !important;
+  box-shadow: 0 0 16px rgba(255,0,0,.46) !important;
+}
+
+/* 가면: 본체는 깨진 뒤 사라지고 조각만 아래에 쌓임 */
+.mask-break-box .broken-mask {
+  position: relative !important;
+  height: 168px !important;
+  margin-bottom: 2px !important;
+  overflow: visible !important;
+  animation: none !important;
+}
+
+.mask-break-box .broken-mask::before {
+  animation: wholeMaskDisappear 2.4s ease-in-out forwards !important;
+}
+
+.mask-break-box .broken-mask::after {
+  animation: crackDisappear 2.4s ease-in-out forwards !important;
+}
+
+.mask-break-box .broken-mask .mask-eye,
+.mask-break-box .broken-mask .mask-crack,
+.mask-break-box .broken-mask .mask-shard {
+  animation-duration: 2.4s !important;
+  animation-fill-mode: forwards !important;
+  animation-iteration-count: 1 !important;
+  animation-timing-function: cubic-bezier(.2,.72,.22,1) !important;
+}
+
+.mask-break-box .broken-mask .mask-eye.left { --fall-x: -45px; --fall-y: 116px; --fall-r: -55deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-eye.right { --fall-x: 45px; --fall-y: 116px; --fall-r: 55deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-crack.one { --fall-x: -20px; --fall-y: 126px; --fall-r: 92deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-crack.two { --fall-x: 24px; --fall-y: 126px; --fall-r: -90deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-crack.three { --fall-x: 4px; --fall-y: 134px; --fall-r: 28deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s1 { --fall-x: -58px; --fall-y: 104px; --fall-r: -72deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s2 { --fall-x: 58px; --fall-y: 104px; --fall-r: 70deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s3 { --fall-x: -38px; --fall-y: 122px; --fall-r: -104deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s4 { --fall-x: 42px; --fall-y: 122px; --fall-r: 105deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s5 { --fall-x: -8px; --fall-y: 114px; --fall-r: 34deg; animation-name: maskShardDropAndStay !important; }
+.mask-break-box .broken-mask .mask-shard.s6 { --fall-x: 12px; --fall-y: 134px; --fall-r: -36deg; animation-name: maskShardDropAndStay !important; }
+
+@keyframes wholeMaskDisappear {
+  0%, 26% { opacity: 1; transform: translate(0,0) scale(1); }
+  36% { opacity: .55; transform: translateY(8px) scale(.98); }
+  54%, 100% { opacity: 0; transform: translateY(34px) scale(.72); }
+}
+
+@keyframes crackDisappear {
+  0%, 30% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+
+@keyframes maskShardDropAndStay {
+  0%, 30% { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  34% { opacity: 1; }
+  62% { transform: translate(calc(var(--fall-x) * .52), calc(var(--fall-y) * .58)) rotate(calc(var(--fall-r) * .56)); opacity: 1; }
+  100% { transform: translate(var(--fall-x), var(--fall-y)) rotate(var(--fall-r)); opacity: 1; }
+}
+
+/* 황금 해약서: 가면 팝업처럼 별도의 화면으로 강제 */
+#contractReleaseModal,
+.contract-release-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  background: rgba(0,0,0,.72) !important;
+}
+
+#contractReleaseModal.open,
+.contract-release-modal.open {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#contractReleaseModal .contract-release-box,
+.contract-release-modal .contract-release-box {
+  width: min(520px, calc(100vw - 32px)) !important;
+  background:
+    radial-gradient(circle at 50% 0%, #ffffff 0%, #fffef5 44%, #fff0aa 100%) !important;
+  border: 3px solid #ffd95a !important;
+  color: #c89100 !important;
+  box-shadow: 0 0 76px rgba(255,232,124,.95), 0 20px 60px rgba(0,0,0,.48) !important;
+  text-align: center !important;
+}
+
+#contractReleaseModal .contract-release-box h2,
+#contractReleaseModal .contract-release-box p,
+.contract-release-modal .contract-release-box h2,
+.contract-release-modal .contract-release-box p {
+  color: #c89100 !important;
+  -webkit-text-fill-color: #c89100 !important;
+  text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 18px rgba(255,218,82,.75) !important;
+  font-weight: 900 !important;
+}
+
+#contractReleaseModal .contract-release-box p,
+.contract-release-modal .contract-release-box p {
+  font-size: 17px !important;
+  line-height: 1.8 !important;
+}
+
+#contractReleaseModal .contract-release-box button,
+.contract-release-modal .contract-release-box button {
+  background: #ffffff !important;
+  color: #a87400 !important;
+  -webkit-text-fill-color: #a87400 !important;
+  border-color: #ffd95a !important;
+  box-shadow: 0 0 22px rgba(255,222,92,.78) !important;
+}
+
+.torn-contract .paper-piece {
+  position: absolute !important;
+  background:
+    repeating-linear-gradient(180deg, rgba(160,110,0,.14) 0 1px, transparent 1px 11px),
+    linear-gradient(180deg, #ffffff, #fff3bf) !important;
+  border: 1px solid #d5a322 !important;
+  box-shadow: 0 0 14px rgba(255,230,120,.75) !important;
+  animation: paperPieceFly 0.9s ease-in-out infinite alternate !important;
+}
+
+.torn-contract .paper-piece.p1 {
+  left: 70px !important; top: 34px !important; width: 22px !important; height: 28px !important;
+  clip-path: polygon(0 0, 100% 18%, 74% 100%, 12% 66%) !important;
+  --px: -18px; --py: 20px; --pr: -34deg;
+}
+
+.torn-contract .paper-piece.p2 {
+  right: 68px !important; top: 44px !important; width: 24px !important; height: 30px !important;
+  clip-path: polygon(22% 0, 100% 12%, 82% 86%, 0 100%) !important;
+  --px: 18px; --py: 24px; --pr: 36deg;
+}
+
+.torn-contract .paper-piece.p3 {
+  left: 83px !important; top: 76px !important; width: 20px !important; height: 24px !important;
+  clip-path: polygon(0 12%, 100% 0, 74% 100%, 18% 84%) !important;
+  --px: 0px; --py: 32px; --pr: 18deg;
+}
+
+@keyframes paperPieceFly {
+  0% { transform: translate(0,0) rotate(0deg); opacity: .8; }
+  100% { transform: translate(var(--px), var(--py)) rotate(var(--pr)); opacity: 1; }
+}

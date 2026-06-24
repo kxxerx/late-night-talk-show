@@ -34,15 +34,11 @@ function typeText(node, text, interval = 18) {
   });
 }
 
-function splitTextKeepingChars(text) {
-  return Array.from(text);
-}
-
 function buildMorphLine(original, redacted, className = "") {
   const p = document.createElement("p");
   p.className = className;
-  const originalChars = splitTextKeepingChars(original);
-  const redactedChars = splitTextKeepingChars(redacted);
+  const originalChars = Array.from(original);
+  const redactedChars = Array.from(redacted);
   const max = Math.max(originalChars.length, redactedChars.length);
 
   for (let i = 0; i < max; i += 1) {
@@ -50,19 +46,15 @@ function buildMorphLine(original, redacted, className = "") {
     span.className = "morph-char";
     span.dataset.to = redactedChars[i] ?? "";
     span.textContent = originalChars[i] ?? "";
-    if ((originalChars[i] ?? "") === "
-") span.textContent = "
-";
     p.appendChild(span);
   }
 
   return p;
 }
 
-async function morphChars(container, interval = 18) {
+async function morphChars(container, interval = 12) {
   const chars = Array.from(container.querySelectorAll(".morph-char"));
-  for (let i = 0; i < chars.length; i += 1) {
-    const span = chars[i];
+  for (const span of chars) {
     span.classList.add("is-changing");
     await sleep(interval);
     span.textContent = span.dataset.to || "";
@@ -137,6 +129,7 @@ async function runHumanPrelude() {
 
 function renderOriginalInvitation(content) {
   qs("#inviteLead").textContent = "수신 중입니다.";
+
   const warning = "단, 이 버튼을 누름으로써 발생하는 공포, 환청, ■■, ■■■■ 등의 문제에 대하여 골든 리조트는 일체의 배상책임이 없습니다.";
   const play = "우 리 같 이 놀 자";
   const gabia = "안녕하십니까! 이 밤의 즐거움. 매일 만나는 새로운 얼굴. 그리고 친근한 당신의 사회자! 안녕하십니까. 여기는 심야 토크쇼입니다! 오늘의 방청객으로 초대된 것을 환영합니다.";
@@ -216,11 +209,13 @@ function renderInvite() {
     document.body.classList.add("entity-invite-page");
     renderEntityInvite().catch(error => {
       console.error(error);
+      qs("#inviteLead").textContent = "수신 오류";
       showMessage(error.message, "error");
     });
   } else {
     renderHumanInvite().catch(error => {
       console.error(error);
+      qs("#inviteLead").textContent = "수신 오류";
       showMessage(error.message, "error");
     });
   }

@@ -142,15 +142,34 @@ function renderItems() {
       }
 
       const itemId = button.dataset.buy;
+      const item = cachedItems.find(row => String(row.id) === String(itemId));
+
       button.disabled = true;
       button.textContent = "처리 중";
 
-      const { data, error } = await supabase.rpc("purchase_item", { p_item_id: itemId });
+      try {
+        const { data, error } = await supabase.rpc("purchase_item", { p_item_id: itemId });
+        if (error) throw error;
 
-      if (error) showMessage(friendlyError(error.message), "error");
-      else showMessage(data.message || "구매 완료", "success");
+        const isContractRelease =
+          data?.contract_released ||
+          item?.item_kind === "contract_release" ||
+          item?.effect_type === "contract_release" ||
+          item?.name === "황금 해약서" ||
+          data?.message?.includes("근로계약서");
 
-      await loadShopHome();
+        if (isContractRelease) {
+          openContractReleaseModal();
+          return;
+        }
+
+        showMessage(data?.message || "구매 완료", "success");
+        await loadShopHome();
+      } catch (error) {
+        showMessage(friendlyError(error.message), "error");
+        button.disabled = false;
+        button.textContent = "구입";
+      }
     });
   });
 }
@@ -446,7 +465,7 @@ function openContractReleaseModal() {
   if (!modal) {
     modal = document.createElement("div");
     modal.id = "contractReleaseModal";
-    modal.className = "soft-modal contract-release-modal";
+    modal.className = "soft-modal contract-release-modal open";
     modal.innerHTML = `
       <div class="soft-modal-box contract-release-box">
         <div class="torn-contract" aria-hidden="true">
