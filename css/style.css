@@ -3966,3 +3966,190 @@ body.entity-mode .gauge-bar {
     font-size: 10.5px !important;
   }
 }
+
+
+
+/* v3.1 cross-page category labels, entity leftovers, profile centering, entity gauge fix */
+
+/* 괴이 모드: 금색 잔여선, 설명/placeholder, pager, 빈 쇼핑백까지 청록으로 */
+html.entity-mode body .category-strip,
+body.entity-mode .category-strip {
+  border-top-color: rgba(83,210,191,.55) !important;
+  border-bottom-color: rgba(83,210,191,.55) !important;
+  box-shadow: inset 0 1px rgba(83,210,191,.18), inset 0 -1px rgba(83,210,191,.14) !important;
+}
+
+html.entity-mode body input::placeholder,
+html.entity-mode body textarea::placeholder,
+body.entity-mode input::placeholder,
+body.entity-mode textarea::placeholder {
+  color: rgba(183,255,243,.62) !important;
+}
+
+html.entity-mode body small.muted,
+html.entity-mode body .muted,
+html.entity-mode body .hint,
+html.entity-mode body .form-hint,
+body.entity-mode small.muted,
+body.entity-mode .muted,
+body.entity-mode .hint,
+body.entity-mode .form-hint {
+  color: #78bfb2 !important;
+}
+
+/* 기념품샵 떠나기 영역은 괴이 모드에서도 붉은색 유지 */
+html.entity-mode body .danger-zone,
+body.entity-mode .danger-zone {
+  border-color: rgba(255,0,0,.48) !important;
+  background: #080000 !important;
+}
+
+html.entity-mode body .danger-zone h2,
+html.entity-mode body .danger-zone p,
+html.entity-mode body .danger-zone .muted,
+body.entity-mode .danger-zone h2,
+body.entity-mode .danger-zone p,
+body.entity-mode .danger-zone .muted {
+  color: #ff2020 !important;
+}
+
+html.entity-mode body .danger-zone button,
+body.entity-mode .danger-zone button {
+  color: #ff2020 !important;
+  border-color: #ff2020 !important;
+  background: #150000 !important;
+}
+
+/* 관리자 페이지네이션 */
+html.entity-mode body .pager,
+body.entity-mode .pager {
+  color: #78bfb2 !important;
+}
+
+html.entity-mode body .pager span,
+body.entity-mode .pager span {
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.45) !important;
+}
+
+html.entity-mode body .pager button,
+body.entity-mode .pager button {
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.6) !important;
+  background: #020605 !important;
+}
+
+/* 쇼핑백 빈 상태 */
+html.entity-mode body .empty-inventory-box,
+body.entity-mode .empty-inventory-box {
+  color: #78bfb2 !important;
+  border-color: rgba(83,210,191,.52) !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(83,210,191,.028) 0 1px, transparent 1px 8px),
+    #050908 !important;
+}
+
+/* 프로필 사진 계열 */
+html.entity-mode body .avatar,
+html.entity-mode body .avatar.big,
+html.entity-mode body .profile-avatar,
+body.entity-mode .avatar,
+body.entity-mode .avatar.big,
+body.entity-mode .profile-avatar {
+  border-color: rgba(83,210,191,.58) !important;
+  background: #020605 !important;
+  color: #b7fff3 !important;
+  box-shadow: 0 0 18px rgba(83,210,191,.12) !important;
+}
+
+/* 괴이 초대장 본문은 붉은색 */
+html.entity-mode body .entity-welcome,
+html.entity-mode body .entity-copy,
+body.entity-mode .entity-welcome,
+body.entity-mode .entity-copy {
+  color: #ff2020 !important;
+  text-shadow: 0 0 10px rgba(255,0,0,.55) !important;
+}
+
+/* 프로필 수치 박스: 가로/세로 모두 중앙. 기존 stat/paragraph margin도 제거 */
+.profile-stats.two-stats > div,
+.status-only-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 2px !important;
+  min-height: 48px !important;
+  padding: 5px 6px !important;
+}
+
+.profile-stats.two-stats > div *,
+.status-only-card * {
+  text-align: center !important;
+  align-self: center !important;
+  justify-self: center !important;
+}
+
+.profile-stats.two-stats span,
+.status-only-card > span {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-size: 17px !important;
+  line-height: 1 !important;
+}
+
+.profile-stats.two-stats small,
+.profile-status-text,
+.status-only-card > small {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+}
+
+/* 방문객 정보 페이지 게이지: 실제 .pollution-bar 자체가 fill 역할 */
+html.entity-mode body .pollution-meter,
+body.entity-mode .pollution-meter {
+  background: #020605 !important;
+  border: 1px solid rgba(255,0,0,.42) !important;
+  box-shadow: inset 0 0 12px rgba(255,0,0,.12) !important;
+}
+
+html.entity-mode body #pollutionBar.pollution-bar,
+body.entity-mode #pollutionBar.pollution-bar,
+html.entity-mode body .pollution-bar,
+body.entity-mode .pollution-bar {
+  background: linear-gradient(90deg, #3a0000, #ff0000) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(255,0,0,.5) !important;
+  border-color: rgba(255,0,0,.65) !important;
+}
+
+/* 괴이 모드 메뉴/사이드 버튼 남은 금색 제거 추가 */
+html.entity-mode body header .category-link,
+html.entity-mode body .category-link,
+body.entity-mode header .category-link,
+body.entity-mode .category-link,
+html.entity-mode body .profile-card .button,
+html.entity-mode body .profile-card button,
+body.entity-mode .profile-card .button,
+body.entity-mode .profile-card button {
+  color: #b7fff3 !important;
+  border-color: rgba(83,210,191,.7) !important;
+  background: #020605 !important;
+}
+
+@media (max-width: 640px) {
+  .profile-stats.two-stats > div,
+  .status-only-card {
+    min-height: 50px !important;
+    padding: 5px 5px !important;
+  }
+}

@@ -1,10 +1,8 @@
-pollution-shop-starter v3.0
-- Fixed final invitation line style.
-- Invite lead changes to 수신이 완료되었습니다 after full animation.
-- Entity invitation text now types character by character.
-- Forced 404 NOT FOUND to stay red in entity mode.
-- Forced 또 놀 러 와 to bright yellow in all modes.
-- Strengthened entity mode category and side-action color overrides.
-- Entity status gauge fills red.
-- Profile stat boxes vertically centered.
-- No SQL migration required.
+pollution-shop-starter v3.1
+- Applied snack/entity category labels across all pages.
+- Hardened entity mode colors for empty inventory, category borders, placeholders, avatar, pager, and side buttons.
+- Preserved danger-zone red in entity mode.
+- Made entity invitation typing text red.
+- Centered profile stat boxes horizontally and vertically.
+- Dashboard gauge now uses mask_collapse_rate for entity users and fills red.
+- Admin status adjustments now update mask_collapse_rate for entity users via SQL migration.

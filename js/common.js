@@ -58,6 +58,8 @@ export async function getMyProfile() {
 
   if (error) throw error;
 
+  applyVisitorModeClass(data);
+
   if (data?.status === "withdrawn") {
     await supabase.auth.signOut();
     location.href = "index.html";
@@ -116,16 +118,22 @@ export function pollutionLabel(value) {
 }
 
 export function visitorStatusClass(profileOrValue) {
-  const n = typeof profileOrValue === "object" && profileOrValue !== null
-    ? Number(profileOrValue.pollution || 0)
-    : Number(profileOrValue || 0);
+  if (typeof profileOrValue === "object" && profileOrValue !== null) {
+    if (profileOrValue.visitor_type === "entity") {
+      const n = Number(profileOrValue.mask_collapse_rate || 0);
+      return n >= 100 ? "status-red" : "status-yellow";
+    }
+    const n = Number(profileOrValue.pollution || 0);
+    return n >= 100 ? "status-red" : "status-yellow";
+  }
+  const n = Number(profileOrValue || 0);
   if (n >= 100) return "status-red";
   return "status-yellow";
 }
 
 export function visitorStatusText(profileOrValue) {
   if (typeof profileOrValue === "object" && profileOrValue !== null) {
-    if (profileOrValue.visitor_type === "entity") return profileOrValue.current_life_item_id ? "가면 붕괴율" : "측정 불필요";
+    if (profileOrValue.visitor_type === "entity") return profileOrValue.current_life_item_id ? maskCollapseJudgment(profileOrValue.mask_collapse_rate) : "측정 불필요";
     return pollutionLabel(Number(profileOrValue.pollution || 0));
   }
   return pollutionLabel(Number(profileOrValue || 0));
@@ -180,4 +188,38 @@ export function applyVisitorModeClass(profile) {
     else if (isInfected) localStorage.setItem("visitor_mode", "infected");
     else localStorage.setItem("visitor_mode", "human");
   } catch (_) {}
+  updateGlobalCategoryLabels(profile);
 }
+
+
+export function updateGlobalCategoryLabels(profileOrMode = null) {
+  const mode = typeof profileOrMode === "string"
+    ? profileOrMode
+    : profileOrMode?.visitor_type || (() => {
+        try { return localStorage.getItem("visitor_mode") || "human"; } catch (_) { return "human"; }
+      })();
+
+  const entityLabels = {
+    all: "전체",
+    main: "인생 진열장",
+    cleanse: "가면 수선소",
+    special: "■■ ■■",
+    event: "초대권"
+  };
+
+  const humanLabels = {
+    all: "전체",
+    main: "기념품",
+    cleanse: "스낵",
+    special: "특별 상품",
+    event: "초대권"
+  };
+
+  const labels = mode === "entity" ? entityLabels : humanLabels;
+  document.querySelectorAll("[data-category]").forEach((node) => {
+    const key = node.dataset.category || "all";
+    if (labels[key]) node.textContent = labels[key];
+  });
+}
+
+updateGlobalCategoryLabels();

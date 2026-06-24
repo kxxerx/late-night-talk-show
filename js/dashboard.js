@@ -54,8 +54,9 @@ applyVisitorModeClass(profile);
 
   const bar = qs("#pollutionBar");
   if (bar) {
-    bar.style.width = `${profile.pollution}%`;
-    bar.textContent = `${profile.pollution}%`;
+    const metric = Number(visitorMetricValue(profile) || 0);
+    bar.style.width = `${metric}%`;
+    bar.textContent = `${metric}%`;
   }
 
   const { data: currencyLogs } = await supabase.from("currency_logs").select("*").order("created_at", { ascending: false }).limit(5);

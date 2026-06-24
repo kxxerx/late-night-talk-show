@@ -1,8 +1,9 @@
 import { supabase } from "./supabaseClient.js";
-import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks } from "./common.js";
+import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
 await revealMemberLinks();
 const adminProfile = await requireAdmin();
+applyVisitorModeClass(adminProfile);
 
 let users = [];
 let items = [];
@@ -114,7 +115,7 @@ function renderItemsAdmin() {
     <tr>
       <td><input class="table-input short" data-item-name="${item.id}" value="${safeText(item.name || "")}"></td>
       <td><input class="table-input tiny" type="number" data-item-price="${item.id}" value="${Number(item.price || 0)}"></td>
-      <td><select data-item-category="${item.id}"><option value="main" ${item.category === "main" ? "selected" : ""}>기념품</option><option value="cleanse" ${item.category === "cleanse" ? "selected" : ""}>분실물</option><option value="special" ${item.category === "special" ? "selected" : ""}>특별 상품</option><option value="event" ${item.category === "event" ? "selected" : ""}>초대권</option></select></td>
+      <td><select data-item-category="${item.id}"><option value="main" ${item.category === "main" ? "selected" : ""}>기념품</option><option value="cleanse" ${item.category === "cleanse" ? "selected" : ""}>스낵</option><option value="special" ${item.category === "special" ? "selected" : ""}>특별 상품</option><option value="event" ${item.category === "event" ? "selected" : ""}>초대권</option></select></td>
       <td><select data-item-audience="${item.id}"><option value="human" ${item.audience === "human" || !item.audience ? "selected" : ""}>일반</option><option value="infected" ${item.audience === "infected" ? "selected" : ""}>오염자</option><option value="entity" ${item.audience === "entity" ? "selected" : ""}>괴이</option><option value="all" ${item.audience === "all" ? "selected" : ""}>공통</option></select></td>
       <td><select data-item-kind="${item.id}"><option value="regular" ${item.item_kind === "regular" || !item.item_kind ? "selected" : ""}>일반</option><option value="life" ${item.item_kind === "life" ? "selected" : ""}>인생</option><option value="mask_care" ${item.item_kind === "mask_care" ? "selected" : ""}>가면관리</option></select></td>
       <td><input class="table-input tiny" data-item-effect-type="${item.id}" value="${safeText(item.effect_type || "pollution_delta")}"></td>
