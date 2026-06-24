@@ -131,7 +131,7 @@ function renderLoggedInSide(profile) {
       <div><h2 class="visitor-name" title="${name}">${name}</h2></div>
       <div class="profile-stats two-stats">
         <div><span>${profile.currency}</span><small>유쾌주화</small></div>
-        <div><span>${profile.visitor_type === "entity" ? "—" : profile.pollution}</span><small>방문객 상태</small><strong class="profile-status-text ${visitorStatusClass(profile)}">${visitorStatusText(profile)}</strong></div>
+        <div class="status-only-card"><span class="profile-status-text ${visitorStatusClass(profile)}">${visitorStatusText(profile)}</span></div>
       </div>
       <div class="side-actions unified-actions">
         <a class="button secondary" href="inventory.html">쇼핑백</a>
@@ -205,19 +205,94 @@ async function handleSideSignup(event) {
   showMessage("방문객 등록은 완료되었습니다. 이메일 확인 설정이 켜져 있으면 입장이 막힐 수 있습니다.", "success");
   document.querySelector("#signupModal")?.classList.remove("open");
 }
+
+function ensureItemDetailModal() {
+  let modal = document.querySelector("#itemDetailModal");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.id = "itemDetailModal";
+  modal.className = "soft-modal item-detail-modal";
+  modal.innerHTML = `
+    <div class="soft-modal-box item-detail-box">
+      <button id="closeItemDetailBtn" class="modal-close" type="button">×</button>
+      <div id="itemDetailContent"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.id === "closeItemDetailBtn") {
+      modal.classList.remove("open");
+    }
+  });
+
+  return modal;
+}
+
+function openItemDetail(item) {
+  const modal = ensureItemDetailModal();
+  const content = modal.querySelector("#itemDetailContent");
+  content.innerHTML = `
+    <div class="detail-image-wrap">
+      ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+    </div>
+    <h2>${item.name}</h2>
+    <p class="detail-price">${item.price} 유쾌주화</p>
+    <p class="detail-description">${item.description || "상세 설명이 등록되지 않았습니다."}</p>
+  `;
+  modal.classList.add("open");
+}
+
 function filteredItems() { return currentCategory === "all" ? cachedItems : cachedItems.filter(item => (item.category || "main") === currentCategory); }
 function renderItems() {
   const items = filteredItems();
-  if (!items.length) { qs("#shopList").innerHTML = `<article class="panel empty-panel"><h2>등록된 아이템 없음</h2><p class="muted">이 선반에는 아직 아무것도 없습니다.</p></article>`; return; }
+  if (!items.length) {
+    qs("#shopList").innerHTML = `<article class="panel empty-panel"><h2>등록된 물품 없음</h2><p class="muted">이 선반에는 아직 아무것도 없습니다.</p></article>`;
+    return;
+  }
+
   qs("#shopList").innerHTML = items.map(item => `
-    <article class="item-card"><div class="item-image-wrap">${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}</div><div class="item-body"><h2>${item.name}</h2><p>${item.description}</p></div><div class="item-footer"><p class="price">${item.price} 유쾌주화</p><button data-buy="${item.id}">구입</button></div></article>`).join("");
+    <article class="item-card luxury-item-card">
+      <div class="item-image-wrap">
+        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+      </div>
+      <div class="item-body">
+        <h2>${item.name}</h2>
+      </div>
+      <div class="item-footer">
+        <p class="price">${item.price} 유쾌주화</p>
+        <div class="item-actions">
+          <button data-detail="${item.id}" class="button secondary" type="button">자세히</button>
+          <button data-buy="${item.id}" type="button">구입</button>
+        </div>
+      </div>
+    </article>
+  `).join("");
+
+  document.querySelectorAll("[data-detail]").forEach(button => {
+    button.addEventListener("click", () => {
+      const item = cachedItems.find(row => String(row.id) === String(button.dataset.detail));
+      if (item) openItemDetail(item);
+    });
+  });
+
   document.querySelectorAll("[data-buy]").forEach(button => button.addEventListener("click", async () => {
-    if (!cachedSession || !cachedProfile) { showMessage("구매하려면 먼저 방문객 등록을 해주세요.", "error"); qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (!cachedSession || !cachedProfile) {
+      showMessage("구매하려면 먼저 방문객 등록을 해주세요.", "error");
+      qs("#sidePanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
     const itemId = button.dataset.buy;
-    button.disabled = true; button.textContent = "처리 중";
+    button.disabled = true;
+    button.textContent = "처리 중";
+
     const { data, error } = await supabase.rpc("purchase_item", { p_item_id: itemId });
+
     if (error) showMessage(friendlyError(error.message), "error");
     else showMessage(data.message, "success");
+
     await loadShopHome();
   }));
 }

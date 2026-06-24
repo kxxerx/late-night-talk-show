@@ -1,8 +1,7 @@
-pollution-shop-starter v1.9
-- Fixed admin management tables so headers, buttons, and select boxes stay horizontal.
-- Widened admin tables and improved horizontal scrolling.
-- Updated member-management column labels.
-- Increased profile-card stat label readability.
-- Changed 판정 상태 label to 방문객 상태.
-- Refined black/gold header-category strip while keeping pastel body.
-- Added farewell modal for 다시 방문하기.
+pollution-shop-starter v2.0
+- Replaced pastel body with full black/gold luxury theme.
+- Shop cards now show image, item name, price, detail/buy only.
+- Added item detail modal with image and full description.
+- Updated Midnight Talk Show whisper text with spacing and mobile-safe wrapping.
+- Profile status card now shows only the status phrase, without the visitor-status label.
+- Fixed duplicated payload typo in admin.js from previous branch.
