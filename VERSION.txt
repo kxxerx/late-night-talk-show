@@ -1,6 +1,6 @@
-pollution-shop-starter v5.1
-- Fixed assets/site-logo.svg old brand text.
-- Updated logo to 마스코트 골든의 기념품샵 / MASCOT GOLDEN'S SOUVENIR SHOP.
-- Added SVG files to brand scan scope.
-- Updated major file version markers to v5.1.
+pollution-shop-starter v5.2
+- Enlarged logo text in assets/site-logo.svg.
+- Added explicit center-scream-text classes in partner.js.
+- Added no-crop classes to generated item images where possible.
+- Strengthened desktop and detail-modal item image contain rules.
 - No SQL migration required.

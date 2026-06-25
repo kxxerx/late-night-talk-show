@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.1
+// pollution-shop-version: v5.2
 import * as config from "./config.js";
 import { qs, showMessage, getMyProfile, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -112,7 +112,7 @@ async function runHumanPrelude() {
   const overlay = makeMadPopup();
   const content = overlay.querySelector("#madPopupContent");
 
-  content.innerHTML = `<div class="mad-popup-big">보라!</div>`;
+  content.innerHTML = `<div class="mad-popup-big center-scream-text">보라!</div>`;
   await sleep(900);
   await clearMadPopup(overlay, 360);
 
@@ -121,12 +121,12 @@ async function runHumanPrelude() {
   await sleep(620);
   await clearMadPopup(overlay, 420);
 
-  content.innerHTML = `<p id="whoAmILine" class="mad-popup-text who-am-i-screen"></p>`;
+  content.innerHTML = `<p id="whoAmILine" class="mad-popup-text who-am-i-screen center-scream-text"></p>`;
   await typeText(content.querySelector("#whoAmILine"), WHO_AM_I_TEXT, 7);
   await sleep(560);
   await clearMadPopup(overlay, 420);
 
-  content.innerHTML = `<div class="mad-popup-big who-are-you">너는 누구야?</div>`;
+  content.innerHTML = `<div class="mad-popup-big who-are-you center-scream-text">너는 누구야?</div>`;
   await sleep(900);
 
   overlay.classList.remove("open");

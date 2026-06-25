@@ -1,4 +1,4 @@
-/* pollution-shop-version: v5.1 */
+/* pollution-shop-version: v5.2 */
 @import url("https://cdn.jsdelivr.net/npm/@noonnu/gabia-maeumgyeol@0.1.0/index.css");
 :root {
   --bg: #0c0d12;
@@ -6823,4 +6823,181 @@ img.modal-item-image {
 [class*="modal"] img[src*="supabase"] {
   object-fit: contain !important;
   object-position: center center !important;
+}
+
+
+
+/* v5.2 actual generated markup fixes: no-crop item images + centered scream text + larger logo */
+
+/* 로고 SVG가 헤더에서 너무 작아지지 않도록 */
+.site-logo img,
+.logo img,
+.header-logo img,
+.blog-logo img,
+img[src*="site-logo.svg"] {
+  width: min(760px, 92vw) !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* 특별관: 보라/나는 누구야/너는 누구야 중앙 정렬 강제 */
+.center-scream-text,
+.mad-popup-content .center-scream-text,
+#madPopupContent .center-scream-text,
+.mad-popup-big.center-scream-text,
+.mad-popup-text.center-scream-text,
+.who-am-i-screen.center-scream-text,
+.who-are-you.center-scream-text {
+  display: flex !important;
+  width: 100% !important;
+  min-height: 100% !important;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  white-space: normal !important;
+}
+
+.mad-popup-overlay,
+.mad-popup-box,
+.mad-popup-content,
+#madPopupContent {
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* 이리와도 중앙 유지 */
+#comeHereLine,
+.come-here-wall,
+.invite-corrupt-copy.come-here-wall {
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  margin-inline: auto !important;
+}
+
+/* 아이템 이미지: PC에서도 박스가 커져도 이미지 자체는 절대 잘리지 않게 */
+.item-image-no-crop,
+.item-img-no-crop,
+.item-detail-img-no-crop,
+.item-image,
+.item-card-image,
+.item-thumb,
+.modal-item-image,
+.detail-item-image,
+.item-detail-image {
+  aspect-ratio: 4 / 3 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(214,168,79,.10), transparent 62%),
+    rgba(0,0,0,.30) !important;
+}
+
+/* 컨테이너 안의 img 전부 contain */
+.item-image-no-crop img,
+.item-image img,
+.item-card-image img,
+.item-thumb img,
+.modal-item-image img,
+.detail-item-image img,
+.item-detail-image img,
+.item-card img,
+.shop-item img,
+.product-card img,
+.item-modal img,
+.item-detail-modal img,
+.soft-modal-box img.item-img-no-crop,
+img.item-img-no-crop,
+img.item-detail-img-no-crop {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+  flex: 0 0 auto !important;
+}
+
+/* 판매 카드에서 화면이 커질 때 이미지 박스만 과하게 커지는 문제 제한 */
+.item-card .item-image,
+.shop-item .item-image,
+.product-card .item-image,
+.item-card-image,
+.item-thumb {
+  max-height: 260px !important;
+}
+
+/* 상세 팝업: 위아래 잘림 방지. 높이 고정 대신 4:3 전체 표시 */
+.item-detail-modal .item-detail-image,
+.item-modal .modal-item-image,
+.detail-modal .detail-item-image,
+.soft-modal-box .item-detail-image,
+.soft-modal-box .modal-item-image,
+#itemDetailModal .item-detail-image,
+#itemDetailModal .modal-item-image {
+  width: min(100%, 720px) !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 4 / 3 !important;
+  margin-inline: auto !important;
+  overflow: hidden !important;
+}
+
+.item-detail-modal .item-detail-image img,
+.item-modal .modal-item-image img,
+.detail-modal .detail-item-image img,
+.soft-modal-box .item-detail-image img,
+.soft-modal-box .modal-item-image img,
+#itemDetailModal img,
+#itemDetailModal .item-detail-image img,
+#itemDetailModal .modal-item-image img {
+  object-fit: contain !important;
+  object-position: center center !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+}
+
+/* 기존 background-image 방식으로 들어간 경우도 크롭하지 않도록 */
+.item-image[style*="background-image"],
+.item-thumb[style*="background-image"],
+.modal-item-image[style*="background-image"],
+.item-detail-image[style*="background-image"] {
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+}
+
+/* 화면이 넓을수록 카드 이미지 박스가 늘어져 보이는 현상 방지 */
+@media (min-width: 900px) {
+  .item-card .item-image,
+  .shop-item .item-image,
+  .product-card .item-image,
+  .item-card-image,
+  .item-thumb {
+    max-height: 240px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .item-card .item-image,
+  .shop-item .item-image,
+  .product-card .item-image,
+  .item-card-image,
+  .item-thumb {
+    max-height: 230px !important;
+  }
 }

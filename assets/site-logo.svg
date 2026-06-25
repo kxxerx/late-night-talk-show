@@ -1,12 +1,12 @@
-<!-- pollution-shop-version: v5.1 -->
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="220" viewBox="0 0 980 220" role="img" aria-label="마스코트 골든의 기념품샵">
-  <rect width="980" height="220" fill="none"/>
+<!-- pollution-shop-version: v5.2 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="240" viewBox="0 0 1060 240" role="img" aria-label="마스코트 골든의 기념품샵">
+  <rect width="1060" height="240" fill="none"/>
   <g>
-    <circle cx="108" cy="110" r="62" fill="#0b0b0b" stroke="#d6a84f" stroke-width="4"/>
-    <text x="73" y="133" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="700" fill="#d6a84f">G</text>
-    <path d="M61 60 C86 28, 132 28, 156 60" fill="none" stroke="#d6a84f" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="112" cy="120" r="68" fill="#0b0b0b" stroke="#d6a84f" stroke-width="5"/>
+    <text x="73" y="146" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="700" fill="#d6a84f">G</text>
+    <path d="M58 66 C86 30, 138 30, 166 66" fill="none" stroke="#d6a84f" stroke-width="6" stroke-linecap="round"/>
   </g>
-  <text x="205" y="103" font-family="'Noto Sans KR', Arial, sans-serif" font-size="34" font-weight="900" fill="#d6a84f">마스코트 골든의 기념품샵</text>
-  <text x="209" y="145" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#b58b42" letter-spacing="3">MASCOT GOLDEN'S SOUVENIR SHOP</text>
-  <line x1="660" y1="112" x2="900" y2="112" stroke="#d6a84f" stroke-width="3"/>
+  <text x="210" y="110" font-family="'Noto Sans KR', Arial, sans-serif" font-size="44" font-weight="900" fill="#d6a84f">마스코트 골든의 기념품샵</text>
+  <text x="214" y="158" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#b58b42" letter-spacing="3.5">MASCOT GOLDEN'S SOUVENIR SHOP</text>
+  <line x1="745" y1="123" x2="970" y2="123" stroke="#d6a84f" stroke-width="4"/>
 </svg>

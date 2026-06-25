@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.1
+// pollution-shop-version: v5.2
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass, handleEntityCollapseIfNeeded, clearVisitorModeClass } from "./common.js";
 
@@ -90,7 +90,7 @@ function openItemDetail(item) {
   const content = modal.querySelector("#itemDetailContent");
   content.innerHTML = `
     <div class="detail-image-wrap">
-      ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+      ${item.image_url ? `<img class="item-img-no-crop" src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
     </div>
     <h2>${item.name}</h2>
     <p class="detail-price">${item.price} 유쾌주화</p>
@@ -112,7 +112,7 @@ function renderItems() {
   list.innerHTML = items.map(item => `
     <article class="item-card luxury-item-card">
       <div class="item-image-wrap">
-        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+        ${item.image_url ? `<img class="item-img-no-crop" src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
       </div>
       <div class="item-body">
         <h2>${item.name}</h2>
