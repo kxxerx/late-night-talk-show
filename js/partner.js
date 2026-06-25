@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.0
+// pollution-shop-version: v5.1
 import * as config from "./config.js";
 import { qs, showMessage, getMyProfile, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
