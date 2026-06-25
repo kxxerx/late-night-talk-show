@@ -1,3 +1,4 @@
+/* pollution-shop-version: v5.0 */
 @import url("https://cdn.jsdelivr.net/npm/@noonnu/gabia-maeumgyeol@0.1.0/index.css");
 :root {
   --bg: #0c0d12;
@@ -6704,4 +6705,122 @@ body.entity-mode .modal-item-image {
 #inviteDynamicContent .original-play,
 #inviteDynamicContent .original-gabia {
   text-align: center !important;
+}
+
+
+
+/* v5.0 hard overwrite marker + desktop image no-crop + special hall centering */
+
+/* 특별관 '너는 누구야?'는 부모와 본문까지 전부 중앙 고정 */
+.mad-popup-overlay .mad-popup-box,
+.mad-popup-overlay .mad-popup-content,
+#madPopupContent {
+  text-align: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.mad-popup-big,
+.mad-popup-big.who-are-you,
+.who-are-you,
+#madPopupContent .who-are-you,
+.mad-popup-content .who-are-you {
+  display: flex !important;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  white-space: normal !important;
+}
+
+/* 특별관 '이리와' 중앙 고정 */
+.come-here-wall,
+#comeHereLine,
+#inviteDynamicContent .come-here-wall,
+.invite-corrupt-copy.come-here-wall {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* PC에서 상품 이미지가 잘리지 않도록: 컨테이너와 img 둘 다 4:3 + contain */
+.item-image,
+.item-img,
+.item-card-image,
+.product-image,
+.shop-item-image,
+.item-card .item-image,
+.shop-item .item-image,
+.product-card .item-image,
+.item-thumb,
+.item-detail-image,
+.detail-item-image,
+.modal-item-image,
+#itemDetailImage,
+#detailItemImage {
+  aspect-ratio: 4 / 3 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(214,168,79,.10), transparent 58%),
+    rgba(0,0,0,.28) !important;
+}
+
+.item-image img,
+.item-img img,
+.item-card-image img,
+.product-image img,
+.shop-item-image img,
+.item-card img,
+.shop-item img,
+.product-card img,
+.item-thumb img,
+.item-detail-image img,
+.detail-item-image img,
+.modal-item-image img,
+#itemDetailImage img,
+#detailItemImage img,
+img.item-image,
+img.item-img,
+img.item-card-image,
+img.product-image,
+img.shop-item-image,
+img.item-detail-image,
+img.detail-item-image,
+img.modal-item-image {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  max-height: min(70vh, 600px) !important;
+  display: block !important;
+}
+
+/* 상세 팝업에서 이미지 영역 자체가 세로로 잘리지 않도록 */
+.item-detail-modal .item-detail-image,
+.item-modal .modal-item-image,
+.detail-modal .detail-item-image,
+.soft-modal-box .item-detail-image,
+.soft-modal-box .modal-item-image {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 4 / 3 !important;
+}
+
+/* 만약 기존 CSS가 cover를 다시 걸어도 마지막에 contain으로 덮어씌움 */
+[class*="item"] img[src*="supabase"],
+[class*="product"] img[src*="supabase"],
+[class*="modal"] img[src*="supabase"] {
+  object-fit: contain !important;
+  object-position: center center !important;
 }

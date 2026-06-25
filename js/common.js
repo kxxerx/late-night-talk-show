@@ -1,3 +1,4 @@
+// pollution-shop-version: v5.0
 import { supabase } from "./supabaseClient.js";
 
 export function qs(selector) {

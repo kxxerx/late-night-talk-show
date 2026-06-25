@@ -1,5 +1,6 @@
-pollution-shop-starter v4.9
+pollution-shop-starter v5.0
+- Added v5.0 version markers to major HTML/JS/CSS files to force GitHub overwrite detection.
 - Re-applied brand replacement to 마스코트 골든의 기념품샵 / Mascot Golden's Souvenir Shop.
-- Center-aligned special hall '너는 누구야?' and '이리와' text.
-- Scanned remaining old brand strings.
+- Strengthened center alignment for special hall '너는 누구야?' and '이리와'.
+- Strengthened desktop item image no-crop rules with 4:3 aspect ratio and object-fit: contain.
 - No SQL migration required.

@@ -1,3 +1,4 @@
+// pollution-shop-version: v5.0
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getMyProfile, formatDate, applyVisitorModeClass } from "./common.js";
 
