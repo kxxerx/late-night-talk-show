@@ -65,6 +65,74 @@ async function uploadItemImageFile(file) {
 }
 function selectedUserIds() { return qsa("[data-user-check]:checked").map(input => input.value); }
 
+function organizationOptions(value) {
+  const rows = [
+    ["baekildream", "백일몽 주식회사"],
+    ["disaster_agency", "초자연 재난관리국"],
+    ["entity", "괴이"],
+    ["unaffiliated", "무소속"],
+    ["other", "기타"]
+  ];
+  return rows.map(([code, label]) => `<option value="${code}" ${value === code ? "selected" : ""}>${label}</option>`).join("");
+}
+function departmentOptions(value) {
+  const rows = [
+    ["field_exploration", "현장탐사팀"],
+    ["research", "연구팀"],
+    ["security", "보안팀"],
+    ["agent", "요원"],
+    ["entity", "괴이"],
+    ["none", "없음"],
+    ["other", "기타"]
+  ];
+  return rows.map(([code, label]) => `<option value="${code}" ${value === code ? "selected" : ""}>${label}</option>`).join("");
+}
+
+let characterPresets = [];
+
+async function loadCharacterPresets() {
+  const { data, error } = await supabase
+    .from("character_presets")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+    .order("display_name", { ascending: true });
+
+  if (error) {
+    console.warn("character_presets load failed:", error.message);
+    characterPresets = [];
+    return;
+  }
+
+  characterPresets = data || [];
+}
+
+function characterPresetOptions(selectedKey) {
+  const selected = selectedKey || "";
+  const options = [`<option value="">직접 입력 / 미지정</option>`];
+
+  characterPresets.forEach(preset => {
+    const label = `${preset.display_name} · ${preset.affiliation_label}`;
+    options.push(`<option value="${preset.character_key}" ${preset.character_key === selected ? "selected" : ""}>${safeText(label)}</option>`);
+  });
+
+  return options.join("");
+}
+
+async function applyCharacterPresetToUser(userId, characterKey) {
+  if (!characterKey) return false;
+
+  const { error } = await supabase.rpc("admin_apply_character_preset", {
+    p_user_id: userId,
+    p_character_key: characterKey
+  });
+
+  if (error) throw error;
+  return true;
+}
+
+
+
 async function loadUsers() {
   const { data, error } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
   if (error) throw error;
@@ -80,6 +148,10 @@ function renderUsers() {
       <td>${safeText(user.site_id)}</td>
       <td>${safeText(user.email || "")}</td>
       <td><input class="table-input" data-display="${user.id}" value="${safeText(user.display_name || "")}"></td>
+      <td><input class="table-input" data-character-key="${user.id}" value="${safeText(user.character_key || "")}" placeholder="예: kimsolum_disaster"></td>
+      <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "unaffiliated")}</select></td>
+      <td><select data-department-code="${user.id}">${departmentOptions(user.department_code || "none")}</select></td>
+      <td><input class="table-input" data-affiliation-label="${user.id}" value="${safeText(user.affiliation_label || "무소속")}"></td>
       <td><input class="table-input" data-band="${user.id}" value="${safeText(user.band_nickname || "")}"></td>
       <td>${Number(user.currency || 0)}</td>
       <td>${user.visitor_type === "entity" ? Number(user.mask_collapse_rate || 0) : Number(user.pollution || 0)}</td>
@@ -87,7 +159,7 @@ function renderUsers() {
       <td><select data-visitor-type="${user.id}"><option value="human" ${user.visitor_type === "human" || !user.visitor_type ? "selected" : ""}>일반</option><option value="infected" ${user.visitor_type === "infected" ? "selected" : ""}>오염자</option><option value="entity" ${user.visitor_type === "entity" ? "selected" : ""}>괴이</option></select></td>
       <td><select data-role="${user.id}"><option value="user" ${user.role === "user" ? "selected" : ""}>user</option><option value="admin" ${user.role === "admin" ? "selected" : ""}>admin</option></select></td>
       <td class="action-cell"><button data-save-user="${user.id}">저장</button>${user.id !== adminProfile.id ? `<button data-remove-user="${user.id}" class="danger">제거</button>` : ""}</td>
-    </tr>`).join("") || `<tr><td colspan="11">회원 없음</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="15">회원 없음</td></tr>`;
   renderPager("userPager", "users", users.length, renderUsers);
   qsa("[data-save-user]").forEach(button => button.addEventListener("click", async () => {
     const id = button.dataset.saveUser;
@@ -96,7 +168,11 @@ function renderUsers() {
       p_display_name: document.querySelector(`[data-display="${id}"]`).value,
       p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
       p_role: document.querySelector(`[data-role="${id}"]`).value,
-      p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value
+      p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value,
+      p_character_key: document.querySelector(`[data-character-key="${id}"]`).value,
+      p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
+      p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
+      p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
     });
     if (error) showMessage(error.message, "error"); else showMessage("방문객 정보 저장 완료", "success");
     await loadUsers();

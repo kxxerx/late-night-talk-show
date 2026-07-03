@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <!-- exploration-site-starter: v0.1, compatible with pollution-shop-starter v5.2 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>탐사 홈페이지</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="blog-header slim noir">
+    <div class="brand-stage">
+      <a class="logo-slot" href="exploration.html" aria-label="탐사 홈으로">
+        <img src="assets/site-logo.svg" alt="탐사 홈페이지">
+      </a>
+    </div>
+    <div class="category-strip">
+      <a class="category-link" href="index.html">기념품샵</a>
+      <a class="category-link" href="exploration.html">탐사</a>
+      <a class="category-link requires-login" href="inventory.html" hidden>보관함</a>
+      <a class="category-link requires-login" href="mypage.html" hidden>마이페이지</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>탐사 홈페이지</h1>
+    <p class="lead">기념품샵 계정으로 로그인해 현재 캐릭터와 소속 정보를 확인합니다.</p>
+    <div id="message" class="message"></div>
+
+    <section id="loginPanel" class="panel" hidden>
+      <h2>로그인</h2>
+      <form id="explorationLoginForm">
+        <label>아이디
+          <input id="explorationLoginId" type="text" autocomplete="username" required>
+        </label>
+        <label>비밀번호
+          <input id="explorationPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit">탐사 로그인</button>
+      </form>
+    </section>
+
+    <section id="profilePanel" class="panel" hidden>
+      <h2>현재 탐사자 정보</h2>
+      <div id="profileCard" class="soft-card"></div>
+      <p class="small muted">소속 판정은 display_name이 아니라 organization_code / department_code / character_key를 기준으로 합니다.</p>
+      <button id="refreshProfile" type="button">새로고침</button>
+      <button id="logoutButton" type="button" class="danger">로그아웃</button>
+    </section>
+
+    <section id="roomPanel" class="panel" hidden>
+      <h2>방 만들기 준비 영역</h2>
+      <p>다음 단계에서 game_rooms, room_members, room_state 테이블을 추가하면 여기서 시나리오 선택, 초대코드 방 생성, 입장을 붙일 수 있습니다.</p>
+      <form id="roomDraftForm">
+        <label>시나리오
+          <select id="scenarioSelect">
+            <option value="mulmok-dragon">물목 해안가</option>
+          </select>
+        </label>
+        <label>방 제목
+          <input id="roomTitle" type="text" placeholder="예: 금요일 밤 물목 해안가 2인팟">
+        </label>
+        <label>최대 인원
+          <select id="maxPlayers">
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+          </select>
+        </label>
+        <button type="submit">방 설정 확인</button>
+      </form>
+      <div id="roomDraftResult" class="message" style="display:none"></div>
+    </section>
+  </main>
+  <script type="module" src="js/exploration.js"></script>
+</body>
+</html>
