@@ -65,27 +65,27 @@ async function uploadItemImageFile(file) {
 }
 function selectedUserIds() { return qsa("[data-user-check]:checked").map(input => input.value); }
 
-function organizationOptions(value) {
-  const rows = [
+function organizationOptions(selected) {
+  const options = [
     ["baekildream", "백일몽 주식회사"],
     ["disaster_agency", "초자연 재난관리국"],
     ["entity", "괴이"],
-    ["unaffiliated", "무소속"],
     ["other", "기타"]
   ];
-  return rows.map(([code, label]) => `<option value="${code}" ${value === code ? "selected" : ""}>${label}</option>`).join("");
+  const value = selected === "unaffiliated" ? "other" : (selected || "other");
+  return options.map(([code, label]) => `<option value="${code}" ${code === value ? "selected" : ""}>${label}</option>`).join("");
 }
-function departmentOptions(value) {
-  const rows = [
+function departmentOptions(selected) {
+  const options = [
     ["field_exploration", "현장탐사팀"],
     ["research", "연구팀"],
     ["security", "보안팀"],
     ["agent", "요원"],
     ["entity", "괴이"],
-    ["none", "없음"],
     ["other", "기타"]
   ];
-  return rows.map(([code, label]) => `<option value="${code}" ${value === code ? "selected" : ""}>${label}</option>`).join("");
+  const value = selected === "none" ? "other" : (selected || "other");
+  return options.map(([code, label]) => `<option value="${code}" ${code === value ? "selected" : ""}>${label}</option>`).join("");
 }
 
 let characterPresets = [];
@@ -109,7 +109,7 @@ async function loadCharacterPresets() {
 
 function characterPresetOptions(selectedKey) {
   const selected = selectedKey || "";
-  const options = [`<option value="">직접 입력 / 미지정</option>`];
+  const options = [`<option value="">캐릭터 선택</option>`];
 
   characterPresets.forEach(preset => {
     const nameForAdmin = preset.preset_label || preset.display_name;
@@ -119,6 +119,28 @@ function characterPresetOptions(selectedKey) {
 
   return options.join("");
 }
+
+function getCharacterPresetByKey(characterKey) {
+  return characterPresets.find(preset => preset.character_key === characterKey) || null;
+}
+
+function applyCharacterPresetPreview(userId, characterKey) {
+  const preset = getCharacterPresetByKey(characterKey);
+  if (!preset) return;
+
+  const displayInput = document.querySelector(`[data-display="${userId}"]`);
+  const keyInput = document.querySelector(`[data-character-key="${userId}"]`);
+  const orgSelect = document.querySelector(`[data-organization-code="${userId}"]`);
+  const deptSelect = document.querySelector(`[data-department-code="${userId}"]`);
+  const labelInput = document.querySelector(`[data-affiliation-label="${userId}"]`);
+
+  if (displayInput) displayInput.value = preset.display_name || "";
+  if (keyInput) keyInput.value = preset.character_key || "";
+  if (orgSelect) orgSelect.value = preset.organization_code || "other";
+  if (deptSelect) deptSelect.value = preset.department_code || "other";
+  if (labelInput) labelInput.value = preset.affiliation_label || "기타";
+}
+
 
 async function applyCharacterPresetToUser(userId, characterKey) {
   if (!characterKey) return false;
@@ -148,11 +170,14 @@ function renderUsers() {
       <td><input type="checkbox" data-user-check value="${user.id}"></td>
       <td>${safeText(user.site_id)}</td>
       <td>${safeText(user.email || "")}</td>
-      <td><input class="table-input" data-display="${user.id}" value="${safeText(user.display_name || "")}"></td>
+      <td>
+        <select class="table-input profile-character-select" data-character-preset="${user.id}">${characterPresetOptions(user.character_key)}</select>
+        <input class="table-input profile-display-name-readonly" data-display="${user.id}" value="${safeText(user.display_name || "")}" readonly>
+      </td>
       <td><input class="table-input" data-character-key="${user.id}" value="${safeText(user.character_key || "")}" placeholder="예: kimsolum_disaster"></td>
-      <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "unaffiliated")}</select></td>
-      <td><select data-department-code="${user.id}">${departmentOptions(user.department_code || "none")}</select></td>
-      <td><input class="table-input" data-affiliation-label="${user.id}" value="${safeText(user.affiliation_label || "무소속")}"></td>
+      <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "other")}</select></td>
+      <td><select data-department-code="${user.id}">${departmentOptions(user.department_code || "other")}</select></td>
+      <td><input class="table-input" data-affiliation-label="${user.id}" value="${safeText(user.affiliation_label || "기타")}"></td>
       <td><input class="table-input" data-band="${user.id}" value="${safeText(user.band_nickname || "")}"></td>
       <td>${Number(user.currency || 0)}</td>
       <td>${user.visitor_type === "entity" ? Number(user.mask_collapse_rate || 0) : Number(user.pollution || 0)}</td>
@@ -162,8 +187,24 @@ function renderUsers() {
       <td class="action-cell"><button data-save-user="${user.id}">저장</button>${user.id !== adminProfile.id ? `<button data-remove-user="${user.id}" class="danger">제거</button>` : ""}</td>
     </tr>`).join("") || `<tr><td colspan="15">회원 없음</td></tr>`;
   renderPager("userPager", "users", users.length, renderUsers);
+  qsa("[data-character-preset]").forEach(select => {
+    select.addEventListener("change", () => {
+      applyCharacterPresetPreview(select.dataset.characterPreset, select.value);
+    });
+  });
   qsa("[data-save-user]").forEach(button => button.addEventListener("click", async () => {
     const id = button.dataset.saveUser;
+    const presetKey = document.querySelector(`[data-character-preset="${id}"]`)?.value || "";
+    if (presetKey) {
+      try {
+        await applyCharacterPresetToUser(id, presetKey);
+        showMessage("캐릭터 프리셋 적용 완료", "success");
+      } catch (error) {
+        showMessage(error.message, "error");
+      }
+      await loadUsers();
+      return;
+    }
     const { error } = await supabase.rpc("admin_update_member", {
       p_target_user_id: id,
       p_display_name: document.querySelector(`[data-display="${id}"]`).value,

@@ -104,3 +104,49 @@ README-exploration-patch.md
 
 
 v0.3 실제 캐릭터 프리셋 목록은 `migrations/upgrade-v5.5-character-presets-seed.sql`에 들어 있습니다. SQL 실행 순서는 v5.3 → v5.4 → v5.5입니다.
+
+
+---
+
+# v0.4 추가 안내: 관리실 캐릭터 선택 드롭다운 개선
+
+v0.4에서는 관리실 회원 목록의 `사용자 이름` 입력칸을 `캐릭터 선택` 드롭다운으로 바꿨습니다.
+
+## 바뀐 점
+
+```txt
+기존: 사용자 이름 / 캐릭터 키 / 기관 / 팀 / 표시 소속명을 따로 입력
+변경: 캐릭터 선택 드롭다운에서 프리셋 선택
+```
+
+프리셋을 선택하면 아래 값이 자동으로 채워집니다.
+
+```txt
+display_name
+character_key
+organization_code
+department_code
+affiliation_label
+```
+
+관리실 드롭다운에는 괄호가 있는 구분명이 보일 수 있지만, 실제 사용자 화면에는 괄호 없는 display_name만 저장됩니다.
+
+예시:
+
+```txt
+관리실 선택: 김솔음(포도) · 초자연 재난관리국 요원
+사용자 표시: 김솔음
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+```
+
+v5.6은 기존 무소속/없음 기본값을 기타로 정리하는 보정 SQL입니다.
