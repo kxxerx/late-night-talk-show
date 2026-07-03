@@ -112,7 +112,8 @@ function characterPresetOptions(selectedKey) {
   const options = [`<option value="">직접 입력 / 미지정</option>`];
 
   characterPresets.forEach(preset => {
-    const label = `${preset.display_name} · ${preset.affiliation_label}`;
+    const nameForAdmin = preset.preset_label || preset.display_name;
+    const label = `${nameForAdmin} · ${preset.affiliation_label}`;
     options.push(`<option value="${preset.character_key}" ${preset.character_key === selected ? "selected" : ""}>${safeText(label)}</option>`);
   });
 

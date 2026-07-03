@@ -101,3 +101,6 @@ migrations/upgrade-v5.3-exploration-affiliation.sql
 migrations/upgrade-v5.4-character-presets.sql
 README-exploration-patch.md
 ```
+
+
+v0.3 실제 캐릭터 프리셋 목록은 `migrations/upgrade-v5.5-character-presets-seed.sql`에 들어 있습니다. SQL 실행 순서는 v5.3 → v5.4 → v5.5입니다.

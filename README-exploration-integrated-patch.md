@@ -140,3 +140,44 @@ database connection string
 4. `/exploration.html` 접속 확인
 5. 새 사용자 가입 후 관리실에서 캐릭터 프리셋 적용 테스트
 6. 탐사 홈페이지에서 display_name과 affiliation_label이 정상 표시되는지 확인
+
+---
+
+# v0.3 추가 안내: 실제 캐릭터 프리셋 목록 반영
+
+v0.3에서는 실제 캐릭터 프리셋 목록을 추가했습니다.
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+```
+
+## v5.5에서 추가되는 점
+
+`character_presets`에 `preset_label` 컬럼을 추가합니다.
+
+```txt
+preset_label = 관리자 드롭다운에서 보이는 구분명
+display_name = 실제 사용자에게 보이는 캐릭터명
+```
+
+예시:
+
+```txt
+preset_label: 김솔음(마스코트 골든)
+display_name: 김솔음
+affiliation_label: 괴이
+```
+
+즉, 관리자는 `김솔음(마스코트 골든) · 괴이`로 구분해서 선택할 수 있고, 실제 사용자 화면에는 `김솔음`만 표시됩니다.
+
+## 반영된 프리셋 수
+
+```txt
+35개
+```
