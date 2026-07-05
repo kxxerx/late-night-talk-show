@@ -150,3 +150,33 @@ affiliation_label
 ```
 
 v5.6은 기존 무소속/없음 기본값을 기타로 정리하는 보정 SQL입니다.
+
+
+---
+
+# v0.5 추가 안내: 캐릭터 드롭다운 빈 목록/겹침 수정
+
+v0.5에서는 관리실의 캐릭터 선택 드롭다운이 비어 보이거나, 기존 display_name 입력칸과 겹쳐 보이는 문제를 수정했습니다.
+
+## 바뀐 점
+
+```txt
+display_name 입력칸을 화면에서 숨김
+캐릭터 선택 드롭다운만 표시
+드롭다운 선택 시 캐릭터 키/기관/팀/표시 소속명 자동 반영
+character_presets 읽기 권한 보정 SQL 추가
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```
+
+이미 v5.3~v5.6을 실행했다면 v5.7만 추가로 실행해도 됩니다.

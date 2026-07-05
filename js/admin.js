@@ -93,14 +93,15 @@ let characterPresets = [];
 async function loadCharacterPresets() {
   const { data, error } = await supabase
     .from("character_presets")
-    .select("*")
+    .select("character_key,preset_label,display_name,organization_code,department_code,affiliation_label,sort_order,is_active")
     .eq("is_active", true)
     .order("sort_order", { ascending: true })
-    .order("display_name", { ascending: true });
+    .order("preset_label", { ascending: true });
 
   if (error) {
     console.warn("character_presets load failed:", error.message);
     characterPresets = [];
+    showMessage(`캐릭터 프리셋을 불러오지 못했습니다: ${error.message}`, "error");
     return;
   }
 
@@ -170,9 +171,9 @@ function renderUsers() {
       <td><input type="checkbox" data-user-check value="${user.id}"></td>
       <td>${safeText(user.site_id)}</td>
       <td>${safeText(user.email || "")}</td>
-      <td>
+      <td class="character-select-cell">
         <select class="table-input profile-character-select" data-character-preset="${user.id}">${characterPresetOptions(user.character_key)}</select>
-        <input class="table-input profile-display-name-readonly" data-display="${user.id}" value="${safeText(user.display_name || "")}" readonly>
+        <input type="hidden" data-display="${user.id}" value="${safeText(user.display_name || "")}">
       </td>
       <td><input class="table-input" data-character-key="${user.id}" value="${safeText(user.character_key || "")}" placeholder="예: kimsolum_disaster"></td>
       <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "other")}</select></td>
@@ -202,7 +203,8 @@ function renderUsers() {
       } catch (error) {
         showMessage(error.message, "error");
       }
-      await loadUsers();
+      await loadCharacterPresets();
+  await loadUsers();
       return;
     }
     const { error } = await supabase.rpc("admin_update_member", {
