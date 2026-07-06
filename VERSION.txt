@@ -1,3 +1,8 @@
+pollution-shop-starter v6.3-password-spacing
+- Based on the uploaded latest pollution-shop-starter_6.1.zip / v6.2 item image fix contents.
+- Adjusted spacing inside the mypage password change card.
+- Kept the existing item image fixes and password change functionality intact.
+
 pollution-shop-starter v6.2-item-image-final-fix
 - Fixed shop list thumbnails to fill the image box without side gaps.
 - Fixed item detail modal images to show the full image without cropping.

@@ -7104,3 +7104,46 @@ img.item-detail-img-no-crop {
   max-height: 90vh !important;
   overflow-y: auto !important;
 }
+
+/* v6.3 password card spacing polish
+   마이페이지 비밀번호 변경 카드 내부 간격 정리.
+   앞쪽 공통 label/input 규칙이 여기저기 덮어쓰고 있어서 카드 안에서만 다시 고정한다.
+*/
+.password-change-card {
+  display: grid !important;
+  gap: 14px !important;
+  padding: 22px 20px !important;
+}
+
+.password-change-card h2 {
+  margin: 0 0 2px !important;
+  line-height: 1.35 !important;
+}
+
+.password-change-card .muted {
+  margin: 0 0 4px !important;
+  line-height: 1.65 !important;
+}
+
+.password-change-card .form-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+  margin: 2px 0 0 !important;
+}
+
+.password-change-card label {
+  display: grid !important;
+  gap: 8px !important;
+  line-height: 1.45 !important;
+}
+
+.password-change-card input {
+  margin: 0 !important;
+  min-height: 38px !important;
+}
+
+.password-change-card button {
+  justify-self: start !important;
+  margin-top: 2px !important;
+}
