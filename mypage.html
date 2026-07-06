@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <!-- pollution-shop-version: v5.2 -->
-      <meta charset="utf-8">
+  <!-- pollution-shop-version: v5.8-password -->
+        <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>방문객 정보</title>
   <link rel="stylesheet" href="css/style.css">
@@ -97,7 +97,22 @@
 
     <span id="email" hidden></span>
     <span id="siteId" hidden></span>
-  </main>
+  
+      <section class="soft-card password-change-card">
+        <h2>비밀번호 변경</h2>
+        <p class="muted">현재 로그인된 계정의 비밀번호를 변경합니다. 이메일 복구가 아니라, 지금 로그인한 상태에서 직접 바꾸는 방식입니다.</p>
+        <div class="form-grid">
+          <label>새 비밀번호
+            <input id="newPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호">
+          </label>
+          <label>새 비밀번호 확인
+            <input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="새 비밀번호 확인">
+          </label>
+        </div>
+        <button id="changePasswordBtn" type="button">비밀번호 변경</button>
+      </section>
+
+    </main>
   <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

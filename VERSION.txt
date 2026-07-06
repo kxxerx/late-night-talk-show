@@ -1,6 +1,5 @@
-pollution-shop-starter v5.2
-- Enlarged logo text in assets/site-logo.svg.
-- Added explicit center-scream-text classes in partner.js.
-- Added no-crop classes to generated item images where possible.
-- Strengthened desktop and detail-modal item image contain rules.
-- No SQL migration required.
+pollution-shop-starter v5.8-password
+- Added self password change form to mypage.
+- Added admin temporary password reset UI.
+- Added Supabase Edge Function admin-reset-password for service_role-only password reset.
+- Preserved exploration/admin character preset patch files.

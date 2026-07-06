@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.2
+// pollution-shop-version: v5.8-password
 
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getMyProfile, renderNav, formatDate, profileAvatar, pollutionLabel, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, applyVisitorModeClass, clearVisitorModeClass } from "./common.js";
@@ -144,4 +144,56 @@ qs("#clearAvatarBtn")?.addEventListener("click", () => {
   if (qs("#avatarUrl")) qs("#avatarUrl").value = "";
   if (qs("#avatarFile")) qs("#avatarFile").value = "";
   showMessage("프로필 이미지 삭제 예약됨. 저장을 누르면 반영됩니다.", "info");
+});
+
+
+
+async function handleMyPasswordChange() {
+  const passwordInput = document.querySelector("#newPassword");
+  const confirmInput = document.querySelector("#newPasswordConfirm");
+  const button = document.querySelector("#changePasswordBtn");
+  if (!passwordInput || !confirmInput || !button) return;
+
+  const newPassword = passwordInput.value || "";
+  const confirmPassword = confirmInput.value || "";
+
+  if (newPassword.length < 8) {
+    showMessage("새 비밀번호는 8자 이상으로 입력해 주세요.", "error");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    showMessage("새 비밀번호와 확인 값이 다릅니다.", "error");
+    return;
+  }
+
+  button.disabled = true;
+  const originalText = button.textContent;
+  button.textContent = "변경 중...";
+
+  try {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+
+    passwordInput.value = "";
+    confirmInput.value = "";
+    showMessage("비밀번호가 변경되었습니다. 다음 로그인부터 새 비밀번호를 사용해 주세요.", "success");
+  } catch (error) {
+    showMessage(error.message || "비밀번호 변경에 실패했습니다.", "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+function bindPasswordChangeForm() {
+  const button = document.querySelector("#changePasswordBtn");
+  if (!button || button.dataset.bound === "1") return;
+  button.dataset.bound = "1";
+  button.addEventListener("click", handleMyPasswordChange);
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  bindPasswordChangeForm();
 });

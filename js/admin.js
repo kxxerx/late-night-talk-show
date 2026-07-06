@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.2
+// pollution-shop-version: v5.8-password
 import { supabase } from "./supabaseClient.js";
 import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -517,6 +517,30 @@ async function loadUsers() {
   pages.users = 1;
   renderUsers();
 }
+
+async function resetUserPasswordWithTemporaryPassword(userId, temporaryPassword) {
+  if (!temporaryPassword || temporaryPassword.length < 8) {
+    throw new Error("임시 비밀번호는 8자 이상으로 입력해 주세요.");
+  }
+
+  const { data, error } = await supabase.functions.invoke("admin-reset-password", {
+    body: {
+      user_id: userId,
+      temporary_password: temporaryPassword
+    }
+  });
+
+  if (error) {
+    throw new Error(error.message || "비밀번호 초기화 Edge Function 호출에 실패했습니다.");
+  }
+
+  if (data && data.error) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}
+
 function renderUsers() {
   const rows = slicePage(users, "users");
   qs("#userList").innerHTML = rows.map(user => `
@@ -532,6 +556,12 @@ function renderUsers() {
       <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "other")}</select></td>
       <td><select data-department-code="${user.id}">${departmentOptions(user.department_code || "other")}</select></td>
       <td><input class="table-input" data-affiliation-label="${user.id}" value="${safeText(user.affiliation_label || "기타")}"></td>
+      <td class="admin-temp-password-cell">
+        <div class="admin-temp-password-wrap">
+          <input class="table-input" type="password" autocomplete="new-password" data-temp-password="${user.id}" placeholder="임시 비밀번호">
+          <button type="button" data-reset-password="${user.id}">초기화</button>
+        </div>
+      </td>
       <td><input class="table-input" data-band="${user.id}" value="${safeText(user.band_nickname || "")}"></td>
       <td>${Number(user.currency || 0)}</td>
       <td>${user.visitor_type === "entity" ? Number(user.mask_collapse_rate || 0) : Number(user.pollution || 0)}</td>
@@ -541,6 +571,32 @@ function renderUsers() {
       <td class="action-cell"><button data-save-user="${user.id}">저장</button>${user.id !== adminProfile.id ? `<button data-remove-user="${user.id}" class="danger">제거</button>` : ""}</td>
     </tr>`).join("") || `<tr><td colspan="15">회원 없음</td></tr>`;
   renderPager("userPager", "users", users.length, renderUsers);
+
+  qsa("[data-reset-password]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.resetPassword;
+      const input = document.querySelector(`[data-temp-password="${id}"]`);
+      const temporaryPassword = input?.value || "";
+
+      if (!confirm("이 회원의 비밀번호를 입력한 임시 비밀번호로 초기화할까요?")) return;
+
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = "처리 중...";
+
+      try {
+        await resetUserPasswordWithTemporaryPassword(id, temporaryPassword);
+        if (input) input.value = "";
+        showMessage("임시 비밀번호가 설정되었습니다.", "success");
+      } catch (error) {
+        showMessage(error.message || "비밀번호 초기화에 실패했습니다.", "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    });
+  });
+
   qsa("[data-character-preset]").forEach(select => {
     select.addEventListener("change", () => {
       applyCharacterPresetPreview(select.dataset.characterPreset, select.value);
