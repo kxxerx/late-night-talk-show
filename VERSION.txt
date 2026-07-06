@@ -1,3 +1,8 @@
+pollution-shop-starter v6.2-item-image-final-fix
+- Fixed shop list thumbnails to fill the image box without side gaps.
+- Fixed item detail modal images to show the full image without cropping.
+- CSS-only patch based on the uploaded pollution-shop-starter_6.0.zip.
+
 pollution-shop-starter v5.8-password
 - Added self password change form to mypage.
 - Added admin temporary password reset UI.

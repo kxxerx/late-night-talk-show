@@ -1,4 +1,4 @@
-/* pollution-shop-version: v6.0-password-layout */
+/* pollution-shop-version: v6.2-item-image-final-fix */
 @import url("https://cdn.jsdelivr.net/npm/@noonnu/gabia-maeumgyeol@0.1.0/index.css");
 :root {
   --bg: #0c0d12;
@@ -7019,4 +7019,88 @@ img.item-detail-img-no-crop {
 
 .password-change-card input {
   border-color: rgba(244, 211, 94, 0.22);
+}
+
+
+/* v6.2 final item image fix
+   - 목록 카드: 빈 좌우 여백이 생기지 않도록 썸네일은 박스를 꽉 채움.
+   - 상세 팝업: 이미지 전체가 잘리지 않도록 고정 높이/cover를 전부 해제.
+   이 규칙은 파일 맨 아래에 있어야 앞쪽의 cover/contain 싸움을 이긴다. CSS가 또 내전을 벌였기 때문이다.
+*/
+.luxury-item-card .item-image-wrap,
+.item-card.luxury-item-card .item-image-wrap,
+#shopList .item-card .item-image-wrap {
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: block !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(214,168,79,.10), transparent 62%),
+    #050505 !important;
+}
+
+.luxury-item-card .item-image-wrap img,
+.item-card.luxury-item-card .item-image-wrap img,
+#shopList .item-card .item-image-wrap img,
+#shopList img.item-img-no-crop {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  aspect-ratio: auto !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block !important;
+}
+
+/* 상세 보기 팝업은 반대로 절대 자르지 않는다. */
+.item-detail-modal .detail-image-wrap,
+#itemDetailModal .detail-image-wrap,
+.detail-image-wrap {
+  width: 100% !important;
+  max-width: min(720px, 100%) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  padding: 10px !important;
+  margin-inline: auto !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(214,168,79,.10), transparent 62%),
+    #050505 !important;
+}
+
+.item-detail-modal .detail-image-wrap img,
+#itemDetailModal .detail-image-wrap img,
+.detail-image-wrap img,
+.item-detail-modal img.item-img-no-crop,
+#itemDetailModal img.item-img-no-crop {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: min(66vh, 620px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+  flex: 0 1 auto !important;
+}
+
+/* 상세 팝업 박스 자체가 이미지를 억지로 눌러 자르지 않게 여유를 준다. */
+.item-detail-box {
+  width: min(760px, calc(100vw - 28px)) !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
 }
