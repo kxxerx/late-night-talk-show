@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.8-password
+// pollution-shop-version: v6.4-admin-password-reset
 import { supabase } from "./supabaseClient.js";
 import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -531,7 +531,11 @@ async function resetUserPasswordWithTemporaryPassword(userId, temporaryPassword)
   });
 
   if (error) {
-    throw new Error(error.message || "비밀번호 초기화 Edge Function 호출에 실패했습니다.");
+    const message = error.message || "비밀번호 초기화 Edge Function 호출에 실패했습니다.";
+    if (message.includes("not found") || message.includes("FunctionsHttpError") || message.includes("Failed to send")) {
+      throw new Error(`${message} / admin-reset-password Edge Function 배포와 Secret 설정을 확인해 주세요.`);
+    }
+    throw new Error(message);
   }
 
   if (data && data.error) {

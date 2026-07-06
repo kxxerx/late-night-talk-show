@@ -28,15 +28,25 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const anonKeyFromSecret = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
 
     if (!supabaseUrl || !serviceRoleKey) {
-      return jsonResponse({ error: "Edge Function secret이 설정되지 않았습니다." }, 500);
+      return jsonResponse({ error: "Edge Function secret이 설정되지 않았습니다. SUPABASE_URL과 SUPABASE_SERVICE_ROLE_KEY를 확인해 주세요." }, 500);
     }
 
     const authHeader = req.headers.get("Authorization") || "";
-    const anonKey = req.headers.get("apikey") || "";
+    const anonKey = req.headers.get("apikey") || anonKeyFromSecret;
+
+    if (!authHeader.toLowerCase().startsWith("bearer ")) {
+      return jsonResponse({ error: "로그인 세션이 전달되지 않았습니다. 관리자로 다시 로그인한 뒤 시도해 주세요." }, 401);
+    }
+
+    if (!anonKey) {
+      return jsonResponse({ error: "anon/publishable key가 전달되지 않았습니다. SUPABASE_ANON_KEY secret을 추가하거나 프론트 설정을 확인해 주세요." }, 500);
+    }
 
     const userClient = createClient(supabaseUrl, anonKey, {
+      auth: { persistSession: false },
       global: { headers: { Authorization: authHeader } },
     });
 
@@ -87,7 +97,9 @@ serve(async (req) => {
       return jsonResponse({ error: updateError.message }, 400);
     }
 
-    await adminClient.from("admin_logs").insert({
+    // 로그 기록은 실패해도 비밀번호 초기화 성공 자체를 되돌리지 않습니다.
+    // 프로젝트마다 admin_logs 테이블/권한 상태가 다를 수 있어서, 여기서 전체 기능을 죽이면 인간 세상의 유지보수 지옥이 열립니다.
+    const { error: logError } = await adminClient.from("admin_logs").insert({
       admin_id: authData.user.id,
       target_user_id: userId,
       action: "reset_password",
@@ -96,6 +108,10 @@ serve(async (req) => {
         display_name: targetProfile.display_name,
       }),
     });
+
+    if (logError) {
+      console.warn("admin_logs insert failed:", logError.message);
+    }
 
     return jsonResponse({
       ok: true,
