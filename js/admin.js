@@ -1,4 +1,4 @@
-// pollution-shop-version: v6.4-admin-password-reset
+// pollution-shop-version: v6.5-admin-password-reset-fix
 import { supabase } from "./supabaseClient.js";
 import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -523,23 +523,35 @@ async function resetUserPasswordWithTemporaryPassword(userId, temporaryPassword)
     throw new Error("임시 비밀번호는 8자 이상으로 입력해 주세요.");
   }
 
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  const accessToken = sessionData?.session?.access_token;
+  if (!accessToken) {
+    throw new Error("로그인 세션을 찾을 수 없습니다. 로그아웃 후 다시 로그인해 주세요.");
+  }
+
   const { data, error } = await supabase.functions.invoke("admin-reset-password", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    },
     body: {
       user_id: userId,
       temporary_password: temporaryPassword
     }
   });
 
-  if (error) {
-    const message = error.message || "비밀번호 초기화 Edge Function 호출에 실패했습니다.";
-    if (message.includes("not found") || message.includes("FunctionsHttpError") || message.includes("Failed to send")) {
-      throw new Error(`${message} / admin-reset-password Edge Function 배포와 Secret 설정을 확인해 주세요.`);
-    }
-    throw new Error(message);
+  if (data && data.error) {
+    const debugText = data.debug ? ` / debug: ${JSON.stringify(data.debug)}` : "";
+    throw new Error(`${data.error}${debugText}`);
   }
 
-  if (data && data.error) {
-    throw new Error(data.error);
+  if (error) {
+    const context = error.context || error;
+    const message = context?.message || error.message || "비밀번호 초기화 Edge Function 호출에 실패했습니다.";
+    if (message.includes("not found") || message.includes("FunctionsHttpError") || message.includes("Failed to send") || message.includes("non-2xx")) {
+      throw new Error(`${message} / Network 탭의 Response 또는 Supabase Function Logs를 확인해 주세요.`);
+    }
+    throw new Error(message);
   }
 
   return data;

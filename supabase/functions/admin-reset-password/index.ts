@@ -57,14 +57,38 @@ serve(async (req) => {
       return jsonResponse({ error: "로그인이 필요합니다." }, 401);
     }
 
-    const { data: requester, error: requesterError } = await adminClient
+    const requesterById = await adminClient
       .from("profiles")
-      .select("id, role")
+      .select("id, email, role")
       .eq("id", authData.user.id)
-      .single();
+      .maybeSingle();
 
-    if (requesterError || !requester || requester.role !== "admin") {
-      return jsonResponse({ error: "관리자만 비밀번호를 초기화할 수 있습니다." }, 403);
+    let requester = requesterById.data || null;
+
+    // 일부 기존 프로젝트는 profiles.id가 Auth UID와 정확히 맞지 않고, email 기준으로 관리자 권한을 관리한 흔적이 있을 수 있습니다.
+    // 보안상 클라이언트가 보낸 email은 믿지 않고, Supabase Auth JWT에서 읽은 email만 보조 기준으로 사용합니다.
+    if ((!requester || requester.role !== "admin") && authData.user.email) {
+      const requesterByEmail = await adminClient
+        .from("profiles")
+        .select("id, email, role")
+        .eq("email", authData.user.email)
+        .maybeSingle();
+      requester = requesterByEmail.data || requester;
+    }
+
+    if (!requester || requester.role !== "admin") {
+      return jsonResponse({
+        error: "관리자만 비밀번호를 초기화할 수 있습니다.",
+        debug: {
+          auth_user_id: authData.user.id,
+          auth_email: authData.user.email || null,
+          profile_found: Boolean(requester),
+          profile_id: requester?.id || null,
+          profile_email: requester?.email || null,
+          profile_role: requester?.role || null,
+          id_lookup_error: requesterById.error?.message || null,
+        },
+      }, 403);
     }
 
     const body = await req.json().catch(() => ({}));
