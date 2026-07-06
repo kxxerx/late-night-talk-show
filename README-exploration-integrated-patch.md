@@ -257,3 +257,28 @@ character_presets 읽기 권한 보정 SQL 추가
 ```
 
 이미 v5.3~v5.6을 실행했다면 v5.7만 추가로 실행해도 됩니다.
+
+
+---
+
+# v0.6 추가 안내: 캐릭터 선택/사용자 이름 구조 재수정
+
+v0.6에서는 관리실 회원 목록 구조를 다시 정리했습니다.
+
+```txt
+캐릭터 선택: character_presets 프리셋 드롭다운
+사용자 이름: display_name, 직접 수정 가능
+캐릭터 키: 화면에 보이지 않는 hidden 값으로 자동 저장
+기관/팀/표시 소속명: 프리셋 선택 시 자동 반영, 필요 시 직접 수정 가능
+방문객 상태: 일반/오염자/괴이 상태값으로 별도 관리
+```
+
+프리셋 목록이 DB에서 비어 있거나 RLS 문제로 조회되지 않아도, JS에 내장된 프리셋 목록을 임시로 표시합니다. 다만 DB 저장을 위해 SQL은 아래 순서로 실행해야 합니다.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```

@@ -14,6 +14,359 @@ let passwordRequests = [];
 const pageSize = 10;
 const pages = { users: 1, items: 1, codes: 1, submissions: 1, passwords: 1 };
 
+const FALLBACK_CHARACTER_PRESETS = [
+  {
+    "character_key": "choi_agent_disaster_agency",
+    "preset_label": "최 요원",
+    "display_name": "최 요원",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 10,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_baekildream_field",
+    "preset_label": "김솔음",
+    "display_name": "김솔음",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 20,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_podo_disaster_agency",
+    "preset_label": "김솔음(포도)",
+    "display_name": "김솔음",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 30,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_130666_baekildream_security",
+    "preset_label": "김솔음(130666)",
+    "display_name": "김솔음",
+    "organization_code": "baekildream",
+    "department_code": "security",
+    "affiliation_label": "백일몽 주식회사 보안팀",
+    "sort_order": 40,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_mascot_golden_entity",
+    "preset_label": "김솔음(마스코트 골든)",
+    "display_name": "김솔음",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 50,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_host_friend_entity",
+    "preset_label": "김솔음(사회자의 친구)",
+    "display_name": "김솔음",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 60,
+    "is_active": true
+  },
+  {
+    "character_key": "kim_soleum_segwang_student_entity",
+    "preset_label": "김솔음(세광고 학생)",
+    "display_name": "김솔음",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 70,
+    "is_active": true
+  },
+  {
+    "character_key": "ryu_jaegwan_disaster_agency",
+    "preset_label": "류재관",
+    "display_name": "류재관",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 80,
+    "is_active": true
+  },
+  {
+    "character_key": "eun_haje_baekildream_field",
+    "preset_label": "은하제",
+    "display_name": "은하제",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 90,
+    "is_active": true
+  },
+  {
+    "character_key": "park_minseong_baekildream_field",
+    "preset_label": "박민성",
+    "display_name": "박민성",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 100,
+    "is_active": true
+  },
+  {
+    "character_key": "park_minseong_sprout_baekildream_security",
+    "preset_label": "박민성(새싹반)",
+    "display_name": "박민성",
+    "organization_code": "baekildream",
+    "department_code": "security",
+    "affiliation_label": "백일몽 주식회사 보안팀",
+    "sort_order": 110,
+    "is_active": true
+  },
+  {
+    "character_key": "lee_jahun_baekildream_field",
+    "preset_label": "이자헌",
+    "display_name": "이자헌",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 120,
+    "is_active": true
+  },
+  {
+    "character_key": "jang_heoun_baekildream_field",
+    "preset_label": "장허운",
+    "display_name": "장허운",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 130,
+    "is_active": true
+  },
+  {
+    "character_key": "jang_heoun_hwagal_disaster_agency",
+    "preset_label": "장허운(화각)",
+    "display_name": "장허운",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 140,
+    "is_active": true
+  },
+  {
+    "character_key": "jin_nasol_baekildream_field",
+    "preset_label": "진나솔",
+    "display_name": "진나솔",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 150,
+    "is_active": true
+  },
+  {
+    "character_key": "lee_seonghae_baekildream_field",
+    "preset_label": "이성해",
+    "display_name": "이성해",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 160,
+    "is_active": true
+  },
+  {
+    "character_key": "lee_gangheon_baekildream_field",
+    "preset_label": "이강헌",
+    "display_name": "이강헌",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 170,
+    "is_active": true
+  },
+  {
+    "character_key": "team_b_leader_baekildream_field",
+    "preset_label": "B조 조장",
+    "display_name": "B조 조장",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 180,
+    "is_active": true
+  },
+  {
+    "character_key": "j3_baekildream_security",
+    "preset_label": "J3",
+    "display_name": "J3",
+    "organization_code": "baekildream",
+    "department_code": "security",
+    "affiliation_label": "백일몽 주식회사 보안팀",
+    "sort_order": 190,
+    "is_active": true
+  },
+  {
+    "character_key": "haegeum_disaster_agency",
+    "preset_label": "해금",
+    "display_name": "해금",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 200,
+    "is_active": true
+  },
+  {
+    "character_key": "baek_sahyun_baekildream_field",
+    "preset_label": "백사헌",
+    "display_name": "백사헌",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 210,
+    "is_active": true
+  },
+  {
+    "character_key": "go_yeongeun_baekildream_field",
+    "preset_label": "고영은",
+    "display_name": "고영은",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 220,
+    "is_active": true
+  },
+  {
+    "character_key": "go_yeongeun_bakha_disaster_agency",
+    "preset_label": "고영은(박하)",
+    "display_name": "고영은",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 230,
+    "is_active": true
+  },
+  {
+    "character_key": "park_hongrim_disaster_agency",
+    "preset_label": "박홍림",
+    "display_name": "박홍림",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 240,
+    "is_active": true
+  },
+  {
+    "character_key": "chogae_disaster_agency",
+    "preset_label": "초개",
+    "display_name": "초개",
+    "organization_code": "disaster_agency",
+    "department_code": "agent",
+    "affiliation_label": "초자연 재난관리국 요원",
+    "sort_order": 250,
+    "is_active": true
+  },
+  {
+    "character_key": "gwak_jegang_baekildream_research",
+    "preset_label": "곽제강",
+    "display_name": "곽제강",
+    "organization_code": "baekildream",
+    "department_code": "research",
+    "affiliation_label": "백일몽 주식회사 연구팀",
+    "sort_order": 260,
+    "is_active": true
+  },
+  {
+    "character_key": "lee_yeonhwa_baekildream_research",
+    "preset_label": "이연화",
+    "display_name": "이연화",
+    "organization_code": "baekildream",
+    "department_code": "research",
+    "affiliation_label": "백일몽 주식회사 연구팀",
+    "sort_order": 270,
+    "is_active": true
+  },
+  {
+    "character_key": "baek_seokju_baekildream_field",
+    "preset_label": "백석주",
+    "display_name": "백석주",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 280,
+    "is_active": true
+  },
+  {
+    "character_key": "gang_ihak_baekildream_field",
+    "preset_label": "강이학",
+    "display_name": "강이학",
+    "organization_code": "baekildream",
+    "department_code": "field_exploration",
+    "affiliation_label": "백일몽 주식회사 현장탐사팀",
+    "sort_order": 290,
+    "is_active": true
+  },
+  {
+    "character_key": "ryu_jaegwan_lodge_keeper_entity",
+    "preset_label": "류재관(산장지기)",
+    "display_name": "류재관",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 300,
+    "is_active": true
+  },
+  {
+    "character_key": "choi_agent_lucky_mart_entity",
+    "preset_label": "최 요원(룩키마트)",
+    "display_name": "최 요원",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 310,
+    "is_active": true
+  },
+  {
+    "character_key": "ho_yuwon_entity",
+    "preset_label": "호유원",
+    "display_name": "호유원",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 320,
+    "is_active": true
+  },
+  {
+    "character_key": "cheong_dallae_entity",
+    "preset_label": "청달래",
+    "display_name": "청달래",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 330,
+    "is_active": true
+  },
+  {
+    "character_key": "brown_entity",
+    "preset_label": "브라운",
+    "display_name": "브라운",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 340,
+    "is_active": true
+  },
+  {
+    "character_key": "blue_dragon_mascot_entity",
+    "preset_label": "파란 용 마스코트",
+    "display_name": "파란 용 마스코트",
+    "organization_code": "entity",
+    "department_code": "entity",
+    "affiliation_label": "괴이",
+    "sort_order": 350,
+    "is_active": true
+  }
+];
+
 function safeText(value) {
   return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
@@ -99,13 +452,13 @@ async function loadCharacterPresets() {
     .order("preset_label", { ascending: true });
 
   if (error) {
-    console.warn("character_presets load failed:", error.message);
-    characterPresets = [];
-    showMessage(`캐릭터 프리셋을 불러오지 못했습니다: ${error.message}`, "error");
+    console.warn("character_presets load failed, using fallback presets:", error.message);
+    characterPresets = FALLBACK_CHARACTER_PRESETS;
+    showMessage(`DB 캐릭터 프리셋을 불러오지 못해 내장 목록을 표시합니다. SQL 적용 상태를 확인하세요: ${error.message}`, "error");
     return;
   }
 
-  characterPresets = data || [];
+  characterPresets = (data && data.length > 0) ? data : FALLBACK_CHARACTER_PRESETS;
 }
 
 function characterPresetOptions(selectedKey) {
@@ -173,9 +526,9 @@ function renderUsers() {
       <td>${safeText(user.email || "")}</td>
       <td class="character-select-cell">
         <select class="table-input profile-character-select" data-character-preset="${user.id}">${characterPresetOptions(user.character_key)}</select>
-        <input type="hidden" data-display="${user.id}" value="${safeText(user.display_name || "")}">
+        <input type="hidden" data-character-key="${user.id}" value="${safeText(user.character_key || "")}">
       </td>
-      <td><input class="table-input" data-character-key="${user.id}" value="${safeText(user.character_key || "")}" placeholder="예: kimsolum_disaster"></td>
+      <td><input class="table-input" data-display="${user.id}" value="${safeText(user.display_name || "")}" placeholder="사용자 이름"></td>
       <td><select data-organization-code="${user.id}">${organizationOptions(user.organization_code || "other")}</select></td>
       <td><select data-department-code="${user.id}">${departmentOptions(user.department_code || "other")}</select></td>
       <td><input class="table-input" data-affiliation-label="${user.id}" value="${safeText(user.affiliation_label || "기타")}"></td>
@@ -196,30 +549,49 @@ function renderUsers() {
   qsa("[data-save-user]").forEach(button => button.addEventListener("click", async () => {
     const id = button.dataset.saveUser;
     const presetKey = document.querySelector(`[data-character-preset="${id}"]`)?.value || "";
-    if (presetKey) {
-      try {
-        await applyCharacterPresetToUser(id, presetKey);
-        showMessage("캐릭터 프리셋 적용 완료", "success");
-      } catch (error) {
-        showMessage(error.message, "error");
+    try {
+      if (presetKey) {
+        const preset = getCharacterPresetByKey(presetKey);
+        if (preset) applyCharacterPresetPreview(id, presetKey);
+        try {
+          await applyCharacterPresetToUser(id, presetKey);
+        } catch (rpcError) {
+          console.warn("admin_apply_character_preset failed; falling back to admin_update_member:", rpcError.message);
+          const { error: fallbackError } = await supabase.rpc("admin_update_member", {
+            p_target_user_id: id,
+            p_display_name: document.querySelector(`[data-display="${id}"]`).value,
+            p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
+            p_role: document.querySelector(`[data-role="${id}"]`).value,
+            p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value,
+            p_character_key: document.querySelector(`[data-character-key="${id}"]`).value,
+            p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
+            p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
+            p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
+          });
+          if (fallbackError) throw fallbackError;
+        }
+        showMessage("캐릭터 정보 저장 완료", "success");
+        await loadUsers();
+        return;
       }
-      await loadCharacterPresets();
-  await loadUsers();
-      return;
+
+      const { error } = await supabase.rpc("admin_update_member", {
+        p_target_user_id: id,
+        p_display_name: document.querySelector(`[data-display="${id}"]`).value,
+        p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
+        p_role: document.querySelector(`[data-role="${id}"]`).value,
+        p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value,
+        p_character_key: document.querySelector(`[data-character-key="${id}"]`).value,
+        p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
+        p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
+        p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
+      });
+      if (error) throw error;
+      showMessage("방문객 정보 저장 완료", "success");
+      await loadUsers();
+    } catch (error) {
+      showMessage(error.message, "error");
     }
-    const { error } = await supabase.rpc("admin_update_member", {
-      p_target_user_id: id,
-      p_display_name: document.querySelector(`[data-display="${id}"]`).value,
-      p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
-      p_role: document.querySelector(`[data-role="${id}"]`).value,
-      p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value,
-      p_character_key: document.querySelector(`[data-character-key="${id}"]`).value,
-      p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
-      p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
-      p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
-    });
-    if (error) showMessage(error.message, "error"); else showMessage("방문객 정보 저장 완료", "success");
-    await loadUsers();
   }));
   qsa("[data-remove-user]").forEach(button => button.addEventListener("click", async () => {
     if (!confirm("이 방문객 정보를 사이트 DB에서 제거할까요? Supabase Auth 실제 계정은 별도로 남을 수 있습니다.")) return;
@@ -392,5 +764,13 @@ qs("#eventCodeForm")?.addEventListener("submit", async (event) => {
 });
 
 if (adminProfile) {
-  Promise.all([loadUsers(), loadItems(), loadCodes(), loadSubmissions(), loadPasswordRequests()]).catch(error => { console.error(error); showMessage(error.message, "error"); });
+  (async () => {
+    try {
+      await loadCharacterPresets();
+      await Promise.all([loadUsers(), loadItems(), loadCodes(), loadSubmissions(), loadPasswordRequests()]);
+    } catch (error) {
+      console.error(error);
+      showMessage(error.message, "error");
+    }
+  })();
 }
