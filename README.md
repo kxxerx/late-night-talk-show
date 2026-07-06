@@ -2063,3 +2063,5 @@ PC 화면에서도 800x600 이미지가 잘리지 않도록 `object-fit: contain
 ## 4. SQL 추가 없음
 
 v5.2는 SVG/CSS/JS 수정판이라 SQL 실행이 필요 없습니다.
+
+Deploy retry
