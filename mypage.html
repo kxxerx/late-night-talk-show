@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <!-- pollution-shop-version: v5.8-password -->
-        <meta charset="utf-8">
+  <!-- pollution-shop-version: v6.0-password-layout -->
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>방문객 정보</title>
   <link rel="stylesheet" href="css/style.css">
@@ -89,16 +89,9 @@
       </article>
     </section>
 
-    <section class="section panel danger-zone">
-      <h2>기념품샵 떠나기</h2>
-      <p class="muted">마스코트 골든의 기념품샵에서 나가면 방문객 정보는 더 이상 상점 이용에 사용되지 않습니다. 쇼핑백은 비워지고, 방문객 상태 기록도 더 이상 이어지지 않습니다.</p>
-      <button id="withdrawBtn" class="danger">기념품샵 떠나기</button>
-    </section>
 
-    <span id="email" hidden></span>
-    <span id="siteId" hidden></span>
   
-      <section class="soft-card password-change-card">
+      <section class="section panel password-change-card">
         <h2>비밀번호 변경</h2>
         <p class="muted">현재 로그인된 계정의 비밀번호를 변경합니다. 이메일 복구가 아니라, 지금 로그인한 상태에서 직접 바꾸는 방식입니다.</p>
         <div class="form-grid">
@@ -112,7 +105,16 @@
         <button id="changePasswordBtn" type="button">비밀번호 변경</button>
       </section>
 
-    </main>
+    
+
+    <section class="section panel danger-zone">
+      <h2>기념품샵 떠나기</h2>
+      <p class="muted">마스코트 골든의 기념품샵에서 나가면 방문객 정보는 더 이상 상점 이용에 사용되지 않습니다. 쇼핑백은 비워지고, 방문객 상태 기록도 더 이상 이어지지 않습니다.</p>
+      <button id="withdrawBtn" class="danger">기념품샵 떠나기</button>
+    </section>
+
+    <span id="email" hidden></span>
+    <span id="siteId" hidden></span></main>
   <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

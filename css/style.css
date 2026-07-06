@@ -1,4 +1,4 @@
-/* pollution-shop-version: v5.2 */
+/* pollution-shop-version: v6.0-password-layout */
 @import url("https://cdn.jsdelivr.net/npm/@noonnu/gabia-maeumgyeol@0.1.0/index.css");
 :root {
   --bg: #0c0d12;
@@ -7000,4 +7000,23 @@ img.item-detail-img-no-crop {
   .item-thumb {
     max-height: 230px !important;
   }
+}
+
+
+/* v6.0 password change card */
+.password-change-card {
+  border: 1px solid rgba(244, 211, 94, 0.42);
+  box-shadow: 0 0 0 1px rgba(244, 211, 94, 0.08) inset, var(--shadow);
+}
+
+.password-change-card h2 {
+  color: #f4d35e;
+}
+
+.password-change-card .muted {
+  color: #d8d0b5;
+}
+
+.password-change-card input {
+  border-color: rgba(244, 211, 94, 0.22);
 }
