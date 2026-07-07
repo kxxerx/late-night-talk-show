@@ -1,4 +1,4 @@
-// pollution-shop-version: v6.6-entity-life-metadata
+// pollution-shop-version: v6.9-life-detail-modal-image-price-fix
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass, handleEntityCollapseIfNeeded, clearVisitorModeClass } from "./common.js";
 
@@ -122,15 +122,35 @@ function ensureItemDetailModal() {
 function openItemDetail(item) {
   const modal = ensureItemDetailModal();
   const content = modal.querySelector("#itemDetailContent");
-  content.innerHTML = `
-    <div class="detail-image-wrap">
-      ${item.image_url ? `<img class="item-img-no-crop" src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
-    </div>
-    <h2>${safeText(item.name)}</h2>
-    <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
-    <p class="detail-description">${safeText(item.description || "상세 설명이 등록되지 않았습니다.")}</p>
-    ${lifeDetailHtml(item)}
-  `;
+  const isLifeItem = (item.item_kind || "regular") === "life";
+
+  modal.classList.toggle("life-only-detail-modal", isLifeItem);
+
+  if (isLifeItem) {
+    content.innerHTML = `
+      <div class="detail-image-wrap">
+        ${item.image_url ? `<img class="item-img-no-crop" src="${safeText(item.image_url)}" alt="${safeText(item.name)}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+      </div>
+      <h2>${safeText(item.name)}</h2>
+      <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
+      ${lifeDetailHtml(item) || `
+        <section class="life-detail-section">
+          <h3>이 인생의 기록</h3>
+          <p class="life-warning">인생 상세 정보가 아직 등록되지 않았습니다.</p>
+        </section>
+      `}
+    `;
+  } else {
+    content.innerHTML = `
+      <div class="detail-image-wrap">
+        ${item.image_url ? `<img class="item-img-no-crop" src="${safeText(item.image_url)}" alt="${safeText(item.name)}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
+      </div>
+      <h2>${safeText(item.name)}</h2>
+      <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
+      <p class="detail-description">${safeText(item.description || "상세 설명이 등록되지 않았습니다.")}</p>
+    `;
+  }
+
   modal.classList.add("open");
 }
 

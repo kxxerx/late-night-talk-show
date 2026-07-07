@@ -7314,3 +7314,185 @@ img.item-detail-img-no-crop {
     flex-direction: column;
   }
 }
+
+
+/* v6.9 life detail modal + responsive detail image fix
+   - 일반 아이템: 자세히 보기에서 기존 아이템 설명만 표시.
+   - 인생 상품: 아이템 설명/이미지/가격을 숨기고 인생 상세 기록만 표시.
+   - 상세 이미지 테두리는 이미지 크기에 맞춰 따라가게 조정.
+*/
+#itemDetailModal.life-only-detail-modal .item-detail-box,
+body.entity-mode #itemDetailModal.life-only-detail-modal .item-detail-box,
+html.entity-mode #itemDetailModal.life-only-detail-modal .item-detail-box {
+  width: min(760px, calc(100vw - 28px)) !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(83, 210, 191, .035) 0 1px, transparent 1px 8px),
+    #020605 !important;
+  border: 1px solid rgba(83, 210, 191, .65) !important;
+  color: #b7fff3 !important;
+  box-shadow: 0 0 36px rgba(83, 210, 191, .16), 0 18px 48px rgba(0,0,0,.72) !important;
+}
+
+#itemDetailModal.life-only-detail-modal .life-detail-section,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-section,
+html.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-section {
+  margin-top: 0 !important;
+  padding: 18px !important;
+  border: 1px solid rgba(83, 210, 191, .48) !important;
+  border-radius: 18px !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(83, 210, 191, .025) 0 1px, transparent 1px 8px),
+    #050908 !important;
+  color: #b7fff3 !important;
+}
+
+#itemDetailModal.life-only-detail-modal .life-detail-section h3,
+#itemDetailModal.life-only-detail-modal .life-detail-grid dt,
+#itemDetailModal.life-only-detail-modal .life-detail-grid dd,
+#itemDetailModal.life-only-detail-modal .life-record-block,
+#itemDetailModal.life-only-detail-modal .life-record-block strong,
+#itemDetailModal.life-only-detail-modal .life-record-block p,
+#itemDetailModal.life-only-detail-modal .life-warning,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-section h3,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-grid dt,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-grid dd,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-record-block,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-record-block strong,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-record-block p,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-warning {
+  color: #b7fff3 !important;
+}
+
+#itemDetailModal.life-only-detail-modal .danger-record strong,
+body.entity-mode #itemDetailModal.life-only-detail-modal .danger-record strong {
+  color: #ff6b6b !important;
+}
+
+#itemDetailModal.life-only-detail-modal .life-detail-grid div,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-grid div,
+html.entity-mode #itemDetailModal.life-only-detail-modal .life-detail-grid div {
+  background: #020605 !important;
+  border: 1px solid rgba(83, 210, 191, .35) !important;
+}
+
+#itemDetailModal.life-only-detail-modal .life-warning,
+body.entity-mode #itemDetailModal.life-only-detail-modal .life-warning,
+html.entity-mode #itemDetailModal.life-only-detail-modal .life-warning {
+  background: rgba(83, 210, 191, .08) !important;
+  border: 1px solid rgba(83, 210, 191, .24) !important;
+}
+
+/* 일반 아이템 상세 이미지: 작은 화면에서도 빈 박스가 남지 않도록 테두리가 이미지에 붙는다. */
+#itemDetailModal:not(.life-only-detail-modal) .detail-image-wrap,
+.item-detail-modal:not(.life-only-detail-modal) .detail-image-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 auto 18px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #050505 !important;
+  border: 1px solid rgba(83, 210, 191, .42) !important;
+  border-radius: 14px !important;
+}
+
+#itemDetailModal:not(.life-only-detail-modal) .detail-image-wrap img,
+#itemDetailModal:not(.life-only-detail-modal) img.item-img-no-crop,
+.item-detail-modal:not(.life-only-detail-modal) .detail-image-wrap img {
+  width: auto !important;
+  height: auto !important;
+  max-width: min(100%, 720px) !important;
+  max-height: min(62vh, 620px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+}
+
+@media (max-width: 640px) {
+  #itemDetailModal:not(.life-only-detail-modal) .detail-image-wrap,
+  .item-detail-modal:not(.life-only-detail-modal) .detail-image-wrap {
+    max-width: calc(100vw - 48px) !important;
+  }
+
+  #itemDetailModal:not(.life-only-detail-modal) .detail-image-wrap img,
+  #itemDetailModal:not(.life-only-detail-modal) img.item-img-no-crop,
+  .item-detail-modal:not(.life-only-detail-modal) .detail-image-wrap img {
+    max-width: calc(100vw - 48px) !important;
+    max-height: 56vh !important;
+  }
+}
+
+/* v6.9.1: 인생 상품 상세에서도 이미지/가격은 표시하되, 설명문은 숨김. 이미지 박스는 실제 표시 이미지에 맞춤. */
+#itemDetailModal.life-only-detail-modal .detail-image-wrap,
+body.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap,
+html.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 auto 18px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #050505 !important;
+  border: 1px solid rgba(83, 210, 191, .42) !important;
+  border-radius: 14px !important;
+}
+
+#itemDetailModal.life-only-detail-modal .detail-image-wrap img,
+#itemDetailModal.life-only-detail-modal img.item-img-no-crop,
+body.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap img,
+html.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap img {
+  width: auto !important;
+  height: auto !important;
+  max-width: min(100%, 720px) !important;
+  max-height: min(52vh, 520px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+}
+
+#itemDetailModal.life-only-detail-modal h2,
+#itemDetailModal.life-only-detail-modal .detail-price,
+body.entity-mode #itemDetailModal.life-only-detail-modal h2,
+body.entity-mode #itemDetailModal.life-only-detail-modal .detail-price,
+html.entity-mode #itemDetailModal.life-only-detail-modal h2,
+html.entity-mode #itemDetailModal.life-only-detail-modal .detail-price {
+  color: #b7fff3 !important;
+}
+
+#itemDetailModal.life-only-detail-modal .detail-description,
+body.entity-mode #itemDetailModal.life-only-detail-modal .detail-description,
+html.entity-mode #itemDetailModal.life-only-detail-modal .detail-description {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  #itemDetailModal.life-only-detail-modal .detail-image-wrap,
+  body.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap,
+  html.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap {
+    max-width: calc(100vw - 48px) !important;
+  }
+
+  #itemDetailModal.life-only-detail-modal .detail-image-wrap img,
+  #itemDetailModal.life-only-detail-modal img.item-img-no-crop,
+  body.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap img,
+  html.entity-mode #itemDetailModal.life-only-detail-modal .detail-image-wrap img {
+    max-width: calc(100vw - 48px) !important;
+    max-height: 46vh !important;
+  }
+}
