@@ -1,3 +1,23 @@
+# pollution-shop-starter 통합 README
+
+이 파일은 기존에 흩어져 있던 README 문서들을 하나로 합친 통합본입니다. GitHub에는 이 README.md 하나만 남겨두면 됩니다.
+
+## 빠른 적용 순서
+
+1. ZIP 압축을 풉니다.
+2. 압축 푼 폴더 안의 내용물 전체를 GitHub 저장소 `main` 브랜치 root에 업로드합니다.
+3. ZIP 파일 자체를 올리지 않습니다.
+4. 새 SQL이 필요한 버전은 `migrations` 폴더의 해당 SQL을 Supabase SQL Editor에서 실행합니다.
+5. Edge Function 관련 수정이 있으면 `supabase/functions/admin-reset-password/index.ts`를 Supabase Edge Functions의 `admin-reset-password`에 다시 붙여넣고 Deploy합니다.
+
+
+---
+
+
+
+# 기존 기본 README
+
+
 # 오염도 상점 사이트 스타터
 
 GitHub Pages + Supabase로 만드는 반자동 오염도/유쾌주화/상점 시스템입니다.
@@ -2065,3 +2085,993 @@ PC 화면에서도 800x600 이미지가 잘리지 않도록 `object-fit: contain
 v5.2는 SVG/CSS/JS 수정판이라 SQL 실행이 필요 없습니다.
 
 Deploy retry
+
+
+---
+
+
+
+# README-admin-temp-password-step-by-step
+
+
+# 관리자 임시 비밀번호 초기화 적용 순서
+
+이 패치는 관리실에서 회원의 임시 비밀번호를 새로 설정하는 기능을 고친 버전입니다.
+
+핵심은 이겁니다.
+
+- `admin.html`, `js/admin.js`는 GitHub Pages에 올립니다.
+- `supabase/functions/admin-reset-password/index.ts`는 GitHub Pages가 아니라 Supabase Edge Function으로 배포합니다.
+- `service_role key`는 절대 GitHub에 올리지 않습니다. 절대 `config.js`에 넣지 않습니다. 브라우저에 넣는 순간 보안이 종이문짝 됩니다.
+
+## 1. GitHub Pages에 올릴 것
+
+ZIP을 압축 해제한 뒤, 압축 푼 폴더 안의 내용물을 GitHub 저장소의 `main` 브랜치 root에 업로드하세요.
+
+중요합니다.
+
+- ZIP 파일 자체를 올리는 게 아닙니다.
+- 압축 푼 폴더 안의 파일과 폴더를 올립니다.
+- `main` 브랜치에 올립니다.
+- 현재 GitHub Pages 설정이 `Deploy from a branch / main / root`라면 이 구조가 맞습니다.
+
+## 2. Supabase Edge Function 배포가 필요한 이유
+
+관리자가 다른 회원의 비밀번호를 바꾸려면 Supabase Auth Admin API가 필요합니다.
+이 API는 `service_role key`가 있어야 작동합니다.
+
+그런데 `service_role key`를 `js/config.js` 같은 프론트 파일에 넣으면 사용자가 개발자도구로 볼 수 있습니다.
+그래서 이 기능은 반드시 Supabase Edge Function에서 실행해야 합니다.
+
+## 3. Supabase Dashboard에서 배포하는 방법
+
+CLI가 어렵다면 Dashboard 방식이 낫습니다.
+
+1. Supabase Dashboard에 들어갑니다.
+2. 해당 프로젝트를 엽니다.
+3. 왼쪽 메뉴에서 Edge Functions로 갑니다.
+4. 새 Function을 만듭니다.
+5. Function 이름은 반드시 아래처럼 합니다.
+
+```txt
+admin-reset-password
+```
+
+6. 코드 편집기에 아래 파일 내용을 붙여넣습니다.
+
+```txt
+supabase/functions/admin-reset-password/index.ts
+```
+
+7. 저장/배포합니다.
+
+Supabase 공식 문서 기준으로 Edge Function은 Dashboard에서도 만들고 배포할 수 있고, TypeScript/Deno 런타임으로 동작합니다.
+
+## 4. Edge Function Secret 설정
+
+Edge Function에는 아래 Secret이 필요합니다.
+
+필수:
+
+```txt
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+```
+
+권장:
+
+```txt
+SUPABASE_ANON_KEY
+```
+
+값을 넣는 위치:
+
+```txt
+Supabase Dashboard
+→ Edge Functions
+→ Secrets
+```
+
+각 값은 여기서 확인합니다.
+
+```txt
+Supabase Dashboard
+→ Project Settings
+→ API
+```
+
+주의:
+
+- `SUPABASE_SERVICE_ROLE_KEY`는 절대 GitHub에 올리지 않습니다.
+- `SUPABASE_SERVICE_ROLE_KEY`는 절대 `js/config.js`에 넣지 않습니다.
+- `SUPABASE_SERVICE_ROLE_KEY`는 Supabase Edge Function Secret에만 넣습니다.
+
+## 5. CLI로 배포하는 방법
+
+터미널을 쓸 수 있으면 아래 방식도 됩니다.
+
+```bash
+supabase login
+supabase link --project-ref 프로젝트REF
+supabase secrets set SUPABASE_URL="https://프로젝트REF.supabase.co"
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY="service_role 키"
+supabase secrets set SUPABASE_ANON_KEY="anon 또는 publishable key"
+supabase functions deploy admin-reset-password
+```
+
+Supabase 공식 문서 기준으로 CLI 배포는 `supabase functions deploy 함수명` 형식입니다.
+
+## 6. 작동 확인
+
+1. 홈페이지에서 관리자 계정으로 로그인합니다.
+2. `admin.html` 관리실에 들어갑니다.
+3. 회원 목록의 `임시 비밀번호` 칸에 8자 이상 비밀번호를 입력합니다.
+4. `초기화` 버튼을 누릅니다.
+5. 성공 메시지가 뜨면 해당 회원은 그 임시 비밀번호로 로그인할 수 있습니다.
+
+## 7. 실패할 때 원인 구분
+
+### `FunctionsFetchError`, `Function not found`, `Failed to send` 비슷한 오류
+
+대개 Edge Function이 배포되지 않았거나 이름이 다릅니다.
+
+확인할 것:
+
+```txt
+Function 이름 = admin-reset-password
+```
+
+### `Edge Function secret이 설정되지 않았습니다`
+
+Secret이 빠졌습니다.
+
+확인할 것:
+
+```txt
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+```
+
+### `관리자만 비밀번호를 초기화할 수 있습니다`
+
+현재 로그인한 계정의 `profiles.role`이 `admin`이 아닙니다.
+
+확인할 것:
+
+```sql
+select id, site_id, email, role
+from public.profiles;
+```
+
+관리자 계정의 role이 `admin`이어야 합니다.
+
+### `대상 사용자를 찾을 수 없습니다`
+
+회원 목록의 profile id와 Supabase Auth user id가 맞지 않는 상태일 수 있습니다.
+`profiles.id`는 `auth.users.id`와 같아야 합니다.
+
+### 8자 미만 오류
+
+Supabase Auth 비밀번호 정책과 별개로 이 패치에서는 임시 비밀번호를 8자 이상으로 제한했습니다.
+
+## 8. 이번 버전에서 바뀐 점
+
+- Edge Function에서 로그인 세션 누락 오류를 더 명확히 표시합니다.
+- `SUPABASE_ANON_KEY` 또는 `SUPABASE_PUBLISHABLE_KEY` Secret을 보조로 읽을 수 있게 했습니다.
+- `admin_logs` 기록 실패가 비밀번호 초기화 성공을 막지 않게 했습니다.
+- 관리실 JS 오류 메시지를 조금 더 알아볼 수 있게 했습니다.
+
+
+---
+
+
+
+# README-password-reset
+
+
+# 비밀번호 변경 / 임시 비밀번호 초기화 패치
+
+## 포함 기능
+
+### 1. 마이페이지 비밀번호 변경
+
+로그인한 사용자는 마이페이지에서 자기 비밀번호를 직접 바꿀 수 있습니다.
+
+수정 파일:
+
+```txt
+mypage.html
+js/dashboard.js
+```
+
+이 기능은 Supabase Edge Function 없이 작동합니다.
+
+### 2. 운영자 임시 비밀번호 설정
+
+관리자는 관리실 회원 목록에서 임시 비밀번호를 입력하고 초기화할 수 있습니다.
+
+수정 파일:
+
+```txt
+admin.html
+js/admin.js
+supabase/functions/admin-reset-password/index.ts
+```
+
+이 기능은 Supabase Edge Function 배포가 필요합니다.
+
+## Edge Function 배포 전 주의
+
+절대 아래 값을 GitHub나 프론트 파일에 넣지 마세요.
+
+```txt
+service_role key
+SUPABASE_SERVICE_ROLE_KEY
+sb_secret_...
+DB password
+JWT secret
+```
+
+`SUPABASE_SERVICE_ROLE_KEY`는 Supabase Dashboard 또는 CLI로 Functions Secret에만 저장해야 합니다.
+
+## Supabase Edge Function 설정
+
+### 1. Secret 설정
+
+Supabase CLI를 쓰는 경우:
+
+```bash
+supabase secrets set SUPABASE_URL="https://프로젝트REF.supabase.co"
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY="service_role 키"
+```
+
+Dashboard에서 설정하는 경우:
+
+```txt
+Supabase Dashboard
+→ Edge Functions
+→ Secrets
+→ SUPABASE_URL 추가
+→ SUPABASE_SERVICE_ROLE_KEY 추가
+```
+
+### 2. Function 배포
+
+CLI 예시:
+
+```bash
+supabase functions deploy admin-reset-password
+```
+
+## 적용 파일
+
+GitHub에는 아래 파일을 업로드합니다.
+
+```txt
+mypage.html
+js/dashboard.js
+admin.html
+js/admin.js
+supabase/functions/admin-reset-password/index.ts
+README-password-reset.md
+```
+
+기존 탐사 홈페이지 패치까지 함께 유지하려면 이 ZIP 안의 파일을 그대로 같은 위치에 업로드하세요.
+
+## 작동 방식
+
+### 사용자 본인 비밀번호 변경
+
+```txt
+mypage.html
+→ 새 비밀번호 입력
+→ supabase.auth.updateUser({ password })
+```
+
+로그인한 사용자만 자기 비밀번호를 바꿀 수 있습니다.
+
+### 운영자 임시 비밀번호 설정
+
+```txt
+admin.html
+→ 임시 비밀번호 입력
+→ supabase.functions.invoke("admin-reset-password")
+→ Edge Function에서 관리자 role 확인
+→ service_role로 auth.admin.updateUserById 실행
+```
+
+프론트에는 service_role key가 전혀 들어가지 않습니다.
+
+
+---
+
+
+
+# README-v6.5-password-reset-fix
+
+
+# v6.5 관리자 임시비밀번호 초기화 수정
+
+## 수정 내용
+- 관리자 페이지 아래쪽의 중복 안내 박스를 제거했습니다.
+- 프론트에서 Edge Function 호출 시 현재 로그인 세션 access token을 명시적으로 전달합니다.
+- Edge Function의 관리자 판정을 Auth UID 기준으로 먼저 확인하고, 기존 DB 구조 호환을 위해 Auth JWT의 email 기준도 보조 확인합니다.
+- 실패 시 화면에 debug 정보가 같이 표시되도록 했습니다.
+
+## 적용 순서
+1. 이 ZIP을 압축 풉니다.
+2. 압축 푼 폴더 안의 내용물을 GitHub 저장소 main 브랜치 root에 업로드합니다. ZIP 파일 자체를 올리지 마세요.
+3. Supabase Edge Functions > admin-reset-password > Open Editor에서 `supabase/functions/admin-reset-password/index.ts` 내용을 다시 붙여넣고 Deploy function을 누릅니다.
+4. 홈페이지에서 로그아웃 후 다시 로그인하고 테스트합니다.
+
+
+---
+
+
+
+# README-v6.6-entity-life-metadata
+
+
+# v6.6 괴이 인생 상품 메타데이터 패치
+
+## 추가 기능
+
+- 인생 상품을 여러 개 등록할 수 있습니다.
+- 각 인생 상품마다 기록상 인물명, 소속, 팀, 직책, 직급, 일대기, 사망/소실 기록, 주의 문구를 저장할 수 있습니다.
+- 괴이가 인생 상품을 구매하면 괴이의 이름은 바뀌지 않습니다.
+- 대신 `profiles`의 소속/팀/표시 소속명이 해당 인생의 기록으로 자동 동기화됩니다.
+- 물거품권, 인생해제 상품, 가면 붕괴로 `release_entity_life`가 실행되면 원래 괴이 소속으로 돌아갑니다.
+
+## 적용 순서
+
+1. ZIP 압축을 풉니다.
+2. 압축 푼 폴더 안의 내용물을 GitHub 저장소 `main` 브랜치 root에 업로드합니다.
+3. Supabase SQL Editor에서 `migrations/upgrade-v6.6-entity-life-metadata.sql`을 실행합니다.
+4. GitHub Pages 배포가 반영된 뒤 관리자 페이지에서 인생 상품을 수정하거나 새로 등록합니다.
+
+## 주의
+
+- ZIP 파일 자체를 GitHub에 올리면 안 됩니다.
+- 압축 푼 폴더 안의 파일과 폴더를 올려야 합니다.
+- SQL 실행 전에 이미 작동 중인 기능은 건드리지 말고, v6.6 SQL만 추가 실행하세요.
+
+
+---
+
+
+
+# README-v6.7-life-item-modal
+
+
+# v6.7 인생 상품 등록 UI 정리
+
+## 변경 내용
+
+- 관리실 `아이템 등록` 영역에서 기존처럼 큰 `인생 상품 상세` 입력칸이 바로 펼쳐지지 않도록 수정했습니다.
+- `인생 상품` 체크박스를 추가했습니다.
+- 체크 후 `상세` 버튼을 누르면 팝업에서 아래 값을 입력합니다.
+  - 기록상 인물명
+  - 적용 소속
+  - 적용 팀
+  - 표시 소속명
+  - 직책/역할
+  - 직급
+  - 일대기
+  - 사망/소실 기록
+  - 주의 문구
+- 팝업에서 `상세 저장`을 누르면 아이템 설명 칸이 자동으로 채워집니다.
+- 최종적으로 `아이템 등록` 버튼을 눌러야 실제 아이템이 등록됩니다.
+- 괴이가 인생 상품을 구매하면 이름은 유지되고, 저장된 적용 소속/팀/표시 소속명이 자동 반영됩니다.
+
+## 배포 방법
+
+1. ZIP 압축을 풉니다.
+2. 압축 푼 폴더 안의 내용물을 GitHub 저장소 main 브랜치 root에 업로드합니다.
+3. ZIP 파일 자체를 올리지 마세요.
+4. v6.6 SQL을 이미 실행했다면 추가 SQL은 필요 없습니다.
+
+
+---
+
+
+
+# README-v6.8-member-visitor-type-save
+
+
+# v6.8 회원 권한 구분 저장 수정
+
+## 수정 내용
+
+- 관리실 회원 목록에서 `일반 / 오염자 / 괴이`를 선택하고 저장했을 때 다시 일반으로 돌아가는 문제를 수정했다.
+- 캐릭터 프리셋이 선택되어 있어도 `권한 구분`, `소속`, `팀`, `표시 소속명`을 현재 화면 값 기준으로 저장하도록 수정했다.
+- 예전 `admin_update_member` RPC가 남아 있는 DB에서도 새 9인자 RPC로 교체되도록 SQL 마이그레이션을 추가했다.
+
+## 적용 순서
+
+1. ZIP 압축을 푼다.
+2. 압축 푼 폴더 안의 내용물을 GitHub `main` 브랜치 root에 업로드한다.
+3. ZIP 파일 자체를 올리지 않는다.
+4. Supabase SQL Editor에서 아래 파일 내용을 실행한다.
+
+```txt
+migrations/upgrade-v6.8-member-visitor-type-save.sql
+```
+
+## 테스트
+
+1. 관리자 계정으로 로그인한다.
+2. 관리실 → 회원 목록에서 특정 회원의 권한 구분을 `괴이` 또는 `오염자`로 바꾼다.
+3. 저장을 누른다.
+4. 새로고침 후에도 선택값이 유지되는지 확인한다.
+
+
+---
+
+
+
+# README-v6.9-life-detail-modal-image-fix
+
+
+# v6.9 인생 상품 상세 팝업 및 상세 이미지 수정
+
+## 수정 내용
+
+- 일반 아이템의 `자세히`는 기존 아이템 설명을 표시합니다.
+- 인생 상품의 `자세히`는 아이템 설명/이미지/가격을 표시하지 않고, 인생 상세 입력값만 표시합니다.
+- 인생 상세 팝업 배경을 검은색 계열로, 글씨를 청록색 계열로 고정했습니다.
+- 상세보기 이미지 박스가 작은 브라우저/모바일에서 크게 남는 문제를 줄이도록 이미지 테두리가 실제 이미지 크기에 맞게 따라가도록 조정했습니다.
+
+## 적용 방법
+
+1. ZIP 압축을 풉니다.
+2. 압축 푼 폴더 안의 내용물을 GitHub 저장소 `main` 브랜치 root에 업로드합니다.
+3. ZIP 파일 자체를 올리지 않습니다.
+4. 이번 버전은 추가 SQL 실행이 필요 없습니다.
+
+
+---
+
+
+
+# README-v6.9.1-life-detail-image-price-fix
+
+
+# v6.9.1 인생 상품 자세히/이미지 여백 수정
+
+## 수정 내용
+
+- 일반 아이템 `자세히`
+  - 아이템 이미지
+  - 가격
+  - 아이템 설명 표시
+
+- 인생 상품 `자세히`
+  - 아이템 이미지 표시
+  - 가격 표시
+  - 아이템 설명은 표시하지 않음
+  - 인생 상품 상세 팝업에 입력한 기록상 인물 / 적용 소속 / 직책 / 직급 / 일대기 / 사망·소실 기록 / 주의문구만 표시
+
+- 인생 상품 상세 팝업 색상
+  - 바탕 검은색 계열
+  - 글씨 청록색 계열
+
+- 작은 브라우저/모바일에서 자세히 보기 이미지 주변에 큰 빈 여백이 생기지 않도록 이미지 박스 크기를 실제 표시 이미지에 맞게 조정
+
+## 적용 방법
+
+1. ZIP 압축을 풉니다.
+2. 압축 푼 폴더 안의 내용물을 GitHub 저장소 `main` 브랜치 root에 업로드합니다.
+3. ZIP 파일 자체를 올리지 않습니다.
+4. 이번 버전은 추가 SQL 실행이 필요 없습니다.
+
+
+---
+
+
+
+# README-exploration-patch
+
+
+# 통합본 안내
+
+이 패치 ZIP은 v0.1 + v0.2 통합본입니다. 아직 v0.1을 적용하지 않은 경우에도 이 ZIP만 적용하면 됩니다.
+
+---
+
+# 탐사 홈페이지 연동 패치 v0.1
+
+이 패치는 `pollution-shop-starter v5.2` 기준으로 작성되었습니다.
+
+## 포함 파일
+
+- `migrations/upgrade-v5.3-exploration-affiliation.sql`
+  - `profiles`에 탐사용 소속 컬럼 추가
+  - organization/department 허용값 제약 추가
+  - `admin_update_member` RPC 확장
+- `admin.html`
+  - 관리실 회원 목록에 캐릭터 키/기관/팀/표시 소속명 컬럼 추가
+- `js/admin.js`
+  - 관리실에서 위 소속 값을 저장하도록 수정
+- `exploration.html`
+  - 기념품샵 계정으로 로그인하는 탐사 홈페이지 초기 화면
+- `js/exploration.js`
+  - 기존 로그인 방식 유지, profiles에서 탐사자 정보 조회
+
+## 적용 순서
+
+1. Supabase SQL Editor에서 `migrations/upgrade-v5.3-exploration-affiliation.sql` 실행
+2. 기존 GitHub Pages 파일에 이 패치의 `admin.html`, `js/admin.js`, `exploration.html`, `js/exploration.js`를 반영
+3. `js/config.js`는 기존 파일을 그대로 사용
+4. service_role key, DB password, JWT secret은 절대 GitHub에 올리지 않기
+5. `/exploration.html` 접속 후 기존 아이디/비밀번호로 로그인 테스트
+
+## 설계 기준
+
+- 로그인 아이디는 기존과 동일하게 `site_id@pollution.invalid`로 변환됩니다.
+- 현재 사용자는 `auth.uid()`와 같은 `profiles.id`로 조회합니다.
+- 소속 판정은 `display_name`이 아니라 `organization_code`, `department_code`, `character_key`로 합니다.
+- `display_name`은 표시명일 뿐입니다.
+- 탐사방/채팅/시나리오 진행 DB는 다음 단계에서 별도 migration으로 추가하는 편이 안전합니다.
+
+
+---
+
+# v0.2 추가 안내: 캐릭터 프리셋 방식
+
+사용자 계정이 아직 없는 상태에서는 `profiles`에 캐릭터별 소속을 미리 넣을 수 없습니다.  
+그래서 v0.2에서는 `character_presets` 테이블을 추가합니다.
+
+## 핵심 개념
+
+```txt
+character_key = 내부 구분값
+display_name = 실제 화면에 보이는 캐릭터명
+organization_code = 기관 코드
+department_code = 팀/부서 코드
+affiliation_label = 화면에 보이는 소속명
+```
+
+예시:
+
+```txt
+character_key: kim_soleum_disaster_agency
+display_name: 김솔음
+affiliation_label: 초자연 재난관리국 요원
+```
+
+실제 사용자 화면에는 `김솔음`만 표시하고, 탐사 홈페이지는 `character_key`, `organization_code`, `department_code`로 소속을 판단합니다.
+
+## 추가 SQL
+
+Supabase SQL Editor에서 아래 순서로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+```
+
+## 관리실 사용법
+
+v5.4 SQL까지 실행하면 관리실 회원 목록에서 캐릭터 프리셋을 선택할 수 있습니다.
+
+```txt
+김솔음 · 초자연 재난관리국 요원
+김솔음 · 백일몽 주식회사 현장탐사팀
+김솔음 · 백일몽 주식회사 연구팀
+김솔음 · 백일몽 주식회사 보안팀
+김솔음 · 괴이
+```
+
+프리셋을 선택하고 저장하면, 해당 회원의 `display_name`은 `김솔음`으로 저장되고 소속 정보는 프리셋 값으로 자동 저장됩니다.
+
+## GitHub 업로드 파일
+
+```txt
+admin.html
+js/admin.js
+exploration.html
+js/exploration.js
+migrations/upgrade-v5.3-exploration-affiliation.sql
+migrations/upgrade-v5.4-character-presets.sql
+README-exploration-patch.md
+```
+
+
+v0.3 실제 캐릭터 프리셋 목록은 `migrations/upgrade-v5.5-character-presets-seed.sql`에 들어 있습니다. SQL 실행 순서는 v5.3 → v5.4 → v5.5입니다.
+
+
+---
+
+# v0.4 추가 안내: 관리실 캐릭터 선택 드롭다운 개선
+
+v0.4에서는 관리실 회원 목록의 `사용자 이름` 입력칸을 `캐릭터 선택` 드롭다운으로 바꿨습니다.
+
+## 바뀐 점
+
+```txt
+기존: 사용자 이름 / 캐릭터 키 / 기관 / 팀 / 표시 소속명을 따로 입력
+변경: 캐릭터 선택 드롭다운에서 프리셋 선택
+```
+
+프리셋을 선택하면 아래 값이 자동으로 채워집니다.
+
+```txt
+display_name
+character_key
+organization_code
+department_code
+affiliation_label
+```
+
+관리실 드롭다운에는 괄호가 있는 구분명이 보일 수 있지만, 실제 사용자 화면에는 괄호 없는 display_name만 저장됩니다.
+
+예시:
+
+```txt
+관리실 선택: 김솔음(포도) · 초자연 재난관리국 요원
+사용자 표시: 김솔음
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+```
+
+v5.6은 기존 무소속/없음 기본값을 기타로 정리하는 보정 SQL입니다.
+
+
+---
+
+# v0.5 추가 안내: 캐릭터 드롭다운 빈 목록/겹침 수정
+
+v0.5에서는 관리실의 캐릭터 선택 드롭다운이 비어 보이거나, 기존 display_name 입력칸과 겹쳐 보이는 문제를 수정했습니다.
+
+## 바뀐 점
+
+```txt
+display_name 입력칸을 화면에서 숨김
+캐릭터 선택 드롭다운만 표시
+드롭다운 선택 시 캐릭터 키/기관/팀/표시 소속명 자동 반영
+character_presets 읽기 권한 보정 SQL 추가
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```
+
+이미 v5.3~v5.6을 실행했다면 v5.7만 추가로 실행해도 됩니다.
+
+
+---
+
+# v0.6 추가 안내: 캐릭터 선택/사용자 이름 구조 재수정
+
+v0.6에서는 관리실 회원 목록 구조를 다시 정리했습니다.
+
+```txt
+캐릭터 선택: character_presets 프리셋 드롭다운
+사용자 이름: display_name, 직접 수정 가능
+캐릭터 키: 화면에 보이지 않는 hidden 값으로 자동 저장
+기관/팀/표시 소속명: 프리셋 선택 시 자동 반영, 필요 시 직접 수정 가능
+방문객 상태: 일반/오염자/괴이 상태값으로 별도 관리
+```
+
+프리셋 목록이 DB에서 비어 있거나 RLS 문제로 조회되지 않아도, JS에 내장된 프리셋 목록을 임시로 표시합니다. 다만 DB 저장을 위해 SQL은 아래 순서로 실행해야 합니다.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```
+
+
+---
+
+
+
+# README-exploration-integrated-patch
+
+
+# 마스코트 골든의 기념품샵 ↔ 탐사 홈페이지 연동 통합 패치
+
+이 ZIP은 v0.1과 v0.2 내용을 합친 통합본입니다.  
+아직 v0.1을 적용하지 않은 상태라면 이 통합본만 사용하면 됩니다.
+
+## 포함 내용
+
+### v0.1 내용
+
+- `profiles` 테이블에 탐사 홈페이지 연동용 소속 컬럼 추가
+- 관리실 회원 목록에서 소속 정보 수정 가능
+- 탐사 홈페이지 기본 화면 추가
+- 기존 계정 로그인 방식 유지
+- 기존 `profiles`, `currency`, `pollution`, `mask_collapse_rate`, `visitor_type` 값 조회
+
+### v0.2 내용
+
+- `character_presets` 테이블 추가
+- 사용자 계정이 없어도 캐릭터별 소속 프리셋을 미리 등록 가능
+- 관리실에서 회원에게 캐릭터 프리셋 적용 가능
+- 예시 프리셋 추가:
+  - 김솔음 · 초자연 재난관리국 요원
+  - 김솔음 · 백일몽 주식회사 현장탐사팀
+  - 김솔음 · 백일몽 주식회사 연구팀
+  - 김솔음 · 백일몽 주식회사 보안팀
+  - 김솔음 · 괴이
+
+## Supabase SQL 실행 순서
+
+Supabase SQL Editor에서 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+```
+
+반드시 1번을 먼저 실행해야 합니다.  
+v5.4 SQL은 v5.3에서 추가한 `profiles.character_key`, `organization_code`, `department_code`, `affiliation_label` 컬럼을 전제로 합니다.
+
+## GitHub 업로드 파일
+
+아래 파일들을 기존 저장소의 같은 위치에 업로드하세요.
+
+```txt
+admin.html
+exploration.html
+README-exploration-patch.md
+README-exploration-integrated-patch.md
+js/admin.js
+js/exploration.js
+migrations/upgrade-v5.3-exploration-affiliation.sql
+migrations/upgrade-v5.4-character-presets.sql
+```
+
+주의: ZIP 폴더 자체를 업로드하지 말고, 압축을 푼 뒤 안의 파일/폴더를 기존 저장소 위치에 맞게 업로드하세요.
+
+## 파일 위치
+
+```txt
+admin.html → 저장소 루트의 admin.html 덮어쓰기
+exploration.html → 저장소 루트에 새로 추가
+README-exploration-patch.md → 저장소 루트에 새로 추가
+README-exploration-integrated-patch.md → 저장소 루트에 새로 추가
+js/admin.js → js 폴더 안 admin.js 덮어쓰기
+js/exploration.js → js 폴더 안 새로 추가
+migrations/upgrade-v5.3-exploration-affiliation.sql → migrations 폴더 안 새로 추가
+migrations/upgrade-v5.4-character-presets.sql → migrations 폴더 안 새로 추가
+```
+
+## 핵심 DB 구조
+
+### profiles에 추가되는 컬럼
+
+```txt
+character_key
+organization_code
+department_code
+affiliation_label
+```
+
+### character_presets 테이블
+
+```txt
+character_key
+display_name
+organization_code
+department_code
+affiliation_label
+sort_order
+is_active
+created_at
+updated_at
+```
+
+## 화면 표시 원칙
+
+사용자에게는 `display_name`만 보여줍니다.
+
+예시:
+
+```txt
+내부 character_key: kim_soleum_disaster_agency
+화면 display_name: 김솔음
+소속 affiliation_label: 초자연 재난관리국 요원
+```
+
+즉, 실제 사용자 화면에는 `김솔음_재난관리국` 같은 내부 구분명이 보이면 안 됩니다.  
+탐사 홈페이지는 `display_name`으로 소속을 추론하지 말고, `character_key`, `organization_code`, `department_code`, `affiliation_label`을 읽어서 처리해야 합니다.
+
+## 로그인 방식
+
+기존 기념품샵과 동일합니다.
+
+```txt
+사용자 입력 아이디 → site_id
+내부 이메일 → `${site_id}@pollution.invalid`
+Supabase Auth email/password 로그인
+auth.uid() = public.profiles.id
+```
+
+## 보안 주의
+
+프론트엔드에는 Supabase URL과 anon key만 사용합니다.
+
+절대 넣으면 안 되는 것:
+
+```txt
+service_role key
+sb_secret_...
+JWT secret
+DB password
+database connection string
+```
+
+## 적용 후 확인
+
+1. Supabase에서 SQL 두 개가 오류 없이 실행되었는지 확인
+2. GitHub Actions 배포 완료 확인
+3. `/admin.html`에서 회원 목록에 캐릭터 프리셋/소속 칸이 보이는지 확인
+4. `/exploration.html` 접속 확인
+5. 새 사용자 가입 후 관리실에서 캐릭터 프리셋 적용 테스트
+6. 탐사 홈페이지에서 display_name과 affiliation_label이 정상 표시되는지 확인
+
+---
+
+# v0.3 추가 안내: 실제 캐릭터 프리셋 목록 반영
+
+v0.3에서는 실제 캐릭터 프리셋 목록을 추가했습니다.
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+```
+
+## v5.5에서 추가되는 점
+
+`character_presets`에 `preset_label` 컬럼을 추가합니다.
+
+```txt
+preset_label = 관리자 드롭다운에서 보이는 구분명
+display_name = 실제 사용자에게 보이는 캐릭터명
+```
+
+예시:
+
+```txt
+preset_label: 김솔음(마스코트 골든)
+display_name: 김솔음
+affiliation_label: 괴이
+```
+
+즉, 관리자는 `김솔음(마스코트 골든) · 괴이`로 구분해서 선택할 수 있고, 실제 사용자 화면에는 `김솔음`만 표시됩니다.
+
+## 반영된 프리셋 수
+
+```txt
+35개
+```
+
+
+---
+
+# v0.4 추가 안내: 관리실 캐릭터 선택 드롭다운 개선
+
+v0.4에서는 관리실 회원 목록의 `사용자 이름` 입력칸을 `캐릭터 선택` 드롭다운으로 바꿨습니다.
+
+## 바뀐 점
+
+```txt
+기존: 사용자 이름 / 캐릭터 키 / 기관 / 팀 / 표시 소속명을 따로 입력
+변경: 캐릭터 선택 드롭다운에서 프리셋 선택
+```
+
+프리셋을 선택하면 아래 값이 자동으로 채워집니다.
+
+```txt
+display_name
+character_key
+organization_code
+department_code
+affiliation_label
+```
+
+관리실 드롭다운에는 괄호가 있는 구분명이 보일 수 있지만, 실제 사용자 화면에는 괄호 없는 display_name만 저장됩니다.
+
+예시:
+
+```txt
+관리실 선택: 김솔음(포도) · 초자연 재난관리국 요원
+사용자 표시: 김솔음
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+```
+
+v5.6은 기존 무소속/없음 기본값을 기타로 정리하는 보정 SQL입니다.
+
+
+---
+
+# v0.5 추가 안내: 캐릭터 드롭다운 빈 목록/겹침 수정
+
+v0.5에서는 관리실의 캐릭터 선택 드롭다운이 비어 보이거나, 기존 display_name 입력칸과 겹쳐 보이는 문제를 수정했습니다.
+
+## 바뀐 점
+
+```txt
+display_name 입력칸을 화면에서 숨김
+캐릭터 선택 드롭다운만 표시
+드롭다운 선택 시 캐릭터 키/기관/팀/표시 소속명 자동 반영
+character_presets 읽기 권한 보정 SQL 추가
+```
+
+## SQL 실행 순서
+
+아직 아무 SQL도 적용하지 않은 상태라면 아래 순서대로 실행하세요.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```
+
+이미 v5.3~v5.6을 실행했다면 v5.7만 추가로 실행해도 됩니다.
+
+
+---
+
+# v0.6 추가 안내: 캐릭터 선택/사용자 이름 구조 재수정
+
+v0.6에서는 관리실 회원 목록 구조를 다시 정리했습니다.
+
+```txt
+캐릭터 선택: character_presets 프리셋 드롭다운
+사용자 이름: display_name, 직접 수정 가능
+캐릭터 키: 화면에 보이지 않는 hidden 값으로 자동 저장
+기관/팀/표시 소속명: 프리셋 선택 시 자동 반영, 필요 시 직접 수정 가능
+방문객 상태: 일반/오염자/괴이 상태값으로 별도 관리
+```
+
+프리셋 목록이 DB에서 비어 있거나 RLS 문제로 조회되지 않아도, JS에 내장된 프리셋 목록을 임시로 표시합니다. 다만 DB 저장을 위해 SQL은 아래 순서로 실행해야 합니다.
+
+```txt
+1. migrations/upgrade-v5.3-exploration-affiliation.sql
+2. migrations/upgrade-v5.4-character-presets.sql
+3. migrations/upgrade-v5.5-character-presets-seed.sql
+4. migrations/upgrade-v5.6-affiliation-admin-cleanup.sql
+5. migrations/upgrade-v5.7-character-presets-read-grant.sql
+```
+
+
+---
