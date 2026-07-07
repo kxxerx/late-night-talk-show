@@ -1,1 +1,1 @@
-v6.6-entity-life-metadata
+v6.7-entity-life-modal-admin

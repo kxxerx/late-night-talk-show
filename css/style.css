@@ -7232,3 +7232,85 @@ img.item-detail-img-no-crop {
   background: rgba(144, 88, 47, 0.1);
   color: #68442c;
 }
+
+/* v6.7 admin life item modal cleanup */
+.item-life-toggle-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 10px 12px;
+  align-items: center;
+  margin: 4px 0 12px;
+}
+.item-life-toggle-row .muted {
+  grid-column: 1 / -1;
+}
+.item-life-check {
+  margin: 0 !important;
+}
+.small-action {
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.small-action:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.admin-life-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(27, 18, 12, 0.46);
+}
+.admin-life-modal.open {
+  display: flex;
+}
+.admin-life-modal-box {
+  width: min(920px, calc(100vw - 32px));
+  max-height: min(88vh, 760px);
+  overflow: auto;
+}
+.life-detail-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+.life-detail-form label {
+  display: grid;
+  gap: 6px;
+}
+.life-detail-form .wide,
+.life-modal-actions.wide {
+  grid-column: 1 / -1;
+}
+.life-detail-form textarea {
+  min-height: 96px;
+}
+.life-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.life-meta-summary {
+  min-width: 210px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted, #725f4b);
+}
+@media (max-width: 720px) {
+  .item-life-toggle-row,
+  .life-detail-form {
+    grid-template-columns: 1fr;
+  }
+  .life-modal-actions {
+    justify-content: stretch;
+    flex-direction: column;
+  }
+}

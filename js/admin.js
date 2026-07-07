@@ -1,4 +1,4 @@
-// pollution-shop-version: v6.6-entity-life-metadata
+// pollution-shop-version: v6.7-entity-life-modal-admin
 import { supabase } from "./supabaseClient.js";
 import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -392,6 +392,131 @@ function lifeMetaSummary(item) {
   return lines.map(safeText).join("<br>");
 }
 
+
+
+const LIFE_EMPTY_META = {
+  life_subject_name: "",
+  life_organization_code: "disaster_agency",
+  life_department_code: "agent",
+  life_affiliation_label: "",
+  life_position_title: "",
+  life_rank_label: "",
+  life_biography: "",
+  life_death_summary: "",
+  life_warning: ""
+};
+let createLifeMeta = { ...LIFE_EMPTY_META };
+let lifeModalMode = "create";
+let lifeModalItemId = null;
+
+function orgLabel(code) {
+  return {
+    entity: "괴이",
+    disaster_agency: "초자연 재난관리국",
+    baekildream: "백일몽 주식회사",
+    other: "기타"
+  }[code || ""] || code || "-";
+}
+function deptLabel(code) {
+  return {
+    entity: "괴이",
+    agent: "요원",
+    field_exploration: "현장탐사팀",
+    research: "연구팀",
+    security: "보안팀",
+    other: "기타"
+  }[code || ""] || code || "-";
+}
+function normalizeLifeMeta(meta = {}) {
+  return {
+    life_subject_name: meta.life_subject_name || "",
+    life_organization_code: meta.life_organization_code || "disaster_agency",
+    life_department_code: meta.life_department_code || "agent",
+    life_affiliation_label: meta.life_affiliation_label || "",
+    life_position_title: meta.life_position_title || "",
+    life_rank_label: meta.life_rank_label || "",
+    life_biography: meta.life_biography || "",
+    life_death_summary: meta.life_death_summary || "",
+    life_warning: meta.life_warning || ""
+  };
+}
+function lifeMetaPayload(meta = {}) {
+  const normalized = normalizeLifeMeta(meta);
+  return {
+    life_subject_name: normalized.life_subject_name.trim() || null,
+    life_organization_code: normalized.life_organization_code || null,
+    life_department_code: normalized.life_department_code || null,
+    life_affiliation_label: normalized.life_affiliation_label.trim() || null,
+    life_position_title: normalized.life_position_title.trim() || null,
+    life_rank_label: normalized.life_rank_label.trim() || null,
+    life_biography: normalized.life_biography.trim() || null,
+    life_death_summary: normalized.life_death_summary.trim() || null,
+    life_warning: normalized.life_warning.trim() || null
+  };
+}
+function buildLifeDescription(meta = {}) {
+  const value = normalizeLifeMeta(meta);
+  const lines = [];
+  if (value.life_affiliation_label) lines.push(`[표시 소속명] ${value.life_affiliation_label}`);
+  lines.push(`[적용 소속] ${orgLabel(value.life_organization_code)}`);
+  lines.push(`[적용 팀] ${deptLabel(value.life_department_code)}`);
+  if (value.life_position_title) lines.push(`[직책/역할] ${value.life_position_title}`);
+  if (value.life_rank_label) lines.push(`[직급] ${value.life_rank_label}`);
+  if (value.life_subject_name) lines.push(`\n[기록상 인물명]\n${value.life_subject_name}`);
+  if (value.life_biography) lines.push(`\n[일대기]\n${value.life_biography}`);
+  if (value.life_death_summary) lines.push(`\n[사망/소실 기록]\n${value.life_death_summary}`);
+  if (value.life_warning) lines.push(`\n[주의 문구]\n${value.life_warning}`);
+  return lines.join("\n").trim();
+}
+function fillLifeModal(meta = {}) {
+  const value = normalizeLifeMeta(meta);
+  qs("#lifeSubjectName").value = value.life_subject_name;
+  qs("#lifeOrganizationCode").value = value.life_organization_code;
+  qs("#lifeDepartmentCode").value = value.life_department_code;
+  qs("#lifeAffiliationLabel").value = value.life_affiliation_label;
+  qs("#lifePositionTitle").value = value.life_position_title;
+  qs("#lifeRankLabel").value = value.life_rank_label;
+  qs("#lifeBiography").value = value.life_biography;
+  qs("#lifeDeathSummary").value = value.life_death_summary;
+  qs("#lifeWarning").value = value.life_warning;
+}
+function readLifeModal() {
+  return normalizeLifeMeta({
+    life_subject_name: qs("#lifeSubjectName")?.value.trim() || "",
+    life_organization_code: qs("#lifeOrganizationCode")?.value || "disaster_agency",
+    life_department_code: qs("#lifeDepartmentCode")?.value || "agent",
+    life_affiliation_label: qs("#lifeAffiliationLabel")?.value.trim() || "",
+    life_position_title: qs("#lifePositionTitle")?.value.trim() || "",
+    life_rank_label: qs("#lifeRankLabel")?.value.trim() || "",
+    life_biography: qs("#lifeBiography")?.value.trim() || "",
+    life_death_summary: qs("#lifeDeathSummary")?.value.trim() || "",
+    life_warning: qs("#lifeWarning")?.value.trim() || ""
+  });
+}
+function openLifeModal(mode = "create", itemId = null) {
+  lifeModalMode = mode;
+  lifeModalItemId = itemId;
+  if (mode === "edit") {
+    const item = items.find(row => String(row.id) === String(itemId));
+    fillLifeModal(item || LIFE_EMPTY_META);
+  } else {
+    fillLifeModal(createLifeMeta);
+  }
+  qs("#lifeDetailModal")?.classList.add("open");
+  qs("#lifeDetailModal")?.setAttribute("aria-hidden", "false");
+}
+function closeLifeModal() {
+  qs("#lifeDetailModal")?.classList.remove("open");
+  qs("#lifeDetailModal")?.setAttribute("aria-hidden", "true");
+  lifeModalMode = "create";
+  lifeModalItemId = null;
+}
+function updateLifeCreateControls() {
+  const checked = !!qs("#itemIsLife")?.checked;
+  if (qs("#openLifeDetailBtn")) qs("#openLifeDetailBtn").disabled = !checked;
+  if (checked && qs("#itemAudience")) qs("#itemAudience").value = "entity";
+}
+
 function slicePage(rows, key) {
   const total = Math.max(1, Math.ceil(rows.length / pageSize));
   pages[key] = Math.min(Math.max(1, pages[key]), total);
@@ -705,34 +830,8 @@ function renderItemsAdmin() {
       <td><select data-item-kind="${item.id}"><option value="regular" ${item.item_kind === "regular" || !item.item_kind ? "selected" : ""}>일반</option><option value="life" ${item.item_kind === "life" ? "selected" : ""}>인생</option><option value="mask_care" ${item.item_kind === "mask_care" ? "selected" : ""}>가면관리</option><option value="life_cancel" ${item.item_kind === "life_cancel" ? "selected" : ""}>인생해제</option><option value="contract_release" ${item.item_kind === "contract_release" ? "selected" : ""}>계약해제</option></select></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${Number(item.effect_value || 0)}"></td>
       <td class="life-meta-admin-cell">
-        <details>
-          <summary>${lifeMetaSummary(item)}</summary>
-          <label>기록상 인물명<input class="table-input" data-item-life-subject-name="${item.id}" value="${safeText(item.life_subject_name || "")}"></label>
-          <label>소속 코드
-            <select data-item-life-org="${item.id}">
-              <option value="entity" ${item.life_organization_code === "entity" || !item.life_organization_code ? "selected" : ""}>괴이</option>
-              <option value="disaster_agency" ${item.life_organization_code === "disaster_agency" ? "selected" : ""}>초자연 재난관리국</option>
-              <option value="baekildream" ${item.life_organization_code === "baekildream" ? "selected" : ""}>백일몽 주식회사</option>
-              <option value="other" ${item.life_organization_code === "other" ? "selected" : ""}>기타</option>
-            </select>
-          </label>
-          <label>팀 코드
-            <select data-item-life-dept="${item.id}">
-              <option value="entity" ${item.life_department_code === "entity" || !item.life_department_code ? "selected" : ""}>괴이</option>
-              <option value="agent" ${item.life_department_code === "agent" ? "selected" : ""}>요원</option>
-              <option value="field_exploration" ${item.life_department_code === "field_exploration" ? "selected" : ""}>현장탐사팀</option>
-              <option value="research" ${item.life_department_code === "research" ? "selected" : ""}>연구팀</option>
-              <option value="security" ${item.life_department_code === "security" ? "selected" : ""}>보안팀</option>
-              <option value="other" ${item.life_department_code === "other" ? "selected" : ""}>기타</option>
-            </select>
-          </label>
-          <label>표시 소속명<input class="table-input" data-item-life-affiliation="${item.id}" value="${safeText(item.life_affiliation_label || "")}"></label>
-          <label>직책/역할<input class="table-input" data-item-life-position="${item.id}" value="${safeText(item.life_position_title || "")}"></label>
-          <label>직급<input class="table-input" data-item-life-rank="${item.id}" value="${safeText(item.life_rank_label || "")}"></label>
-          <label>일대기<textarea class="table-textarea" data-item-life-biography="${item.id}">${safeText(item.life_biography || "")}</textarea></label>
-          <label>사망/소실 기록<textarea class="table-textarea" data-item-life-death="${item.id}">${safeText(item.life_death_summary || "")}</textarea></label>
-          <label>주의 문구<textarea class="table-textarea" data-item-life-warning="${item.id}">${safeText(item.life_warning || "")}</textarea></label>
-        </details>
+        <div class="life-meta-summary">${lifeMetaSummary(item)}</div>
+        <button type="button" class="small-action" data-edit-life-details="${item.id}">${item.item_kind === "life" ? "상세" : "상세"}</button>
       </td>
       <td class="image-manage-cell"><input class="file-only-input" type="file" accept="image/*" data-item-file="${item.id}"></td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${Number(item.sort_order || 100)}"></td>
@@ -756,15 +855,7 @@ function renderItemsAdmin() {
         item_kind: itemKind,
         effect_type: deriveItemEffectType(itemKind),
         effect_value: Number(document.querySelector(`[data-item-effect-value="${id}"]`).value || 0),
-        life_subject_name: document.querySelector(`[data-item-life-subject-name="${id}"]`)?.value.trim() || null,
-        life_organization_code: document.querySelector(`[data-item-life-org="${id}"]`)?.value || null,
-        life_department_code: document.querySelector(`[data-item-life-dept="${id}"]`)?.value || null,
-        life_affiliation_label: document.querySelector(`[data-item-life-affiliation="${id}"]`)?.value.trim() || null,
-        life_position_title: document.querySelector(`[data-item-life-position="${id}"]`)?.value.trim() || null,
-        life_rank_label: document.querySelector(`[data-item-life-rank="${id}"]`)?.value.trim() || null,
-        life_biography: document.querySelector(`[data-item-life-biography="${id}"]`)?.value.trim() || null,
-        life_death_summary: document.querySelector(`[data-item-life-death="${id}"]`)?.value.trim() || null,
-        life_warning: document.querySelector(`[data-item-life-warning="${id}"]`)?.value.trim() || null,
+        ...lifeMetaPayload(current || {}),
         image_url: uploadedUrl || current?.image_url || null,
         sort_order: Number(document.querySelector(`[data-item-sort="${id}"]`).value || 100),
         is_active: document.querySelector(`[data-item-active="${id}"]`).checked
@@ -775,6 +866,7 @@ function renderItemsAdmin() {
       await loadItems();
     } catch (error) { showMessage(error.message, "error"); }
   }));
+  qsa("[data-edit-life-details]").forEach(button => button.addEventListener("click", () => openLifeModal("edit", button.dataset.editLifeDetails)));
   qsa("[data-delete-item]").forEach(button => button.addEventListener("click", async () => {
     if (!confirm("이 아이템을 삭제할까요? 이미 지급/구매 기록이 있으면 삭제가 막힐 수 있습니다. 그 경우 판매중을 해제하세요.")) return;
     const { error } = await supabase.from("items").delete().eq("id", button.dataset.deleteItem);
@@ -870,32 +962,27 @@ qs("#itemForm")?.addEventListener("submit", async (event) => {
   try {
     const file = qs("#itemImageFile")?.files?.[0];
     const imageUrl = file ? await uploadItemImageFile(file) : null;
-    const itemKind = qs("#itemKind")?.value || "regular";
+    const isLifeItem = !!qs("#itemIsLife")?.checked;
+    const itemKind = isLifeItem ? "life" : (qs("#itemKind")?.value || "regular");
+    const generatedLifeDescription = isLifeItem ? buildLifeDescription(createLifeMeta) : "";
+    const manualDescription = qs("#itemDescription").value.trim();
     const payload = {
       name: qs("#itemName").value.trim(),
-      description: qs("#itemDescription").value.trim(),
+      description: isLifeItem ? (generatedLifeDescription || manualDescription) : manualDescription,
       image_url: imageUrl,
       price: Number(qs("#itemPrice").value || 0),
       category: qs("#itemCategory")?.value || "main",
       effect_type: deriveItemEffectType(itemKind),
       effect_value: Number(qs("#itemEffectValue").value || 0),
-      audience: qs("#itemAudience")?.value || "human",
+      audience: isLifeItem ? "entity" : (qs("#itemAudience")?.value || "human"),
       item_kind: itemKind,
       is_active: qs("#itemActive").checked,
       sort_order: Number(qs("#itemSort").value || 100),
-      life_subject_name: qs("#lifeSubjectName")?.value.trim() || null,
-      life_organization_code: qs("#lifeOrganizationCode")?.value || null,
-      life_department_code: qs("#lifeDepartmentCode")?.value || null,
-      life_affiliation_label: qs("#lifeAffiliationLabel")?.value.trim() || null,
-      life_position_title: qs("#lifePositionTitle")?.value.trim() || null,
-      life_rank_label: qs("#lifeRankLabel")?.value.trim() || null,
-      life_biography: qs("#lifeBiography")?.value.trim() || null,
-      life_death_summary: qs("#lifeDeathSummary")?.value.trim() || null,
-      life_warning: qs("#lifeWarning")?.value.trim() || null
+      ...lifeMetaPayload(isLifeItem ? createLifeMeta : {})
     };
     const { error } = await supabase.from("items").insert(payload);
     if (error) throw error;
-    showMessage("선물 등록 완료", "success"); qs("#itemForm").reset(); qs("#itemActive").checked = true; await loadItems();
+    showMessage("선물 등록 완료", "success"); qs("#itemForm").reset(); qs("#itemActive").checked = true; createLifeMeta = { ...LIFE_EMPTY_META }; updateLifeCreateControls(); await loadItems();
   } catch (error) { showMessage(error.message, "error"); }
 });
 qs("#eventCodeForm")?.addEventListener("submit", async (event) => {
@@ -904,6 +991,48 @@ qs("#eventCodeForm")?.addEventListener("submit", async (event) => {
   const { error } = await supabase.from("event_codes").insert(payload);
   if (error) showMessage(error.message, "error"); else { showMessage("초대권 생성 완료", "success"); qs("#eventCodeForm").reset(); await loadCodes(); }
 });
+
+
+qs("#itemIsLife")?.addEventListener("change", () => {
+  updateLifeCreateControls();
+  if (qs("#itemIsLife")?.checked) openLifeModal("create");
+});
+qs("#openLifeDetailBtn")?.addEventListener("click", () => openLifeModal("create"));
+qs("#closeLifeDetailModal")?.addEventListener("click", closeLifeModal);
+qs("#lifeDetailModal")?.addEventListener("click", (event) => {
+  if (event.target === qs("#lifeDetailModal")) closeLifeModal();
+});
+qs("#clearLifeDetailBtn")?.addEventListener("click", () => fillLifeModal(LIFE_EMPTY_META));
+qs("#lifeDetailForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const meta = readLifeModal();
+  const description = buildLifeDescription(meta);
+  try {
+    if (lifeModalMode === "edit" && lifeModalItemId) {
+      const item = items.find(row => String(row.id) === String(lifeModalItemId));
+      const itemKind = item?.item_kind === "life" ? "life" : item?.item_kind || "regular";
+      const payload = {
+        ...lifeMetaPayload(meta),
+        description: itemKind === "life" ? description : (item?.description || "")
+      };
+      const { error } = await supabase.from("items").update(payload).eq("id", lifeModalItemId);
+      if (error) throw error;
+      showMessage("인생 상세 저장 완료", "success");
+      closeLifeModal();
+      await loadItems();
+      return;
+    }
+    createLifeMeta = meta;
+    if (qs("#itemDescription")) qs("#itemDescription").value = description;
+    if (qs("#itemIsLife")) qs("#itemIsLife").checked = true;
+    updateLifeCreateControls();
+    showMessage("인생 상세가 임시 저장되었습니다. 아이템 등록을 눌러야 실제 등록됩니다.", "success");
+    closeLifeModal();
+  } catch (error) {
+    showMessage(error.message, "error");
+  }
+});
+updateLifeCreateControls();
 
 if (adminProfile) {
   (async () => {
