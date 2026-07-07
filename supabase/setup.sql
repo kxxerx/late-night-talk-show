@@ -2601,3 +2601,419 @@ values (
   'contract_release'
 )
 on conflict do nothing;
+-- Upgrade to v6.6
+-- Multiple purchasable "life" items for entity visitors.
+-- A life does NOT rename the entity. It temporarily changes organization/team/affiliation metadata.
+-- release_entity_life or mask collapse restores the saved original entity affiliation.
+
+alter table public.items
+  add column if not exists life_subject_name text,
+  add column if not exists life_organization_code text,
+  add column if not exists life_department_code text,
+  add column if not exists life_affiliation_label text,
+  add column if not exists life_position_title text,
+  add column if not exists life_rank_label text,
+  add column if not exists life_biography text,
+  add column if not exists life_death_summary text,
+  add column if not exists life_warning text;
+
+alter table public.profiles
+  add column if not exists original_organization_code text,
+  add column if not exists original_department_code text,
+  add column if not exists original_affiliation_label text,
+  add column if not exists current_life_subject_name text,
+  add column if not exists current_life_position_title text,
+  add column if not exists current_life_rank_label text;
+
+-- Preserve current entity affiliation as a fallback original value.
+update public.profiles
+set
+  original_organization_code = coalesce(original_organization_code, organization_code),
+  original_department_code = coalesce(original_department_code, department_code),
+  original_affiliation_label = coalesce(original_affiliation_label, affiliation_label)
+where visitor_type = 'entity'
+  and (original_organization_code is null
+    or original_department_code is null
+    or original_affiliation_label is null);
+
+-- Existing sample lives get usable metadata. You can freely edit these later in Admin > registered items.
+update public.items
+set
+  life_subject_name = coalesce(life_subject_name, '기록번호 A-001'),
+  life_organization_code = coalesce(life_organization_code, 'disaster_agency'),
+  life_department_code = coalesce(life_department_code, 'agent'),
+  life_affiliation_label = coalesce(life_affiliation_label, '초자연 재난관리국 현장대응팀 요원'),
+  life_position_title = coalesce(life_position_title, '현장대응팀 요원'),
+  life_rank_label = coalesce(life_rank_label, '요원'),
+  life_biography = coalesce(life_biography, '초자연 재난 현장에 가장 먼저 들어가고 가장 늦게 빠져나온 기록이 남아 있습니다. 이름은 남았지만, 마지막 보고서는 끝까지 제출되지 않았습니다.'),
+  life_death_summary = coalesce(life_death_summary, '봉쇄 실패 현장에서 구조 신호를 보낸 뒤 통신이 끊겼습니다. 수습된 것은 신분증과 손상된 무전기뿐이었습니다.'),
+  life_warning = coalesce(life_warning, '구매 시 이름은 바뀌지 않지만, 표시 소속과 팀이 이 인생의 기록으로 동기화됩니다.')
+where item_kind = 'life' and name = 'A의 인생';
+
+update public.items
+set
+  life_subject_name = coalesce(life_subject_name, '기록번호 B-014'),
+  life_organization_code = coalesce(life_organization_code, 'baekildream'),
+  life_department_code = coalesce(life_department_code, 'field_exploration'),
+  life_affiliation_label = coalesce(life_affiliation_label, '백일몽 주식회사 현장탐사팀 대리'),
+  life_position_title = coalesce(life_position_title, '현장탐사팀 대리'),
+  life_rank_label = coalesce(life_rank_label, '대리'),
+  life_biography = coalesce(life_biography, '백일몽 주식회사에서 오래 살아남은 직원입니다. 오래 살아남았다는 말은, 그만큼 많은 것을 대신 보았다는 뜻이기도 합니다.'),
+  life_death_summary = coalesce(life_death_summary, '사내 야간 점검 중 엘리베이터 CCTV에서만 마지막 모습이 확인되었습니다. 다음 날 출근 기록은 정상 처리되었습니다.'),
+  life_warning = coalesce(life_warning, '구매 시 이름은 바뀌지 않지만, 표시 소속과 팀이 이 인생의 기록으로 동기화됩니다.')
+where item_kind = 'life' and name = 'B의 인생';
+
+update public.items
+set
+  life_subject_name = coalesce(life_subject_name, '기록번호 C-027'),
+  life_organization_code = coalesce(life_organization_code, 'baekildream'),
+  life_department_code = coalesce(life_department_code, 'research'),
+  life_affiliation_label = coalesce(life_affiliation_label, '백일몽 주식회사 연구팀 주임'),
+  life_position_title = coalesce(life_position_title, '연구팀 주임'),
+  life_rank_label = coalesce(life_rank_label, '주임'),
+  life_biography = coalesce(life_biography, '실험기록의 빈칸을 메우던 사람입니다. 빈칸은 줄어들었지만, 기록자의 이름도 함께 흐려졌습니다.'),
+  life_death_summary = coalesce(life_death_summary, '격리실 내부에서 마지막 생체 신호가 사라졌습니다. 사인은 문서상 과로로 정리되었습니다.'),
+  life_warning = coalesce(life_warning, '구매 시 이름은 바뀌지 않지만, 표시 소속과 팀이 이 인생의 기록으로 동기화됩니다.')
+where item_kind = 'life' and name = 'C의 인생';
+
+-- Additional editable life slots. Names are placeholders; replace them later from the admin item list.
+insert into public.items (
+  name, description, image_url, price, effect_type, effect_value, category, is_active, sort_order, audience, item_kind,
+  life_subject_name, life_organization_code, life_department_code, life_affiliation_label, life_position_title, life_rank_label,
+  life_biography, life_death_summary, life_warning
+)
+select
+  'T의 인생',
+  '아직 이름이 확정되지 않은 사원의 인생입니다. 자세히 보기에서 기록을 확인할 수 있습니다.',
+  null,
+  160,
+  'entity_life',
+  0,
+  'main',
+  true,
+  340,
+  'entity',
+  'life',
+  '기록번호 T-009',
+  'baekildream',
+  'security',
+  '백일몽 주식회사 보안팀 사원',
+  '보안팀 사원',
+  '사원',
+  '사내에서 가장 자주 이름이 지워지는 직급의 기록입니다. 출입증은 남았지만, 얼굴을 기억하는 사람은 거의 없습니다.',
+  '비상계단 13층과 14층 사이에서 마지막으로 목격되었습니다. 보고서에는 “퇴사 처리”라고만 적혔습니다.',
+  '구매 시 이름은 바뀌지 않지만, 표시 소속과 팀이 이 인생의 기록으로 동기화됩니다.'
+where not exists (select 1 from public.items where name = 'T의 인생');
+
+insert into public.items (
+  name, description, image_url, price, effect_type, effect_value, category, is_active, sort_order, audience, item_kind,
+  life_subject_name, life_organization_code, life_department_code, life_affiliation_label, life_position_title, life_rank_label,
+  life_biography, life_death_summary, life_warning
+)
+select
+  'Q의 인생',
+  '아직 이름이 확정되지 않은 요원의 인생입니다. 자세히 보기에서 기록을 확인할 수 있습니다.',
+  null,
+  180,
+  'entity_life',
+  0,
+  'main',
+  true,
+  350,
+  'entity',
+  'life',
+  '기록번호 Q-032',
+  'disaster_agency',
+  'agent',
+  '초자연 재난관리국 특수대응팀 요원',
+  '특수대응팀 요원',
+  '요원',
+  '보고서 대부분이 검게 칠해진 요원입니다. 남은 문장만으로도 이 사람이 자주 돌아오지 못할 장소에 들어갔다는 사실은 알 수 있습니다.',
+  '작전 종료 9분 전 생존 신호가 사라졌습니다. 구조팀은 내부 진입 허가를 받지 못했습니다.',
+  '구매 시 이름은 바뀌지 않지만, 표시 소속과 팀이 이 인생의 기록으로 동기화됩니다.'
+where not exists (select 1 from public.items where name = 'Q의 인생');
+
+create or replace function public.release_entity_life(p_reason text default '가면 동기화 해제')
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_profile public.profiles;
+  v_before integer;
+  v_life uuid;
+  v_restore_org text;
+  v_restore_dept text;
+  v_restore_label text;
+begin
+  if v_user_id is null then
+    raise exception '로그인이 필요합니다.';
+  end if;
+
+  select * into v_profile
+  from public.profiles
+  where id = v_user_id
+  for update;
+
+  if not found then
+    raise exception '방문객 정보를 찾을 수 없습니다.';
+  end if;
+
+  if v_profile.visitor_type <> 'entity' then
+    raise exception '괴이 방문객만 사용할 수 있습니다.';
+  end if;
+
+  if v_profile.current_life_item_id is null then
+    return jsonb_build_object('ok', true, 'message', '해제할 인생이 없습니다.', 'life_released', false);
+  end if;
+
+  v_before := coalesce(v_profile.mask_collapse_rate, 0);
+  v_life := v_profile.current_life_item_id;
+  v_restore_org := coalesce(nullif(v_profile.original_organization_code, ''), 'entity');
+  v_restore_dept := coalesce(nullif(v_profile.original_department_code, ''), 'entity');
+  v_restore_label := coalesce(nullif(v_profile.original_affiliation_label, ''), '괴이');
+
+  update public.profiles
+  set
+    current_life_item_id = null,
+    mask_collapse_rate = 0,
+    organization_code = v_restore_org,
+    department_code = v_restore_dept,
+    affiliation_label = v_restore_label,
+    current_life_subject_name = null,
+    current_life_position_title = null,
+    current_life_rank_label = null
+  where id = v_user_id;
+
+  insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+  values (v_user_id, -v_before, p_reason, v_before, 0, 'entity_life_release', v_life);
+
+  return jsonb_build_object('ok', true, 'message', '인생 동기화가 해제되었습니다. 본래 소속으로 돌아갑니다.', 'life_released', true);
+end;
+$$;
+
+grant execute on function public.release_entity_life(text) to authenticated;
+
+create or replace function public.purchase_item(p_item_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_item public.items;
+  v_profile public.profiles;
+  v_before integer;
+  v_after integer;
+  v_life_org text;
+  v_life_dept text;
+  v_life_label text;
+begin
+  if v_user_id is null then
+    raise exception '로그인이 필요합니다.';
+  end if;
+
+  select * into v_item
+  from public.items
+  where id = p_item_id and is_active = true;
+
+  if not found then
+    raise exception '구매할 수 없는 물품입니다.';
+  end if;
+
+  select * into v_profile
+  from public.profiles
+  where id = v_user_id
+  for update;
+
+  if not found then
+    raise exception '방문객 정보를 찾을 수 없습니다.';
+  end if;
+
+  if v_profile.currency < v_item.price then
+    raise exception '유쾌주화가 부족합니다.';
+  end if;
+
+  -- 괴이 전용 구매 규칙
+  if v_profile.visitor_type = 'entity' then
+    if v_item.audience <> 'entity' then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+
+    if v_item.item_kind = 'life' then
+      if v_profile.current_life_item_id = p_item_id and v_profile.mask_collapse_rate < 100 then
+        raise exception '이미 착용 중인 인생입니다.';
+      end if;
+
+      v_life_org := coalesce(nullif(v_item.life_organization_code, ''), 'entity');
+      v_life_dept := coalesce(nullif(v_item.life_department_code, ''), 'entity');
+      v_life_label := coalesce(nullif(v_item.life_affiliation_label, ''), v_item.name);
+
+      update public.profiles
+      set
+        currency = currency - v_item.price,
+        original_organization_code = coalesce(original_organization_code, organization_code),
+        original_department_code = coalesce(original_department_code, department_code),
+        original_affiliation_label = coalesce(original_affiliation_label, affiliation_label),
+        current_life_item_id = p_item_id,
+        mask_collapse_rate = 0,
+        organization_code = v_life_org,
+        department_code = v_life_dept,
+        affiliation_label = v_life_label,
+        current_life_subject_name = nullif(v_item.life_subject_name, ''),
+        current_life_position_title = nullif(v_item.life_position_title, ''),
+        current_life_rank_label = nullif(v_item.life_rank_label, '')
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_item.price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_item.price, '인생 구매: ' || v_item.name, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, 0, '가면 교체: ' || v_item.name, v_profile.mask_collapse_rate, 0, 'entity_life', p_item_id);
+
+      return jsonb_build_object(
+        'ok', true,
+        'message', v_item.name || '을 착용했습니다. 이름은 유지되고, 표시 소속과 팀이 동기화됩니다.',
+        'item_name', v_item.name,
+        'life_applied', true,
+        'affiliation_label', v_life_label,
+        'organization_code', v_life_org,
+        'department_code', v_life_dept
+      );
+    end if;
+
+    if v_item.item_kind = 'life_cancel' then
+      if v_profile.current_life_item_id is null then
+        raise exception '해제할 인생이 없습니다.';
+      end if;
+
+      v_before := v_profile.mask_collapse_rate;
+      v_life_org := coalesce(nullif(v_profile.original_organization_code, ''), 'entity');
+      v_life_dept := coalesce(nullif(v_profile.original_department_code, ''), 'entity');
+      v_life_label := coalesce(nullif(v_profile.original_affiliation_label, ''), '괴이');
+
+      update public.profiles
+      set
+        currency = currency - v_item.price,
+        current_life_item_id = null,
+        mask_collapse_rate = 0,
+        organization_code = v_life_org,
+        department_code = v_life_dept,
+        affiliation_label = v_life_label,
+        current_life_subject_name = null,
+        current_life_position_title = null,
+        current_life_rank_label = null
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_item.price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_item.price, '인생 동기화 해제: ' || v_item.name, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, -v_before, '인생 동기화 해제: ' || v_item.name, v_before, 0, 'entity_life_cancel', p_item_id);
+
+      return jsonb_build_object('ok', true, 'message', '인생 동기화가 해제되었습니다. 본래 소속으로 돌아갑니다.', 'item_name', v_item.name, 'life_released', true);
+    end if;
+
+    if v_item.item_kind = 'mask_care' then
+      if v_profile.current_life_item_id is null then
+        raise exception '먼저 착용할 인생을 구입해야 합니다.';
+      end if;
+
+      v_before := v_profile.mask_collapse_rate;
+      v_after := greatest(0, least(100, v_profile.mask_collapse_rate + v_item.effect_value));
+
+      update public.profiles
+      set
+        currency = currency - v_item.price,
+        mask_collapse_rate = v_after
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_item.price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_item.price, '가면 관리 물품 구매: ' || v_item.name, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, v_after - v_before, '동기화 조정: ' || v_item.name, v_before, v_after, 'mask_care', p_item_id);
+
+      return jsonb_build_object('ok', true, 'message', '동기화 수치가 ' || v_before || ' → ' || v_after || '로 조정되었습니다.', 'item_name', v_item.name, 'mask_value', v_after);
+    end if;
+
+    raise exception '괴이 방문객에게 판매할 수 없는 물품입니다.';
+  end if;
+
+  -- 오염자 계약 해제 물품
+  if v_item.item_kind = 'contract_release' then
+    if v_profile.visitor_type <> 'infected' then
+      raise exception '보안팀 근로계약이 체결된 방문객만 사용할 수 있습니다.';
+    end if;
+
+    v_before := v_profile.pollution;
+
+    update public.profiles
+    set
+      currency = currency - v_item.price,
+      visitor_type = 'human',
+      pollution = 0
+    where id = v_user_id;
+
+    insert into public.purchase_logs (user_id, item_id, item_name, price)
+    values (v_user_id, p_item_id, v_item.name, v_item.price);
+
+    insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+    values (v_user_id, -v_item.price, '근로계약 파기: ' || v_item.name, 'item', p_item_id);
+
+    insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+    values (v_user_id, -v_before, '근로계약 파기: ' || v_item.name, v_before, 0, 'contract_release', p_item_id);
+
+    return jsonb_build_object(
+      'ok', true,
+      'message', '당신을 구속하고 있던 근로계약서의 힘이 사라집니다.',
+      'item_name', v_item.name,
+      'contract_released', true
+    );
+  end if;
+
+  -- 오염자/일반 구매 규칙
+  if v_profile.visitor_type = 'infected' then
+    if v_item.audience not in ('infected', 'all') then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+  else
+    if v_item.audience not in ('human', 'all') then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+  end if;
+
+  update public.profiles
+  set currency = currency - v_item.price
+  where id = v_user_id;
+
+  insert into public.inventories (user_id, item_id, quantity)
+  values (v_user_id, p_item_id, 1)
+  on conflict (user_id, item_id)
+  do update set quantity = public.inventories.quantity + 1, updated_at = now();
+
+  insert into public.purchase_logs (user_id, item_id, item_name, price)
+  values (v_user_id, p_item_id, v_item.name, v_item.price);
+
+  insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+  values (v_user_id, -v_item.price, '물품 구매: ' || v_item.name, 'item', p_item_id);
+
+  return jsonb_build_object('ok', true, 'message', '구매 완료', 'item_name', v_item.name);
+end;
+$$;
+
+grant execute on function public.purchase_item(uuid) to authenticated;
+
+grant select on table public.items to anon, authenticated;

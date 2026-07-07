@@ -7147,3 +7147,88 @@ img.item-detail-img-no-crop {
   justify-self: start !important;
   margin-top: 2px !important;
 }
+
+/* v6.6 entity life metadata */
+.life-meta-fieldset {
+  border: 1px solid rgba(143, 111, 74, 0.28);
+  border-radius: 16px;
+  padding: 14px;
+  margin: 8px 0 14px;
+  background: rgba(255, 248, 232, 0.45);
+}
+.life-meta-fieldset legend {
+  padding: 0 8px;
+  font-weight: 700;
+}
+.life-meta-admin-cell {
+  min-width: 260px;
+  vertical-align: top;
+}
+.life-meta-admin-cell details {
+  max-width: 340px;
+}
+.life-meta-admin-cell summary {
+  cursor: pointer;
+  line-height: 1.45;
+  color: var(--muted, #725f4b);
+}
+.life-meta-admin-cell label {
+  display: block;
+  margin: 8px 0;
+  font-size: 12px;
+  color: var(--muted, #725f4b);
+}
+.life-meta-admin-cell input,
+.life-meta-admin-cell select,
+.life-meta-admin-cell textarea {
+  width: 100%;
+  margin-top: 4px;
+}
+.life-detail-section {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(143, 111, 74, 0.22);
+  border-radius: 18px;
+  background: rgba(255, 250, 239, 0.72);
+}
+.life-detail-section h3 {
+  margin: 0 0 12px;
+  font-size: 1.02rem;
+}
+.life-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.life-detail-grid div {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+}
+.life-detail-grid dt {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--muted, #725f4b);
+}
+.life-detail-grid dd {
+  margin: 0;
+  font-weight: 700;
+}
+.life-record-block {
+  margin-top: 12px;
+}
+.life-record-block p,
+.life-warning {
+  white-space: pre-wrap;
+}
+.danger-record strong {
+  color: #9b2f2f;
+}
+.life-warning {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(144, 88, 47, 0.1);
+  color: #68442c;
+}

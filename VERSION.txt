@@ -1,1 +1,1 @@
-v6.5-admin-password-reset-fix
+v6.6-entity-life-metadata

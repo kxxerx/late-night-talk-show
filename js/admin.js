@@ -1,4 +1,4 @@
-// pollution-shop-version: v6.5-admin-password-reset-fix
+// pollution-shop-version: v6.6-entity-life-metadata
 import { supabase } from "./supabaseClient.js";
 import { qs, qsa, showMessage, requireAdmin, formatDate, revealMemberLinks, applyVisitorModeClass } from "./common.js";
 
@@ -382,6 +382,16 @@ function deriveItemEffectType(itemKind) {
   return "pollution_delta";
 }
 
+function lifeMetaSummary(item) {
+  if ((item.item_kind || "regular") !== "life") return "—";
+  const lines = [
+    item.life_subject_name ? `기록: ${item.life_subject_name}` : "기록: -",
+    item.life_affiliation_label ? `소속: ${item.life_affiliation_label}` : "소속: -",
+    item.life_position_title ? `직책: ${item.life_position_title}` : "직책: -"
+  ];
+  return lines.map(safeText).join("<br>");
+}
+
 function slicePage(rows, key) {
   const total = Math.max(1, Math.ceil(rows.length / pageSize));
   pages[key] = Math.min(Math.max(1, pages[key]), total);
@@ -694,11 +704,41 @@ function renderItemsAdmin() {
       <td><select data-item-audience="${item.id}"><option value="human" ${item.audience === "human" || !item.audience ? "selected" : ""}>일반</option><option value="infected" ${item.audience === "infected" ? "selected" : ""}>오염자</option><option value="entity" ${item.audience === "entity" ? "selected" : ""}>괴이</option><option value="all" ${item.audience === "all" ? "selected" : ""}>공통</option></select></td>
       <td><select data-item-kind="${item.id}"><option value="regular" ${item.item_kind === "regular" || !item.item_kind ? "selected" : ""}>일반</option><option value="life" ${item.item_kind === "life" ? "selected" : ""}>인생</option><option value="mask_care" ${item.item_kind === "mask_care" ? "selected" : ""}>가면관리</option><option value="life_cancel" ${item.item_kind === "life_cancel" ? "selected" : ""}>인생해제</option><option value="contract_release" ${item.item_kind === "contract_release" ? "selected" : ""}>계약해제</option></select></td>
       <td><input class="table-input tiny" type="number" data-item-effect-value="${item.id}" value="${Number(item.effect_value || 0)}"></td>
+      <td class="life-meta-admin-cell">
+        <details>
+          <summary>${lifeMetaSummary(item)}</summary>
+          <label>기록상 인물명<input class="table-input" data-item-life-subject-name="${item.id}" value="${safeText(item.life_subject_name || "")}"></label>
+          <label>소속 코드
+            <select data-item-life-org="${item.id}">
+              <option value="entity" ${item.life_organization_code === "entity" || !item.life_organization_code ? "selected" : ""}>괴이</option>
+              <option value="disaster_agency" ${item.life_organization_code === "disaster_agency" ? "selected" : ""}>초자연 재난관리국</option>
+              <option value="baekildream" ${item.life_organization_code === "baekildream" ? "selected" : ""}>백일몽 주식회사</option>
+              <option value="other" ${item.life_organization_code === "other" ? "selected" : ""}>기타</option>
+            </select>
+          </label>
+          <label>팀 코드
+            <select data-item-life-dept="${item.id}">
+              <option value="entity" ${item.life_department_code === "entity" || !item.life_department_code ? "selected" : ""}>괴이</option>
+              <option value="agent" ${item.life_department_code === "agent" ? "selected" : ""}>요원</option>
+              <option value="field_exploration" ${item.life_department_code === "field_exploration" ? "selected" : ""}>현장탐사팀</option>
+              <option value="research" ${item.life_department_code === "research" ? "selected" : ""}>연구팀</option>
+              <option value="security" ${item.life_department_code === "security" ? "selected" : ""}>보안팀</option>
+              <option value="other" ${item.life_department_code === "other" ? "selected" : ""}>기타</option>
+            </select>
+          </label>
+          <label>표시 소속명<input class="table-input" data-item-life-affiliation="${item.id}" value="${safeText(item.life_affiliation_label || "")}"></label>
+          <label>직책/역할<input class="table-input" data-item-life-position="${item.id}" value="${safeText(item.life_position_title || "")}"></label>
+          <label>직급<input class="table-input" data-item-life-rank="${item.id}" value="${safeText(item.life_rank_label || "")}"></label>
+          <label>일대기<textarea class="table-textarea" data-item-life-biography="${item.id}">${safeText(item.life_biography || "")}</textarea></label>
+          <label>사망/소실 기록<textarea class="table-textarea" data-item-life-death="${item.id}">${safeText(item.life_death_summary || "")}</textarea></label>
+          <label>주의 문구<textarea class="table-textarea" data-item-life-warning="${item.id}">${safeText(item.life_warning || "")}</textarea></label>
+        </details>
+      </td>
       <td class="image-manage-cell"><input class="file-only-input" type="file" accept="image/*" data-item-file="${item.id}"></td>
       <td><input class="table-input tiny" type="number" data-item-sort="${item.id}" value="${Number(item.sort_order || 100)}"></td>
       <td><input type="checkbox" data-item-active="${item.id}" ${item.is_active ? "checked" : ""}></td>
       <td class="action-cell"><button data-save-item="${item.id}">저장</button><button data-delete-item="${item.id}" class="danger">삭제</button></td>
-    </tr>`).join("") || `<tr><td colspan="11">등록된 아이템 없음</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="12">등록된 아이템 없음</td></tr>`;
   renderPager("itemPager", "items", items.length, renderItemsAdmin);
   qsa("[data-save-item]").forEach(button => button.addEventListener("click", async () => {
     const id = button.dataset.saveItem;
@@ -716,6 +756,15 @@ function renderItemsAdmin() {
         item_kind: itemKind,
         effect_type: deriveItemEffectType(itemKind),
         effect_value: Number(document.querySelector(`[data-item-effect-value="${id}"]`).value || 0),
+        life_subject_name: document.querySelector(`[data-item-life-subject-name="${id}"]`)?.value.trim() || null,
+        life_organization_code: document.querySelector(`[data-item-life-org="${id}"]`)?.value || null,
+        life_department_code: document.querySelector(`[data-item-life-dept="${id}"]`)?.value || null,
+        life_affiliation_label: document.querySelector(`[data-item-life-affiliation="${id}"]`)?.value.trim() || null,
+        life_position_title: document.querySelector(`[data-item-life-position="${id}"]`)?.value.trim() || null,
+        life_rank_label: document.querySelector(`[data-item-life-rank="${id}"]`)?.value.trim() || null,
+        life_biography: document.querySelector(`[data-item-life-biography="${id}"]`)?.value.trim() || null,
+        life_death_summary: document.querySelector(`[data-item-life-death="${id}"]`)?.value.trim() || null,
+        life_warning: document.querySelector(`[data-item-life-warning="${id}"]`)?.value.trim() || null,
         image_url: uploadedUrl || current?.image_url || null,
         sort_order: Number(document.querySelector(`[data-item-sort="${id}"]`).value || 100),
         is_active: document.querySelector(`[data-item-active="${id}"]`).checked
@@ -822,7 +871,28 @@ qs("#itemForm")?.addEventListener("submit", async (event) => {
     const file = qs("#itemImageFile")?.files?.[0];
     const imageUrl = file ? await uploadItemImageFile(file) : null;
     const itemKind = qs("#itemKind")?.value || "regular";
-    const payload = { name: qs("#itemName").value.trim(), description: qs("#itemDescription").value.trim(), image_url: imageUrl, price: Number(qs("#itemPrice").value || 0), category: qs("#itemCategory")?.value || "main", effect_type: deriveItemEffectType(itemKind), effect_value: Number(qs("#itemEffectValue").value || 0), audience: qs("#itemAudience")?.value || "human", item_kind: itemKind, is_active: qs("#itemActive").checked, sort_order: Number(qs("#itemSort").value || 100) };
+    const payload = {
+      name: qs("#itemName").value.trim(),
+      description: qs("#itemDescription").value.trim(),
+      image_url: imageUrl,
+      price: Number(qs("#itemPrice").value || 0),
+      category: qs("#itemCategory")?.value || "main",
+      effect_type: deriveItemEffectType(itemKind),
+      effect_value: Number(qs("#itemEffectValue").value || 0),
+      audience: qs("#itemAudience")?.value || "human",
+      item_kind: itemKind,
+      is_active: qs("#itemActive").checked,
+      sort_order: Number(qs("#itemSort").value || 100),
+      life_subject_name: qs("#lifeSubjectName")?.value.trim() || null,
+      life_organization_code: qs("#lifeOrganizationCode")?.value || null,
+      life_department_code: qs("#lifeDepartmentCode")?.value || null,
+      life_affiliation_label: qs("#lifeAffiliationLabel")?.value.trim() || null,
+      life_position_title: qs("#lifePositionTitle")?.value.trim() || null,
+      life_rank_label: qs("#lifeRankLabel")?.value.trim() || null,
+      life_biography: qs("#lifeBiography")?.value.trim() || null,
+      life_death_summary: qs("#lifeDeathSummary")?.value.trim() || null,
+      life_warning: qs("#lifeWarning")?.value.trim() || null
+    };
     const { error } = await supabase.from("items").insert(payload);
     if (error) throw error;
     showMessage("선물 등록 완료", "success"); qs("#itemForm").reset(); qs("#itemActive").checked = true; await loadItems();

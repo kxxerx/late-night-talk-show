@@ -167,6 +167,49 @@
               <option value="contract_release">계약해제</option>
             </select>
           </label>
+          <fieldset class="life-meta-fieldset">
+            <legend>인생 상품 상세</legend>
+            <small class="muted">물품 구분이 “인생”일 때 사용됩니다. 괴이의 이름은 바꾸지 않고, 소속/팀/직책 표시만 이 값으로 동기화됩니다.</small>
+            <label>기록상 인물명
+              <input id="lifeSubjectName" type="text" placeholder="예: 미정 요원, 기록번호 A-001">
+            </label>
+            <label>적용 소속
+              <select id="lifeOrganizationCode">
+                <option value="entity">괴이</option>
+                <option value="disaster_agency">초자연 재난관리국</option>
+                <option value="baekildream">백일몽 주식회사</option>
+                <option value="other">기타</option>
+              </select>
+            </label>
+            <label>적용 팀
+              <select id="lifeDepartmentCode">
+                <option value="entity">괴이</option>
+                <option value="agent">요원</option>
+                <option value="field_exploration">현장탐사팀</option>
+                <option value="research">연구팀</option>
+                <option value="security">보안팀</option>
+                <option value="other">기타</option>
+              </select>
+            </label>
+            <label>표시 소속명
+              <input id="lifeAffiliationLabel" type="text" placeholder="예: 초자연 재난관리국 현장대응팀 요원">
+            </label>
+            <label>직책/역할
+              <input id="lifePositionTitle" type="text" placeholder="예: 현장대응팀 요원, 보안팀 사원">
+            </label>
+            <label>직급
+              <input id="lifeRankLabel" type="text" placeholder="예: 요원, 대리, 주임, 사원">
+            </label>
+            <label>일대기
+              <textarea id="lifeBiography" placeholder="이 인물이 어떤 삶을 살았는지 적어 주세요."></textarea>
+            </label>
+            <label>사망/소실 기록
+              <textarea id="lifeDeathSummary" placeholder="얼마나 비참하게 죽었는지, 어떻게 사라졌는지 적어 주세요."></textarea>
+            </label>
+            <label>주의 문구
+              <textarea id="lifeWarning" placeholder="구매 시 적용되는 설정 안내나 경고문을 적어 주세요."></textarea>
+            </label>
+          </fieldset>
           <label>효과값
             <input id="itemEffectValue" type="number" value="-10">
           </label>
@@ -244,6 +287,7 @@
               <th>대상</th>
               <th>구분</th>
               <th>효과값</th>
+              <th>인생 상세</th>
               <th>이미지 파일</th>
               <th>정렬</th>
               <th>판매</th>

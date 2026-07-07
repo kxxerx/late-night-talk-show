@@ -1,4 +1,4 @@
-// pollution-shop-version: v5.2
+// pollution-shop-version: v6.6-entity-life-metadata
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass, handleEntityCollapseIfNeeded, clearVisitorModeClass } from "./common.js";
 
@@ -22,6 +22,40 @@ const entityCategoryLabels = {
   special: "■■ ■■",
   event: "초대권"
 };
+
+function safeText(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function lifeDetailHtml(item) {
+  if ((item.item_kind || "regular") !== "life") return "";
+  const rows = [
+    ["기록상 인물", item.life_subject_name],
+    ["적용 소속", item.life_affiliation_label],
+    ["직책/역할", item.life_position_title],
+    ["직급", item.life_rank_label]
+  ].filter(([, value]) => String(value || "").trim());
+
+  const rowHtml = rows.length ? `
+    <dl class="life-detail-grid">
+      ${rows.map(([label, value]) => `<div><dt>${safeText(label)}</dt><dd>${safeText(value)}</dd></div>`).join("")}
+    </dl>
+  ` : "";
+
+  return `
+    <section class="life-detail-section">
+      <h3>이 인생의 기록</h3>
+      ${rowHtml}
+      ${item.life_biography ? `<div class="life-record-block"><strong>일대기</strong><p>${safeText(item.life_biography)}</p></div>` : ""}
+      ${item.life_death_summary ? `<div class="life-record-block danger-record"><strong>사망/소실 기록</strong><p>${safeText(item.life_death_summary)}</p></div>` : ""}
+      ${item.life_warning ? `<p class="life-warning">${safeText(item.life_warning)}</p>` : `<p class="life-warning">구매 시 괴이의 이름은 유지되고, 표시 소속과 팀만 이 인생의 기록으로 동기화됩니다.</p>`}
+    </section>
+  `;
+}
 
 function friendlyError(message = "") {
   return String(message)
@@ -92,9 +126,10 @@ function openItemDetail(item) {
     <div class="detail-image-wrap">
       ${item.image_url ? `<img class="item-img-no-crop" src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
     </div>
-    <h2>${item.name}</h2>
-    <p class="detail-price">${item.price} 유쾌주화</p>
-    <p class="detail-description">${item.description || "상세 설명이 등록되지 않았습니다."}</p>
+    <h2>${safeText(item.name)}</h2>
+    <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
+    <p class="detail-description">${safeText(item.description || "상세 설명이 등록되지 않았습니다.")}</p>
+    ${lifeDetailHtml(item)}
   `;
   modal.classList.add("open");
 }
