@@ -3017,3 +3017,80 @@ $$;
 grant execute on function public.purchase_item(uuid) to authenticated;
 
 grant select on table public.items to anon, authenticated;
+-- v6.8: 회원 목록 권한 구분(일반/오염자/괴이) 저장 보정
+-- 원인: 일부 DB에는 admin_update_member RPC의 예전 5인자 버전이 남아 있어
+--       프론트에서 선택한 visitor_type/소속/팀 값이 저장되지 않거나 되돌아갈 수 있다.
+
+-- 예전 RPC 오버로드 제거
+-- 없는 시그니처는 무시된다.
+drop function if exists public.admin_update_member(uuid, text, text, text);
+drop function if exists public.admin_update_member(uuid, text, text, text, text);
+drop function if exists public.admin_update_member(uuid, text, text, text, text, text, text, text, text);
+
+create or replace function public.admin_update_member(
+  p_target_user_id uuid,
+  p_display_name text,
+  p_band_nickname text,
+  p_role text,
+  p_visitor_type text default 'human',
+  p_character_key text default null,
+  p_organization_code text default 'unaffiliated',
+  p_department_code text default 'none',
+  p_affiliation_label text default '무소속'
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception '관리자 권한이 필요합니다.';
+  end if;
+
+  if p_role not in ('user', 'admin') then
+    raise exception 'role 값이 올바르지 않습니다.';
+  end if;
+
+  if p_visitor_type not in ('human', 'infected', 'entity') then
+    raise exception '방문객 유형이 올바르지 않습니다.';
+  end if;
+
+  if coalesce(nullif(trim(p_organization_code), ''), 'unaffiliated') not in ('baekildream', 'disaster_agency', 'entity', 'unaffiliated', 'other') then
+    raise exception 'organization_code 값이 올바르지 않습니다.';
+  end if;
+
+  if coalesce(nullif(trim(p_department_code), ''), 'none') not in ('field_exploration', 'research', 'security', 'agent', 'entity', 'none', 'other') then
+    raise exception 'department_code 값이 올바르지 않습니다.';
+  end if;
+
+  update public.profiles
+  set
+    display_name = coalesce(nullif(trim(p_display_name), ''), '익명'),
+    band_nickname = nullif(trim(p_band_nickname), ''),
+    role = p_role,
+    visitor_type = p_visitor_type,
+    character_key = nullif(trim(p_character_key), ''),
+    organization_code = coalesce(nullif(trim(p_organization_code), ''), 'unaffiliated'),
+    department_code = coalesce(nullif(trim(p_department_code), ''), 'none'),
+    affiliation_label = coalesce(nullif(trim(p_affiliation_label), ''), '무소속'),
+    updated_at = now()
+  where id = p_target_user_id;
+
+  if not found then
+    raise exception '대상 회원을 찾을 수 없습니다.';
+  end if;
+
+  insert into public.admin_logs (admin_id, target_user_id, action, detail)
+  values (
+    auth.uid(),
+    p_target_user_id,
+    'admin_update_member',
+    '방문객 정보/권한 구분/탐사 소속 수정'
+  );
+
+  return jsonb_build_object('ok', true);
+end;
+$$;
+
+grant execute on function public.admin_update_member(uuid, text, text, text, text, text, text, text, text) to authenticated;

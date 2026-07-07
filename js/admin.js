@@ -760,29 +760,9 @@ function renderUsers() {
       if (presetKey) {
         const preset = getCharacterPresetByKey(presetKey);
         if (preset) applyCharacterPresetPreview(id, presetKey);
-        try {
-          await applyCharacterPresetToUser(id, presetKey);
-        } catch (rpcError) {
-          console.warn("admin_apply_character_preset failed; falling back to admin_update_member:", rpcError.message);
-          const { error: fallbackError } = await supabase.rpc("admin_update_member", {
-            p_target_user_id: id,
-            p_display_name: document.querySelector(`[data-display="${id}"]`).value,
-            p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
-            p_role: document.querySelector(`[data-role="${id}"]`).value,
-            p_visitor_type: document.querySelector(`[data-visitor-type="${id}"]`).value,
-            p_character_key: document.querySelector(`[data-character-key="${id}"]`).value,
-            p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
-            p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
-            p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
-          });
-          if (fallbackError) throw fallbackError;
-        }
-        showMessage("캐릭터 정보 저장 완료", "success");
-        await loadUsers();
-        return;
       }
 
-      const { error } = await supabase.rpc("admin_update_member", {
+      const payload = {
         p_target_user_id: id,
         p_display_name: document.querySelector(`[data-display="${id}"]`).value,
         p_band_nickname: document.querySelector(`[data-band="${id}"]`).value,
@@ -792,7 +772,9 @@ function renderUsers() {
         p_organization_code: document.querySelector(`[data-organization-code="${id}"]`).value,
         p_department_code: document.querySelector(`[data-department-code="${id}"]`).value,
         p_affiliation_label: document.querySelector(`[data-affiliation-label="${id}"]`).value
-      });
+      };
+
+      const { error } = await supabase.rpc("admin_update_member", payload);
       if (error) throw error;
       showMessage("방문객 정보 저장 완료", "success");
       await loadUsers();
