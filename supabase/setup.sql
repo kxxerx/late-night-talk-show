@@ -3094,3 +3094,270 @@ end;
 $$;
 
 grant execute on function public.admin_update_member(uuid, text, text, text, text, text, text, text, text) to authenticated;
+-- v6.9.4
+-- 괴이 방문객 1회 한정 VIP 무료 인생권 이벤트를 추가합니다.
+-- 조건: 괴이 방문객이 아직 무료 인생권을 사용하지 않았고, 구매 대상이
+--       초자연 재난관리국 요원(disaster_agency/agent) 또는
+--       백일몽 주식회사 현장탐사팀(baekildream/field_exploration) 인생 상품이면 가격을 0으로 처리합니다.
+
+alter table public.profiles
+  add column if not exists free_life_claimed_at timestamptz;
+
+alter table public.profiles
+  add column if not exists free_life_item_id uuid references public.items(id) on delete set null;
+
+
+create or replace function public.purchase_item(p_item_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_item public.items;
+  v_profile public.profiles;
+  v_before integer;
+  v_after integer;
+  v_life_org text;
+  v_life_dept text;
+  v_life_label text;
+  v_effective_price integer;
+  v_is_free_life boolean;
+begin
+  if v_user_id is null then
+    raise exception '로그인이 필요합니다.';
+  end if;
+
+  select * into v_item
+  from public.items
+  where id = p_item_id and is_active = true;
+
+  if not found then
+    raise exception '구매할 수 없는 물품입니다.';
+  end if;
+
+  select * into v_profile
+  from public.profiles
+  where id = v_user_id
+  for update;
+
+  if not found then
+    raise exception '방문객 정보를 찾을 수 없습니다.';
+  end if;
+
+  v_is_free_life := (
+    v_profile.visitor_type = 'entity'
+    and coalesce(v_profile.free_life_claimed_at, null) is null
+    and v_profile.free_life_item_id is null
+    and v_item.audience = 'entity'
+    and v_item.item_kind = 'life'
+    and (
+      (v_item.life_organization_code = 'disaster_agency' and v_item.life_department_code = 'agent')
+      or (v_item.life_organization_code = 'baekildream' and v_item.life_department_code = 'field_exploration')
+    )
+  );
+
+  v_effective_price := case when v_is_free_life then 0 else v_item.price end;
+
+  if v_profile.currency < v_effective_price then
+    raise exception '유쾌주화가 부족합니다.';
+  end if;
+
+  -- 괴이 전용 구매 규칙
+  if v_profile.visitor_type = 'entity' then
+    if v_item.audience <> 'entity' then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+
+    if v_item.item_kind = 'life' then
+      if v_profile.current_life_item_id = p_item_id and v_profile.mask_collapse_rate < 100 then
+        raise exception '이미 착용 중인 인생입니다.';
+      end if;
+
+      v_life_org := coalesce(nullif(v_item.life_organization_code, ''), 'entity');
+      v_life_dept := coalesce(nullif(v_item.life_department_code, ''), 'entity');
+      v_life_label := coalesce(nullif(v_item.life_affiliation_label, ''), v_item.name);
+
+      update public.profiles
+      set
+        currency = currency - v_effective_price,
+        free_life_claimed_at = case when v_is_free_life then now() else free_life_claimed_at end,
+        free_life_item_id = case when v_is_free_life then p_item_id else free_life_item_id end,
+        original_organization_code = coalesce(original_organization_code, organization_code),
+        original_department_code = coalesce(original_department_code, department_code),
+        original_affiliation_label = coalesce(original_affiliation_label, affiliation_label),
+        current_life_item_id = p_item_id,
+        mask_collapse_rate = 0,
+        organization_code = v_life_org,
+        department_code = v_life_dept,
+        affiliation_label = v_life_label,
+        current_life_subject_name = nullif(v_item.life_subject_name, ''),
+        current_life_position_title = nullif(v_item.life_position_title, ''),
+        current_life_rank_label = nullif(v_item.life_rank_label, '')
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_effective_price, case when v_is_free_life then 'VIP 무료 인생권: ' || v_item.name else '인생 구매: ' || v_item.name end, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, 0, '가면 교체: ' || v_item.name, v_profile.mask_collapse_rate, 0, 'entity_life', p_item_id);
+
+      return jsonb_build_object(
+        'ok', true,
+        'message', case when v_is_free_life then 'VIP 무료 인생권이 적용되었습니다. ' || v_item.name || '을 착용했습니다.' else v_item.name || '을 착용했습니다. 이름은 유지되고, 표시 소속과 팀이 동기화됩니다.' end,
+        'item_name', v_item.name,
+        'life_applied', true,
+        'free_life_used', v_is_free_life,
+        'affiliation_label', v_life_label,
+        'organization_code', v_life_org,
+        'department_code', v_life_dept
+      );
+    end if;
+
+    if v_item.item_kind = 'life_cancel' then
+      if v_profile.current_life_item_id is null then
+        raise exception '해제할 인생이 없습니다.';
+      end if;
+
+      v_before := v_profile.mask_collapse_rate;
+      v_life_org := coalesce(nullif(v_profile.original_organization_code, ''), 'entity');
+      v_life_dept := coalesce(nullif(v_profile.original_department_code, ''), 'entity');
+      v_life_label := coalesce(nullif(v_profile.original_affiliation_label, ''), '괴이');
+
+      update public.profiles
+      set
+        currency = currency - v_effective_price,
+        current_life_item_id = null,
+        mask_collapse_rate = 0,
+        organization_code = v_life_org,
+        department_code = v_life_dept,
+        affiliation_label = v_life_label,
+        current_life_subject_name = null,
+        current_life_position_title = null,
+        current_life_rank_label = null
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_effective_price, '인생 동기화 해제: ' || v_item.name, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, -v_before, '인생 동기화 해제: ' || v_item.name, v_before, 0, 'entity_life_cancel', p_item_id);
+
+      return jsonb_build_object('ok', true, 'message', '인생 동기화가 해제되었습니다. 본래 소속으로 돌아갑니다.', 'item_name', v_item.name, 'life_released', true);
+    end if;
+
+    if v_item.item_kind = 'mask_care' then
+      if v_profile.current_life_item_id is null then
+        raise exception '먼저 착용할 인생을 구입해야 합니다.';
+      end if;
+
+      v_before := v_profile.mask_collapse_rate;
+      v_after := greatest(0, least(100, v_profile.mask_collapse_rate + v_item.effect_value));
+
+      update public.profiles
+      set
+        currency = currency - v_effective_price,
+        mask_collapse_rate = v_after
+      where id = v_user_id;
+
+      insert into public.purchase_logs (user_id, item_id, item_name, price)
+      values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+      insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+      values (v_user_id, -v_effective_price, '가면 관리 물품 구매: ' || v_item.name, 'item', p_item_id);
+
+      insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+      values (v_user_id, v_after - v_before, '동기화 조정: ' || v_item.name, v_before, v_after, 'mask_care', p_item_id);
+
+      return jsonb_build_object('ok', true, 'message', '동기화 수치가 ' || v_before || ' → ' || v_after || '로 조정되었습니다.', 'item_name', v_item.name, 'mask_value', v_after);
+    end if;
+
+    -- v6.9.3 수정: 괴이 전용 선반에 노출되는 일반 물품도 정상 구매 처리합니다.
+    update public.profiles
+    set currency = currency - v_effective_price
+    where id = v_user_id;
+
+    insert into public.inventories (user_id, item_id, quantity)
+    values (v_user_id, p_item_id, 1)
+    on conflict (user_id, item_id)
+    do update set quantity = public.inventories.quantity + 1, updated_at = now();
+
+    insert into public.purchase_logs (user_id, item_id, item_name, price)
+    values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+    insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+    values (v_user_id, -v_effective_price, '괴이 물품 구매: ' || v_item.name, 'item', p_item_id);
+
+    return jsonb_build_object('ok', true, 'message', '구매 완료', 'item_name', v_item.name, 'entity_item_purchased', true);
+  end if;
+
+  -- 오염자 계약 해제 물품
+  if v_item.item_kind = 'contract_release' then
+    if v_profile.visitor_type <> 'infected' then
+      raise exception '보안팀 근로계약이 체결된 방문객만 사용할 수 있습니다.';
+    end if;
+
+    v_before := v_profile.pollution;
+
+    update public.profiles
+    set
+      currency = currency - v_effective_price,
+      visitor_type = 'human',
+      pollution = 0
+    where id = v_user_id;
+
+    insert into public.purchase_logs (user_id, item_id, item_name, price)
+    values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+    insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+    values (v_user_id, -v_effective_price, '근로계약 파기: ' || v_item.name, 'item', p_item_id);
+
+    insert into public.pollution_logs (user_id, change_amount, reason, before_value, after_value, related_type, related_id)
+    values (v_user_id, -v_before, '근로계약 파기: ' || v_item.name, v_before, 0, 'contract_release', p_item_id);
+
+    return jsonb_build_object(
+      'ok', true,
+      'message', '당신을 구속하고 있던 근로계약서의 힘이 사라집니다.',
+      'item_name', v_item.name,
+      'contract_released', true
+    );
+  end if;
+
+  -- 오염자/일반 구매 규칙
+  if v_profile.visitor_type = 'infected' then
+    if v_item.audience not in ('infected', 'all') then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+  else
+    if v_item.audience not in ('human', 'all') then
+      raise exception '이 선반의 물품은 현재 방문객에게 판매할 수 없습니다.';
+    end if;
+  end if;
+
+  update public.profiles
+  set currency = currency - v_effective_price
+  where id = v_user_id;
+
+  insert into public.inventories (user_id, item_id, quantity)
+  values (v_user_id, p_item_id, 1)
+  on conflict (user_id, item_id)
+  do update set quantity = public.inventories.quantity + 1, updated_at = now();
+
+  insert into public.purchase_logs (user_id, item_id, item_name, price)
+  values (v_user_id, p_item_id, v_item.name, v_effective_price);
+
+  insert into public.currency_logs (user_id, change_amount, reason, related_type, related_id)
+  values (v_user_id, -v_effective_price, '물품 구매: ' || v_item.name, 'item', p_item_id);
+
+  return jsonb_build_object('ok', true, 'message', '구매 완료', 'item_name', v_item.name);
+end;
+$$;
+
+grant execute on function public.purchase_item(uuid) to authenticated;

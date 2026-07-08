@@ -1,1 +1,1 @@
-v6.9.3-entity-regular-purchase-fix
+v6.9.4-entity-free-life-event

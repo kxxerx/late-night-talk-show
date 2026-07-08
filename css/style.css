@@ -7496,3 +7496,44 @@ html.entity-mode #itemDetailModal.life-only-detail-modal .detail-description {
     max-height: 46vh !important;
   }
 }
+
+/* v6.9.4 entity free life event */
+.entity-free-life-event {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(83, 210, 191, .55) !important;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(83, 210, 191, .14), transparent 32%),
+    repeating-linear-gradient(135deg, rgba(83, 210, 191, .03) 0 1px, transparent 1px 8px),
+    #030807 !important;
+  color: #b7fff3 !important;
+  box-shadow: 0 0 30px rgba(83, 210, 191, .12), 0 18px 45px rgba(0,0,0,.45) !important;
+}
+.entity-free-life-event h2 {
+  margin: 4px 0 8px !important;
+  color: #b7fff3 !important;
+}
+.entity-free-life-event p {
+  color: #b7fff3 !important;
+  line-height: 1.7 !important;
+}
+.entity-free-life-event .muted {
+  color: rgba(183, 255, 243, .76) !important;
+}
+.entity-free-life-event .event-kicker {
+  display: inline-flex;
+  width: fit-content;
+  padding: 5px 10px;
+  border: 1px solid rgba(83, 210, 191, .45);
+  border-radius: 999px;
+  background: rgba(83, 210, 191, .10);
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.luxury-item-card .price.free-price,
+.item-card .price.free-price,
+#shopList .price.free-price,
+.detail-price.free-price {
+  color: #8dfff0 !important;
+  text-shadow: 0 0 12px rgba(83, 210, 191, .28) !important;
+}

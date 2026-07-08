@@ -1,4 +1,4 @@
-// pollution-shop-version: v6.9-life-detail-modal-image-price-fix
+// pollution-shop-version: v6.9.4-entity-free-life-event
 import { supabase } from "./supabaseClient.js";
 import { qs, showMessage, getSession, profileAvatar, visitorStatusText, visitorStatusClass, visitorMetricValue, visitorKindLabel, authEmailFromLoginId, applyVisitorModeClass, handleEntityCollapseIfNeeded, clearVisitorModeClass } from "./common.js";
 
@@ -61,6 +61,45 @@ function friendlyError(message = "") {
   return String(message)
     .replace("재화가 부족합니다.", "유쾌주화가 부족합니다.")
     .replace("재화가 부족합니다", "유쾌주화가 부족합니다");
+}
+
+
+function isFreeLifeEligible(item) {
+  if (!item || (item.item_kind || "regular") !== "life") return false;
+  if ((item.audience || "human") !== "entity") return false;
+  const org = item.life_organization_code || "";
+  const dept = item.life_department_code || "";
+  return (org === "disaster_agency" && dept === "agent")
+    || (org === "baekildream" && dept === "field_exploration");
+}
+
+function hasClaimedFreeLife() {
+  return Boolean(cachedProfile?.free_life_claimed_at || cachedProfile?.free_life_item_id);
+}
+
+function itemFreeForVisitor(item) {
+  return cachedProfile?.visitor_type === "entity"
+    && !hasClaimedFreeLife()
+    && isFreeLifeEligible(item);
+}
+
+function priceLabel(item) {
+  if (itemFreeForVisitor(item)) return "VIP 무료 1회";
+  return `${Number(item.price || 0)} 유쾌주화`;
+}
+
+function freeLifeEventHtml(items) {
+  if (cachedProfile?.visitor_type !== "entity") return "";
+  if (hasClaimedFreeLife()) return "";
+  if (!items.some(isFreeLifeEligible)) return "";
+  return `
+    <article class="panel entity-free-life-event">
+      <p class="event-kicker">VIP 전용 1회 한정</p>
+      <h2>인생권 무료 이벤트</h2>
+      <p>VIP인 당신을 위해 준비했습니다. 초자연 재난관리국 요원 또는 백일몽 주식회사 현장탐사팀 사원의 인생권 중 하나를 1회 무료로 선택할 수 있습니다.</p>
+      <p class="muted">무료 적용 대상 상품에는 <b>VIP 무료 1회</b> 표지가 붙습니다. 하나를 선택하면 이후 무료 혜택은 다시 사용할 수 없습니다.</p>
+    </article>
+  `;
 }
 
 function itemVisibleForVisitor(item) {
@@ -132,7 +171,7 @@ function openItemDetail(item) {
         ${item.image_url ? `<img class="item-img-no-crop" src="${safeText(item.image_url)}" alt="${safeText(item.name)}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
       </div>
       <h2>${safeText(item.name)}</h2>
-      <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
+      <p class="detail-price ${itemFreeForVisitor(item) ? "free-price" : ""}">${safeText(priceLabel(item))}</p>
       ${lifeDetailHtml(item) || `
         <section class="life-detail-section">
           <h3>이 인생의 기록</h3>
@@ -146,7 +185,7 @@ function openItemDetail(item) {
         ${item.image_url ? `<img class="item-img-no-crop" src="${safeText(item.image_url)}" alt="${safeText(item.name)}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
       </div>
       <h2>${safeText(item.name)}</h2>
-      <p class="detail-price">${Number(item.price || 0)} 유쾌주화</p>
+      <p class="detail-price ${itemFreeForVisitor(item) ? "free-price" : ""}">${safeText(priceLabel(item))}</p>
       <p class="detail-description">${safeText(item.description || "상세 설명이 등록되지 않았습니다.")}</p>
     `;
   }
@@ -164,7 +203,7 @@ function renderItems() {
     return;
   }
 
-  list.innerHTML = items.map(item => `
+  list.innerHTML = freeLifeEventHtml(items) + items.map(item => `
     <article class="item-card luxury-item-card">
       <div class="item-image-wrap">
         ${item.image_url ? `<img class="item-img-no-crop" src="${item.image_url}" alt="${item.name}" onerror="this.style.display='none'">` : `<div class="no-image">NO IMAGE</div>`}
@@ -173,7 +212,7 @@ function renderItems() {
         <h2>${item.name}</h2>
       </div>
       <div class="item-footer">
-        <p class="price">${item.price} 유쾌주화</p>
+        <p class="price ${itemFreeForVisitor(item) ? "free-price" : ""}">${safeText(priceLabel(item))}</p>
         <div class="item-actions">
           <button data-detail="${item.id}" class="button secondary" type="button">자세히</button>
           ${itemSoldOutForVisitor(item) ? `<button type="button" disabled>솔드아웃</button>` : `<button data-buy="${item.id}" type="button">구입</button>`}
