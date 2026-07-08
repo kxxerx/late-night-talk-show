@@ -3075,3 +3075,16 @@ v0.6에서는 관리실 회원 목록 구조를 다시 정리했습니다.
 
 
 ---
+
+
+## v6.9.3 괴이 전용 일반 물품 구매 오류 수정
+
+괴이 홈페이지에 노출되는 물품 중 `item_kind`가 `life`, `life_cancel`, `mask_care`가 아닌 일반 괴이 전용 물품도 구매되도록 `purchase_item` RPC를 수정했습니다.
+
+적용 SQL:
+
+```txt
+migrations/upgrade-v6.9.3-entity-regular-purchase-fix.sql
+```
+
+이 SQL을 Supabase SQL Editor에서 실행해야 실제 구매 오류가 해결됩니다. 프론트 파일만 올리면 DB 함수는 바뀌지 않습니다.

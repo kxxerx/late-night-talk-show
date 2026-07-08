@@ -1,1 +1,1 @@
-v6.9.1-life-detail-image-price-fix
+v6.9.3-entity-regular-purchase-fix
